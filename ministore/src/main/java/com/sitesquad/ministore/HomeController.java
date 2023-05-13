@@ -2,6 +2,8 @@ package com.sitesquad.ministore;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Controller  // Chỉ định HomeController là Controller
 public class HomeController {
@@ -12,4 +14,7 @@ public class HomeController {
     }
 
     // Có thể mapping thêm các endpoint khác nữa...
+    
+    
+   
 }
