@@ -5,6 +5,7 @@ import java.util.Objects;
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,7 +22,8 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-//@ToString
+@ToString
+@EqualsAndHashCode
 @Table(name = "product")
 public class Product implements Serializable{
     @Id
@@ -43,11 +45,12 @@ public class Product implements Serializable{
     @Column(name = "is_deleted")
     private Boolean isDeleted;
     
+    @ToString.Exclude
     @ManyToOne(targetEntity = ProductType.class,cascade = CascadeType.ALL)
     @JoinColumn(name = "product_type_id", referencedColumnName = "product_type_id")
     private ProductType productType;
     
-        //equals
+    //equals
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

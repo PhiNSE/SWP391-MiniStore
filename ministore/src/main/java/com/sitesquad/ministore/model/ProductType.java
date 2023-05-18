@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,7 +21,8 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-//@ToString
+@ToString
+@EqualsAndHashCode
 @Table(name = "product_type")
 public class ProductType{
     @Id
@@ -33,7 +35,7 @@ public class ProductType{
     @OneToMany(targetEntity = Product.class,mappedBy = "productType")
     private Set<Product> products;
     
-        //equals method
+     //equals method
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
