@@ -15,17 +15,17 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController  
 public class PhiController {
-    
-    @Autowired
-    ProductRepository productRepository;
-        
-    @GetMapping("/phi")
-    public JSONArray getProducts() {
-                List<Product> products = productRepository.findAll();
-        for (Product product : products) {
-            System.out.println(product.toString());
-        }
-        
-        return new JSONArray(products);
-    }
+//    
+//    @Autowired
+//    ProductRepository productRepository;
+//        
+//    @GetMapping("/phi")
+//    public JSONArray getProducts() {
+//                List<Product> products = productRepository.findAll();
+//        for (Product product : products) {
+//            System.out.println(product.toString());
+//        }
+//        
+//        return new JSONArray(products);
+//    }
 }
