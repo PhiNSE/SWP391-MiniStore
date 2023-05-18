@@ -20,7 +20,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+//@ToString
 @Table(name = "product_type")
 public class ProductType{
     @Id
@@ -30,8 +30,8 @@ public class ProductType{
     @Column(name = "name")
     private String name;
     
-//    @OneToMany(mappedBy = "productType")
-//    private Set<Product> products;
+    @OneToMany(targetEntity = Product.class,mappedBy = "productType")
+    private Set<Product> products;
     
         //equals method
     @Override

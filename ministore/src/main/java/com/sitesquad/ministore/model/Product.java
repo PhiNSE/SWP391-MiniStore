@@ -21,7 +21,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+//@ToString
 @Table(name = "product")
 public class Product implements Serializable{
     @Id
@@ -43,7 +43,7 @@ public class Product implements Serializable{
     @Column(name = "is_deleted")
     private Boolean isDeleted;
     
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = ProductType.class,cascade = CascadeType.ALL)
     @JoinColumn(name = "product_type_id", referencedColumnName = "product_type_id")
     private ProductType productType;
     
@@ -61,4 +61,7 @@ public class Product implements Serializable{
     public int hashCode() {
         return Objects.hash(id);
     }
+
+
+
 }
