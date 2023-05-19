@@ -47,12 +47,6 @@ public class OrderDetails {
     @Column(name = "product_id", insertable = false, updatable = false)
     private Long productId;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "order_id", referencedColumnName = "order_id")
-    @JsonBackReference
-    @ToString.Exclude
-    private Order order;
-    
     @Column(name = "order_id", insertable = false, updatable = false)
     private Long orderId;
 
@@ -65,12 +59,19 @@ public class OrderDetails {
     @Column(name = "total")
     private double total;
 
+    @Column(name = "product_voucher_id", insertable = false, updatable = false)
+    private Long productVoucherId;
+    
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id", referencedColumnName = "order_id")
+    @JsonBackReference
+    @ToString.Exclude
+    private Order order;
+    
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "product_voucher_id", referencedColumnName = "product_voucher_id")
     @JsonBackReference
     @ToString.Exclude
-    private Voucher voucher;
+    private ProductVoucher productVoucher;
     
-    @Column(name = "product_voucher_id", insertable = false, updatable = false)
-    private Long productVoucherId;
 }

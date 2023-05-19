@@ -1,6 +1,8 @@
 package com.sitesquad.ministore.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -12,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -52,4 +55,9 @@ public class Order {
     @JsonBackReference
     @ToString.Exclude
     private User user;
+    
+    @OneToMany(mappedBy = "order")
+    @JsonManagedReference
+    @ToString.Exclude
+    private Collection<OrderDetails> orderDetails;
 }
