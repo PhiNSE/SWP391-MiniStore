@@ -1,9 +1,53 @@
 package com.sitesquad.ministore.model;
 
+import java.io.Serializable;
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  *
  * @author ADMIN
  */
-public class Role {
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
+@Table(name = "role")
+public class Role implements Serializable {
+    @Id
+    @Column(name = "role_id")
+    Long id;
     
+    @Column(name = "name")
+    String name;
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Role role = (Role) o;
+        return Objects.equals(id, role.id);
+    }
+
+    //hashCode
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
