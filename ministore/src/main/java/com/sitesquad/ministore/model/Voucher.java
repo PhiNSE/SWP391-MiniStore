@@ -1,10 +1,14 @@
 package com.sitesquad.ministore.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.util.Collection;
 import java.util.Date;
-import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -28,6 +32,7 @@ import lombok.ToString;
 public class Voucher {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "voucher_id")
     private Long id;
 
@@ -51,22 +56,11 @@ public class Voucher {
 
     @Column(name = "expired_date")
     private Date expiredDate;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Voucher voucher = (Voucher) o;
-        return Objects.equals(id, voucher.id);
-    }
-
-    //hashCode
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+        
+    @OneToMany(mappedBy = "voucher")
+    @JsonManagedReference
+    @ToString.Exclude
+    private Collection<ProductVoucher> productVouchers;
+    
+    
 }

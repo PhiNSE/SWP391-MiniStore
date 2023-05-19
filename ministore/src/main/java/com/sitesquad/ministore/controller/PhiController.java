@@ -41,9 +41,19 @@ public class PhiController {
     public List<Product> getProducts() {
         List<Product> products = productRepository.findAll();
         for (Product product : products) {
-            System.out.println(product.toString());
+            System.out.println(product);
         }
 
         return products;
+    }
+    
+        @GetMapping("/producttypes")
+    public List<ProductType> getProductTypes() {
+        List<ProductType> productTypes = productTypeRepository.findAll();
+        for (ProductType ProductType : productTypes) {
+            System.out.println(ProductType);
+        }
+
+        return productTypes;
     }
 }

@@ -5,6 +5,7 @@
  */
 package com.sitesquad.ministore.repository;
 
+import com.sitesquad.ministore.model.Shift;
 import org.springframework.data.jpa.repository.JpaRepository;
 //import com.sitesquad.ministore.model.Shift;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -13,6 +14,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  *
  * @author ACER
  */
-public interface Shift extends JpaRepository<Shift, Long>, JpaSpecificationExecutor<Shift>{
+public interface ShiftRepository extends JpaRepository<Shift, Long>, JpaSpecificationExecutor<Shift>{
     
 }

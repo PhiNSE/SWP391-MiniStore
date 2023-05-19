@@ -1,5 +1,6 @@
 package com.sitesquad.ministore.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -37,28 +38,12 @@ public class Order {
     private boolean type;
 
     @ToString.Exclude
+    @JsonBackReference
     @ManyToOne(targetEntity = User.class,cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    private int userId;
+    private Long userId;
 
     @Column(name = "datetime")
     private Date dateTime;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Order order = (Order) o;
-        return Objects.equals(id, order.id);
-    }
-
-    //hashCode
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }

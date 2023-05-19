@@ -57,21 +57,4 @@ public class OrderDetails {
     @JoinColumn(name = "product_voucher_id", referencedColumnName = "product_voucher_id")
     private Long productVoucherId;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        OrderDetails orderDetail = (OrderDetails) o;
-        return Objects.equals(id, orderDetail.id);
-    }
-
-    //hashCode
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }
