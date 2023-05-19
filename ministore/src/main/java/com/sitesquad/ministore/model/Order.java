@@ -6,6 +6,9 @@ import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -31,19 +34,22 @@ import lombok.ToString;
 @Table(name = "order")
 public class Order {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
     private Long id;
 
     @Column(name = "type")
     private boolean type;
-
-    @ToString.Exclude
-    @JsonBackReference
-    @ManyToOne(targetEntity = User.class,cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    
+    @Column(name = "user_id", insertable = false, updatable = false)
     private Long userId;
 
     @Column(name = "datetime")
     private Date dateTime;
 
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @JsonBackReference
+    @ToString.Exclude
+    private User user;
 }

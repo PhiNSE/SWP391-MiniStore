@@ -1,9 +1,13 @@
 package com.sitesquad.ministore.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -30,17 +34,26 @@ import lombok.ToString;
 public class OrderDetails {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_detail_id")
     private Long id;
 
-    @ToString.Exclude
-    @ManyToOne(targetEntity = Product.class, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id", referencedColumnName = "product_id")
+    @JsonBackReference
+    @ToString.Exclude
+    private Product product;
+    
+    @Column(name = "product_id", insertable = false, updatable = false)
     private Long productId;
 
-    @ToString.Exclude
-    @ManyToOne(targetEntity = Order.class, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id", referencedColumnName = "order_id")
+    @JsonBackReference
+    @ToString.Exclude
+    private Order order;
+    
+    @Column(name = "order_id", insertable = false, updatable = false)
     private Long orderId;
 
     @Column(name = "quantity")
@@ -52,9 +65,12 @@ public class OrderDetails {
     @Column(name = "total")
     private double total;
 
-    @ToString.Exclude
-    @ManyToOne(targetEntity = ProductVoucher.class, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "product_voucher_id", referencedColumnName = "product_voucher_id")
+    @JsonBackReference
+    @ToString.Exclude
+    private Voucher voucher;
+    
+    @Column(name = "product_voucher_id", insertable = false, updatable = false)
     private Long productVoucherId;
-
 }
