@@ -1,28 +1,28 @@
 package com.sitesquad.ministore.model;
 
-import java.util.ArrayList;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.util.Collection;
 import java.util.Objects;
-import java.util.Set;
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+
 /**
  *
  * @author ADMIN
  */
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
-@EqualsAndHashCode
+//@Getter
+//@Setter
+//@NoArgsConstructor
+//@AllArgsConstructor
+//@ToString
+//@EqualsAndHashCode
 @Table(name = "product_type")
 public class ProductType{
     @Id
@@ -32,8 +32,9 @@ public class ProductType{
     @Column(name = "name")
     private String name;
     
-    @OneToMany(targetEntity = Product.class,mappedBy = "productType")
-    private Set<Product> products;
+    @OneToMany(mappedBy = "productType")
+    @JsonManagedReference
+    private Collection<Product> products;
     
      //equals method
     @Override
@@ -49,4 +50,45 @@ public class ProductType{
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    public ProductType() {
+    }
+
+    public ProductType(Long id, String name, Collection<Product> products) {
+        this.id = id;
+        this.name = name;
+        this.products = products;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Collection<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(Collection<Product> products) {
+        this.products = products;
+    }
+
+    @Override
+    public String toString() {
+        return "ProductType{" + "id=" + id + ", name=" + name +
+//                ", products=" + products 
+                + '}';
+    }
+    
 }

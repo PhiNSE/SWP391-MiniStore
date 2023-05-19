@@ -9,8 +9,6 @@ import com.sitesquad.ministore.repository.ProductTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @Controller  
 public class HomeController {
@@ -24,11 +22,13 @@ public class HomeController {
         List<Product> products = productRepository.findAll();
         for (Product product : products) {
             System.out.println(product.toString());
+//            product.getProductType().getId();
         }
         List<ProductType> productTypes = productTypeRepository.findAll();
         for (ProductType productType : productTypes) {
             System.out.println(productType.toString());
         }
+        
         return "index";  // Trả về trang index.html
     }     
    
