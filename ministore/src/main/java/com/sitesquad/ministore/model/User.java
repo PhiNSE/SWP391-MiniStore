@@ -57,25 +57,25 @@ public class User implements Serializable {
     @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     private int roleId;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        User user = (User) o;
-        return Objects.equals(id, user.id);
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) {
+//            return true;
+//        }
+//        if (o == null || getClass() != o.getClass()) {
+//            return false;
+//        }
+//        User user = (User) o;
+//        return Objects.equals(id, user.id);
+//    }
+//
+//    //hashCode
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(id);
+//    }
 
-    //hashCode
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "orderUser")
     @JsonManagedReference
     @ToString.Exclude
     private Collection<Order> orders;

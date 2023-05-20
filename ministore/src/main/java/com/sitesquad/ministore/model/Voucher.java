@@ -32,7 +32,6 @@ import lombok.ToString;
 public class Voucher {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "voucher_id")
     private Long id;
 
