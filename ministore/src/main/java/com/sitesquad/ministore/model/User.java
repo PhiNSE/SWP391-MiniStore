@@ -52,10 +52,13 @@ public class User implements Serializable {
     @Column(name = "address")
     private String address;
 
+    @Column(name = "role_id" , insertable = false, updatable = false)
+    private Long roleId;
+    
     @ToString.Exclude
     @ManyToOne(targetEntity = Role.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", referencedColumnName = "role_id")
-    private int roleId;
+    private Role roles;
 
 //    @Override
 //    public boolean equals(Object o) {
