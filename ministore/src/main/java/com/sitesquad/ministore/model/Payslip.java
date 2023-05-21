@@ -35,7 +35,6 @@ import lombok.ToString;
 public class Payslip {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "payslip_id")
     private Long id;
 

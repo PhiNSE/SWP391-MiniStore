@@ -33,15 +33,22 @@ public class UserShift {
     @Column(name = "user_shift_id")
     Long id;
     
+    @Column(name = "user_id" , insertable = false, updatable = false)
+    private Long userId;
+    
     @ToString.Exclude
     @ManyToOne(targetEntity = User.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    private Long userId;
+    private User users;
 
+    
+    @Column(name = "shift_id" , insertable = false, updatable = false)
+    private Long shiftId;
+    
     @ToString.Exclude
     @ManyToOne(targetEntity = Shift.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "shift_id", referencedColumnName = "shift_id")
-    private Long shiftId;
+    private Shift shifts;
     
     @Column(name = "work_date")
     private Date workDate;

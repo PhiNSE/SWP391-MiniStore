@@ -52,30 +52,33 @@ public class User implements Serializable {
     @Column(name = "address")
     private String address;
 
+    @Column(name = "role_id" , insertable = false, updatable = false)
+    private Long roleId;
+    
     @ToString.Exclude
     @ManyToOne(targetEntity = Role.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", referencedColumnName = "role_id")
-    private int roleId;
+    private Role roles;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        User user = (User) o;
-        return Objects.equals(id, user.id);
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) {
+//            return true;
+//        }
+//        if (o == null || getClass() != o.getClass()) {
+//            return false;
+//        }
+//        User user = (User) o;
+//        return Objects.equals(id, user.id);
+//    }
+//
+//    //hashCode
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(id);
+//    }
 
-    //hashCode
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "orderUser")
     @JsonManagedReference
     @ToString.Exclude
     private Collection<Order> orders;

@@ -2,15 +2,12 @@ package com.sitesquad.ministore.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.sql.Timestamp;
 import java.util.Collection;
-import java.util.Date;
-import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -25,7 +22,7 @@ import lombok.ToString;
 
 /**
  *
- * @author ADMIN
+ * @author admin
  */
 @Entity
 @Getter
@@ -34,29 +31,29 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-@Table(name = "order")
+@Table(name = "tblorder")
 public class Order {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
     private Long id;
 
     @Column(name = "type")
     private boolean type;
-    
+
     @Column(name = "user_id", insertable = false, updatable = false)
     private Long userId;
 
-    @Column(name = "datetime")
-    private Date dateTime;
+    @Column(name = "date")
+    private Timestamp date;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     @JsonBackReference
     @ToString.Exclude
-    private User user;
-    
-    @OneToMany(mappedBy = "order")
+    private User orderUser;
+
+    @OneToMany(mappedBy = "orderDet")
     @JsonManagedReference
     @ToString.Exclude
     private Collection<OrderDetails> orderDetails;

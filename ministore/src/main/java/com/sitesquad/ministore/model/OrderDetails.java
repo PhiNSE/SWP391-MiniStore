@@ -34,15 +34,8 @@ import lombok.ToString;
 public class OrderDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_detail_id")
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id", referencedColumnName = "product_id")
-    @JsonBackReference
-    @ToString.Exclude
-    private Product product;
     
     @Column(name = "product_id", insertable = false, updatable = false)
     private Long productId;
@@ -66,12 +59,18 @@ public class OrderDetails {
     @JoinColumn(name = "order_id", referencedColumnName = "order_id")
     @JsonBackReference
     @ToString.Exclude
-    private Order order;
+    private Order orderDet;
     
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "product_voucher_id", referencedColumnName = "product_voucher_id")
     @JsonBackReference
     @ToString.Exclude
     private ProductVoucher productVoucher;
+
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_id", referencedColumnName = "product_id")
+    @JsonBackReference
+    @ToString.Exclude
+    private Product product;
     
 }
