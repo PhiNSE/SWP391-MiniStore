@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product>{
-    List<Product> findByProductName(String productName);
+    List<Product> findByProductTypeId(Long productTypeId);
 }

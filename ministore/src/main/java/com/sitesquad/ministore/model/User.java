@@ -1,5 +1,6 @@
 package com.sitesquad.ministore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.util.Collection;
@@ -55,36 +56,19 @@ public class User implements Serializable {
     @Column(name = "role_id" , insertable = false, updatable = false)
     private Long roleId;
     
-    @ToString.Exclude
     @ManyToOne(targetEntity = Role.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", referencedColumnName = "role_id")
+    @ToString.Exclude
+    @JsonIgnore
     private Role roles;
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) {
-//            return true;
-//        }
-//        if (o == null || getClass() != o.getClass()) {
-//            return false;
-//        }
-//        User user = (User) o;
-//        return Objects.equals(id, user.id);
-//    }
-//
-//    //hashCode
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(id);
-//    }
-
     @OneToMany(mappedBy = "orderUser")
-    @JsonManagedReference
+    @JsonIgnore
     @ToString.Exclude
     private Collection<Order> orders;
     
     @OneToMany(mappedBy = "user")
-    @JsonManagedReference
+    @JsonIgnore
     @ToString.Exclude
     private Collection<Payslip> payslips;
 }
