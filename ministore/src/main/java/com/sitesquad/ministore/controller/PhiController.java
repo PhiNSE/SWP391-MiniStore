@@ -4,10 +4,17 @@ import com.sitesquad.ministore.model.Product;
 import com.sitesquad.ministore.model.ProductType;
 import com.sitesquad.ministore.repository.ProductRepository;
 import com.sitesquad.ministore.repository.ProductTypeRepository;
+import com.sitesquad.ministore.service.ProductService;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -19,25 +26,14 @@ public class PhiController {
 
     @Autowired
     ProductRepository productRepository;
-    
+
     @Autowired
     ProductTypeRepository productTypeRepository;
 
-//    @GetMapping("/phi-test")
-//    public String homepage() {
-//        List<Product> products = productRepository.findAll();
-//        for (Product product : products) {
-//            System.out.println(product.toString());
-//        }
-//        List<ProductType> productTypes = productTypeRepository.findAll();
-//        for (ProductType productType : productTypes) {
-//            System.out.println(productType.toString());
-//        }
-//
-//        return "index";  // Trả về trang index.html
-//    }
+    @Autowired
+    ProductService productService;
 
-    @GetMapping("/products")
+    @GetMapping("/product")
     public List<Product> getProducts() {
         List<Product> products = productRepository.findAll();
         for (Product product : products) {
@@ -46,8 +42,8 @@ public class PhiController {
 
         return products;
     }
-    
-        @GetMapping("/producttypes")
+
+    @GetMapping("/producttype")
     public List<ProductType> getProductTypes() {
         List<ProductType> productTypes = productTypeRepository.findAll();
         for (ProductType ProductType : productTypes) {
@@ -56,4 +52,23 @@ public class PhiController {
 
         return productTypes;
     }
+
+    @GetMapping("/product/{id}")
+    public Product getProductByProductId(@PathVariable Long id) {
+        return productService.findByProductId(id);
+
+    }
+
+    @GetMapping("/product/bytypeid/{id}")
+    public List<Product> getProductByProductTypeId(@PathVariable Long id) {
+        List<Product> products = productRepository.findByProductTypeId(id);
+        return products;
+    }
+
+//    @PostMapping("/product")
+//    public Product addProduct(@RequestBody JSONObject object) throws JSONException{
+//        Product product = new Product();
+//        product.setName((String)object.get("name"));
+//        return productService.add(product);
+//    }
 }

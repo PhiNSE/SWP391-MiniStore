@@ -1,6 +1,10 @@
 package com.sitesquad.ministore.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.*;
@@ -23,6 +27,10 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id")
+//@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 @Table(name = "product_type")
 public class ProductType{
     @Id
@@ -34,7 +42,7 @@ public class ProductType{
     private String name;
     
     @OneToMany(mappedBy = "productTypes")
-    @JsonManagedReference
+    @JsonIgnore
     @ToString.Exclude
     private Collection<Product> products;
     
