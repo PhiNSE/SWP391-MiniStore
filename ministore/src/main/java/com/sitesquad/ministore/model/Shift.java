@@ -1,11 +1,15 @@
 package com.sitesquad.ministore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -40,21 +44,9 @@ public class Shift implements Serializable {
     @Column(name = "coefficient")
     private int coefficient;
     
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Shift shift = (Shift) o;
-        return Objects.equals(id, shift.id);
-    }
+    @OneToMany(mappedBy = "shifts")
+    @JsonIgnore
+    @ToString.Exclude
+    private Collection<UserShift> userShifts;
 
-    //hashCode
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }

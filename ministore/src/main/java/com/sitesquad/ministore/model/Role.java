@@ -1,10 +1,14 @@
 package com.sitesquad.ministore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -32,22 +36,10 @@ public class Role implements Serializable {
     
     @Column(name = "name")
     String name;
-    
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Role role = (Role) o;
-        return Objects.equals(id, role.id);
-    }
 
-    //hashCode
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+    @OneToMany(mappedBy = "roles")
+    @JsonIgnore
+    @ToString.Exclude
+    private Collection<User> users;
+
 }

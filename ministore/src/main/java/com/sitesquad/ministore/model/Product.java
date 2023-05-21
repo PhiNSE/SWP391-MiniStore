@@ -1,7 +1,11 @@
 package com.sitesquad.ministore.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
@@ -25,6 +29,10 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id")
+//@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 @Table(name = "product")
 public class Product implements Serializable{
     @Id
@@ -52,13 +60,13 @@ public class Product implements Serializable{
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "product_type_id", referencedColumnName = "product_type_id")
-    @JsonBackReference
+    @JsonIgnore
     @ToString.Exclude
     private ProductType productTypes;
     
     @OneToMany(mappedBy = "product")
-    @JsonManagedReference
+    @JsonIgnore
     @ToString.Exclude
     private Collection<ProductVoucher> productVouchers;
-    
+ 
 }

@@ -1,5 +1,6 @@
 package com.sitesquad.ministore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -33,15 +34,23 @@ public class UserShift {
     @Column(name = "user_shift_id")
     Long id;
     
+    @Column(name = "user_id" , insertable = false, updatable = false)
+    private Long userId;
+    
     @ToString.Exclude
     @ManyToOne(targetEntity = User.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    private Long userId;
+    private User users;
 
+    
+    @Column(name = "shift_id" , insertable = false, updatable = false)
+    private Long shiftId;
+    
     @ToString.Exclude
+    @JsonIgnore
     @ManyToOne(targetEntity = Shift.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "shift_id", referencedColumnName = "shift_id")
-    private Long shiftId;
+    private Shift shifts;
     
     @Column(name = "work_date")
     private Date workDate;
@@ -55,21 +64,4 @@ public class UserShift {
     @Column(name = "is_present")
     private boolean isPresent;
     
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        UserShift userShift = (UserShift) o;
-        return Objects.equals(id, userShift.id);
-    }
-
-    //hashCode
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }
