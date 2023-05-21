@@ -29,13 +29,14 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)@JsonIdentityInfo(
+//@JsonIdentityInfo(
 //        generator = ObjectIdGenerators.PropertyGenerator.class,
 //        property = "id")
 //@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 @Table(name = "product")
 public class Product implements Serializable{
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id")
     private Long id;
 
@@ -67,5 +68,5 @@ public class Product implements Serializable{
     @JsonIgnore
     @ToString.Exclude
     private Collection<ProductVoucher> productVouchers;
-    
+ 
 }
