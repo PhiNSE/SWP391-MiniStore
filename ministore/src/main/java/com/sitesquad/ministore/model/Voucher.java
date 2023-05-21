@@ -1,5 +1,6 @@
 package com.sitesquad.ministore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.util.Collection;
 import java.util.Date;
@@ -57,7 +58,7 @@ public class Voucher {
     private Date expiredDate;
         
     @OneToMany(mappedBy = "voucher")
-    @JsonManagedReference
+    @JsonIgnore
     @ToString.Exclude
     private Collection<ProductVoucher> productVouchers;
     

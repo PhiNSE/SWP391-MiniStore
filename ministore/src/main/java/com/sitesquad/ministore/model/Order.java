@@ -1,6 +1,7 @@
 package com.sitesquad.ministore.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -49,12 +50,12 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    @JsonBackReference
+    @JsonIgnore
     @ToString.Exclude
     private User orderUser;
 
     @OneToMany(mappedBy = "orderDet")
-    @JsonManagedReference
+    @JsonIgnore
     @ToString.Exclude
     private Collection<OrderDetails> orderDetails;
 }

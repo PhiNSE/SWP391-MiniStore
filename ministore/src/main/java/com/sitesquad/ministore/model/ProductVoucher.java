@@ -1,6 +1,7 @@
 package com.sitesquad.ministore.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.util.Collection;
 import javax.persistence.CascadeType;
@@ -48,12 +49,12 @@ public class ProductVoucher {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "voucher_id", referencedColumnName = "voucher_id")
-    @JsonBackReference
+    @JsonIgnore
     @ToString.Exclude
     private Voucher voucher;
 
     @OneToMany(mappedBy = "productVoucher")
-    @JsonManagedReference
+    @JsonIgnore
     @ToString.Exclude
     private Collection<OrderDetails> orderDetails;
 }
