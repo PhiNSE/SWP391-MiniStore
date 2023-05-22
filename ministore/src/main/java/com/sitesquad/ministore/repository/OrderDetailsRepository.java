@@ -15,5 +15,5 @@ public interface OrderDetailsRepository extends JpaRepository<OrderDetails, Long
 
     List<OrderDetails> findByOrderId(Long orderId);
     List<OrderDetails> findByProductId(Long productId);
-    List<OrderDetails> findByPrroductVoucherId(Long productVoucherId);
+    List<OrderDetails> findByProductVoucherId(Long productVoucherId);
 }

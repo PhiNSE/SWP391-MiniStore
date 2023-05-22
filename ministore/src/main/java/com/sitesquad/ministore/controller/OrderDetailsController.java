@@ -92,7 +92,7 @@ public class OrderDetailsController {
     
     @GetMapping("/orderDetail/search/productvoucher")
     public ResponseEntity<ResponseObject> findByProductVoucherId(@RequestParam Long id) {
-        List<OrderDetails> foundOrders = orderDetailRepository.findByPrroductVoucherId(id);
+        List<OrderDetails> foundOrders = orderDetailRepository.findByProductVoucherId(id);
 //        List<Order> foundOrders = orderRepository.findByUserIdAndName(id, name);
         if (!foundOrders.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
