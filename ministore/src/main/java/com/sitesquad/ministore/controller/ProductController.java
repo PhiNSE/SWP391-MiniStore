@@ -39,11 +39,11 @@ public class ProductController {
         Product foundProduct = productService.findById(id);
         if (foundProduct != null) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("200", "Found Product id = " + id, foundProduct)
+                    new ResponseObject(200, "Found Product id = " + id, foundProduct)
             );
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("404", "Cant find Product id = " + id, "")
+                    new ResponseObject(500, "Cant find Product id = " + id, "")
             );
         }
     }
@@ -53,11 +53,11 @@ public class ProductController {
         List<Product> foundProducts = productService.search();
         if (!foundProducts.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("200", "Found Products ", foundProducts)
+                    new ResponseObject(200, "Found Products ", foundProducts)
             );
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("404", "Cant find any Products matched", "")
+                    new ResponseObject(404, "Cant find any Products matched", "")
             );
         }
     }
@@ -67,11 +67,11 @@ public class ProductController {
         Product addProduct = productService.add(product);
         if (addProduct != null) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("200", "Add sucessfully ", addProduct)
+                    new ResponseObject(200, "Add sucessfully ", addProduct)
             );
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("500", "Cant add product", product)
+                    new ResponseObject(500, "Cant add product", product)
             );
         }
 
@@ -83,11 +83,11 @@ public class ProductController {
         if (editedProduct != null) {
 
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("200", "Edit sucessfully ", editedProduct)
+                    new ResponseObject(200, "Edit sucessfully ", editedProduct)
             );
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("500", "Cant edit product", product)
+                    new ResponseObject(500, "Cant edit product", product)
             );
         }
     }
@@ -96,11 +96,11 @@ public class ProductController {
         Boolean isDeleted = productService.delete(id);
         if (isDeleted) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("200", "Delete sucessfully ", "")
+                    new ResponseObject(200, "Delete sucessfully ", "")
             );
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("500", "Cant delete product", "")
+                    new ResponseObject(500, "Cant delete product", "")
             );
         }
     }
