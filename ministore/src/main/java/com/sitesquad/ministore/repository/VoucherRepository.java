@@ -9,5 +9,4 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  * @author admin
  */
 public interface VoucherRepository extends JpaRepository<Voucher, Long>, JpaSpecificationExecutor<Voucher>{
-    
 }
