@@ -39,7 +39,13 @@ public class ProductVoucher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_voucher_id")
-    private String id;
+    private Long id;
+    
+    @Column(name = "voucher_id", insertable = false, updatable = false)
+    private Long voucherId;
+    
+    @Column(name = "product_id", insertable = false, updatable = false)
+    private Long productId;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id", referencedColumnName = "product_id")

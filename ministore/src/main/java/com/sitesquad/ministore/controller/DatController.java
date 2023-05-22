@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sitesquad.ministore.model.Order;
 import com.sitesquad.ministore.model.OrderDetails;
 import com.sitesquad.ministore.model.Payslip;
+import com.sitesquad.ministore.model.ResponseObject;
 import com.sitesquad.ministore.model.Voucher;
 import com.sitesquad.ministore.repository.OrderDetailsRepository;
 import com.sitesquad.ministore.repository.OrderRepository;
@@ -14,6 +15,7 @@ import com.sitesquad.ministore.repository.VoucherRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,21 +30,21 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class DatController {
-
-    @Autowired
-    OrderRepository orderRepository;
-
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    OrderDetailsRepository orderDetailRepository;
-
-    @Autowired
-    VoucherRepository voucherRepository;
-
-    @Autowired
-    PayslipRepository payslipRepository;
+//
+//    @Autowired
+//    OrderRepository orderRepository;
+//
+//    @Autowired
+//    UserRepository userRepository;
+//
+//    @Autowired
+//    OrderDetailsRepository orderDetailRepository;
+//
+//    @Autowired
+//    VoucherRepository voucherRepository;
+//
+//    @Autowired
+//    PayslipRepository payslipRepository;
 
 ////    test Order
 //    @GetMapping("/dat")
@@ -51,11 +53,20 @@ public class DatController {
 //        return orders;
 //    }
     
-    @PostMapping("/dat")
-    public ResponseEntity<ResponseObject> createOrder(@RequestBody Order order) {
-        order.setUserId(userRepository.findById(order.getUserId()).get());
-        return orderRepository.save(order);
-    }
+//    @PostMapping("/dat")
+//    public ResponseEntity<ResponseObject> createOrder(@RequestBody Order order) {
+//        order.setOrderUser(userRepository.findById(order.getUserId()).get());
+//        Order addOrder = orderRepository.save(order);
+//        if (addOrder != null) {
+//            return ResponseEntity.status(HttpStatus.OK).body(
+//                    new ResponseObject("200", "Add sucessfully ", addOrder)
+//            );
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+//                    new ResponseObject("500", "Cant add order", addOrder)
+//            );
+//        }
+//    }
 //    public ResponseEntity<String> createOrder(@RequestBody String json) throws JsonProcessingException {
 //        ObjectMapper objectMapper = new ObjectMapper();
 //        Order order = objectMapper.readValue(json, Order.class);
