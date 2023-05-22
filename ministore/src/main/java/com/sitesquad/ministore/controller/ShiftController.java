@@ -31,11 +31,11 @@ public class ShiftController {
         List<Shift> shiftList = shiftRepository.findAll();
         if(!shiftList.isEmpty()){
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("200", "Shift List found", shiftList)
+                    new ResponseObject(200, "Shift List found", shiftList)
             );
         }else{
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("404", "Shift List not found", shiftList)
+                    new ResponseObject(404, "Shift List not found", shiftList)
             );
         }
     }
