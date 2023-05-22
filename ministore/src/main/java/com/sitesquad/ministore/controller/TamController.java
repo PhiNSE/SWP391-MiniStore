@@ -53,11 +53,11 @@ public class TamController {
     
 // insert new Product POST method
 
-//    @GetMapping("/insert ")
-//    ResponseEntity<ResponseObject> insertProduct(@RequestBody Product newProduct){
-//        return ResponseEntity.status(HttpStatus.OK).body(
-//                new ResponseObject("200","Product added", repository.save(new Product)))
-//        );
-//    }
+    @GetMapping("/insert ")
+    ResponseEntity<ResponseObject> insertProduct(@RequestBody Product newProduct){
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("200","Product added", repository.save(newProduct))
+        );
+    }
 
 }
