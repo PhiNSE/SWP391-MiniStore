@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import static org.springframework.web.servlet.function.ServerResponse.status;
+
 
 /**
  *
@@ -50,10 +52,12 @@ public class TamController {
     }
     
 // insert new Product POST method
-//    @GetMapping("/insert ")
-//    ResponseEntity<ResponseObject> insertProduct(@RequestBody Product newProduct){
-//        return ResponseEntity.status(HttpStatus.OK).body(
-//                new ResponseObject("200","Product added", repository.save(new Product)))
-//        );
-//    }
+
+    @GetMapping("/insert ")
+    ResponseEntity<ResponseObject> insertProduct(@RequestBody Product newProduct){
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("200","Product added", repository.save(newProduct))
+        );
+    }
+
 }
