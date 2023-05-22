@@ -49,7 +49,7 @@ public class ProductVoucher {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id", referencedColumnName = "product_id")
-    @JsonBackReference
+    @JsonIgnore
     @ToString.Exclude
     private Product product;
 

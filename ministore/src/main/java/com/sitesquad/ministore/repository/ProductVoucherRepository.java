@@ -13,5 +13,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProductVoucherRepository extends JpaRepository<ProductVoucher, Long>, JpaSpecificationExecutor<ProductVoucher> {
 
-    List<ProductVoucher> findByOrderId(Long orderId);
 }
