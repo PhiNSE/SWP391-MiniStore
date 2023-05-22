@@ -5,9 +5,11 @@
  */
 package com.sitesquad.ministore.controller;
 
+
 import com.sitesquad.ministore.model.ResponseObject;
-import com.sitesquad.ministore.model.Role;
+import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.repository.RoleRepository;
+import com.sitesquad.ministore.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,52 +26,58 @@ import org.springframework.web.bind.annotation.RestController;
  * @author ACER
  */
 @RestController
-@RequestMapping(path = "/role")
-public class RoleController {
+@RequestMapping(path = "/user")
+public class UserController {
+    @Autowired
+    UserRepository userRepository;
+    
     @Autowired
     RoleRepository roleRepository;
     
     @GetMapping()
-    public ResponseEntity<ResponseObject> getAllRole(){
-        List<Role> roleList = roleRepository.findAll();
-        if(!roleList.isEmpty()){
+    public ResponseEntity<ResponseObject> getAllUser(){
+        List<User> userList = userRepository.findAll();
+        if(!userList.isEmpty()){
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "Role List found", roleList)
+                    new ResponseObject(200, "User List found", userList)
             );
         }else{
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(404, "Role List not found", roleList)
+                    new ResponseObject(404, "User List not found", userList)
             );
         }
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseObject> getRoleById(Long id){
-        Optional<Role> foundRole = roleRepository.findById(id);
-        if(!foundRole.isPresent()){
+    public ResponseEntity<ResponseObject> getUserById(Long id){
+        Optional<User> foundUser = userRepository.findById(id);
+        if(!foundUser.isPresent()){
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "Role found", foundRole)
+                    new ResponseObject(200, "User found", foundUser)
             );
         }else{
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(404, "Role not found", foundRole)
+                    new ResponseObject(404, "User not found", foundUser)
             );
         }
     }
+    
+//    @GetMapping("/search")
+//    public ResponseEntity<ResponseObject> getUserByRoleName()
     
     @PostMapping("/add")
-    public ResponseEntity<ResponseObject> addProduct(@RequestBody Role role){
-        Role addRole = roleRepository.save(role);
-        if(addRole != null){
+    public ResponseEntity<ResponseObject> addProduct(@RequestBody User user){
+        user.setRoles(roleRepository.findById(user.getRoleId()).get());
+        User addUser = userRepository.save(user);
+        if(addUser != null){
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "Add sucessfully ", addRole)
+                    new ResponseObject(200, "Add success", addUser)
             );
         }else{
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(500, "Add failed ", addRole)
+                    new ResponseObject(500, "User not found", addUser)
             );
         }
     }
-    
-    
 }
+

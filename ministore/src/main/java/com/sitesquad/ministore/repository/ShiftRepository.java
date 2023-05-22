@@ -15,5 +15,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  * @author ACER
  */
 public interface ShiftRepository extends JpaRepository<Shift, Long>, JpaSpecificationExecutor<Shift>{
-    List<Shift> findByShiftId (Long shiftId);
+    
 }

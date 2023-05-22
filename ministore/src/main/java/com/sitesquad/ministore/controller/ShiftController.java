@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author ACER
  */
 @RestController  
-@RequestMapping(path = "/test/products")
+@RequestMapping(path = "/shift")
 public class ShiftController {
     @Autowired
     ShiftRepository shiftRepository;

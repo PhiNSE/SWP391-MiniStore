@@ -42,11 +42,11 @@ public class TamController {
         Optional<Product> foundProduct = repository.findById(id);
         if(foundProduct.isPresent()){
             return ResponseEntity.status(HttpStatus.OK).body(
-            new ResponseObject("200","Found Product id = " +id, foundProduct)
+            new ResponseObject(200,"Found Product id = " +id, foundProduct)
             );
         }else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-            new ResponseObject("404", "Cant find Product id = "+id, "")
+            new ResponseObject(404, "Cant find Product id = "+id, "")
             );
         }
     }
@@ -56,7 +56,7 @@ public class TamController {
     @GetMapping("/insert ")
     ResponseEntity<ResponseObject> insertProduct(@RequestBody Product newProduct){
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("200","Product added", repository.save(newProduct))
+                new ResponseObject(200,"Product added", repository.save(newProduct))
         );
     }
 
