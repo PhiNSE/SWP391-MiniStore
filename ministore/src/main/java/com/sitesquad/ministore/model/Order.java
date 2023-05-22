@@ -34,7 +34,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-@Table(name = "tblorder")
+@Table(name = "tbl_order")
 public class Order {
 
     @Id

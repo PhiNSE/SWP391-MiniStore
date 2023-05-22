@@ -31,7 +31,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-@Table(name = "tbluser")
+@Table(name = "tbl_user")
 public class User implements Serializable {
 
     @Id
