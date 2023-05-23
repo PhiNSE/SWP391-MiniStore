@@ -52,7 +52,9 @@ public class ProductService {
         return editedProduct;
     }
     public boolean delete(Long id){
-        productRepository.deleteById(id);
-        return productRepository.findById(id)==null;
+        Product product = new Product();
+        product.setId(id);
+        product.setIsDeleted(true);
+        return productRepository.findById(id).get().getIsDeleted()==true;
     }
 }

@@ -52,8 +52,14 @@ public class Product implements Serializable{
     @Column(name = "price")
     private Double price;
     
+    @Column(name = "cost")
+    private Double cost;
+    
     @Column(name = "product_img")
     private String productImg;
+    
+    @Column(name ="product_code")
+    private String productCode;
     
     @Column(name = "is_deleted")
     private Boolean isDeleted;

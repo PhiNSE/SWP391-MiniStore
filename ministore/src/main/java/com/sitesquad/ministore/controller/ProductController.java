@@ -49,7 +49,9 @@ public class ProductController {
     }
 
     @GetMapping("/product/search")
-    public ResponseEntity<ResponseObject> search(@RequestParam(required = false) Long id, @RequestParam(required = false) String name) {
+    public ResponseEntity<ResponseObject> search(@RequestParam(required = false) Long id,
+                                                @RequestParam(required = false) String name
+                                                ) {
         List<Product> foundProducts = productService.search();
         if (!foundProducts.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
@@ -91,7 +93,7 @@ public class ProductController {
             );
         }
     }
-    @DeleteMapping("/product/delete/{id}")
+    @DeleteMapping("/product/{id}")
     public ResponseEntity<ResponseObject> deleteProduct(@PathVariable Long id){
         Boolean isDeleted = productService.delete(id);
         if (isDeleted) {
