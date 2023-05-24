@@ -8,6 +8,7 @@ package com.sitesquad.ministore.controller;
 import com.sitesquad.ministore.model.ResponseObject;
 import com.sitesquad.ministore.model.Shift;
 import com.sitesquad.ministore.repository.ShiftRepository;
+import com.sitesquad.ministore.service.ShiftService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,11 +25,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/shift")
 public class ShiftController {
     @Autowired
-    ShiftRepository shiftRepository;
+    ShiftService shiftService;
     
     @GetMapping()
     public ResponseEntity<ResponseObject> getAllShiftList(){
-        List<Shift> shiftList = shiftRepository.findAll();
+        List<Shift> shiftList = shiftService.findAll();
         if(!shiftList.isEmpty()){
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Shift List found", shiftList)

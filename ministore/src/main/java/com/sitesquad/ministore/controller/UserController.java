@@ -10,13 +10,17 @@ import com.sitesquad.ministore.model.ResponseObject;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.repository.RoleRepository;
 import com.sitesquad.ministore.repository.UserRepository;
+import com.sitesquad.ministore.service.UserService;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,14 +33,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/user")
 public class UserController {
     @Autowired
-    UserRepository userRepository;
-    
-    @Autowired
-    RoleRepository roleRepository;
+    UserService userService;
+
     
     @GetMapping()
     public ResponseEntity<ResponseObject> getAllUser(){
-        List<User> userList = userRepository.findAll();
+        List<User> userList = userService.findAll();
         if(!userList.isEmpty()){
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "User List found", userList)
@@ -50,8 +52,8 @@ public class UserController {
     
     @GetMapping("/{id}")
     public ResponseEntity<ResponseObject> getUserById(Long id){
-        Optional<User> foundUser = userRepository.findById(id);
-        if(!foundUser.isPresent()){
+        User foundUser = userService.findById(id);
+        if(foundUser != null){
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "User found", foundUser)
             );
@@ -66,9 +68,8 @@ public class UserController {
 //    public ResponseEntity<ResponseObject> getUserByRoleName()
     
     @PostMapping("/add")
-    public ResponseEntity<ResponseObject> addProduct(@RequestBody User user){
-        user.setRoles(roleRepository.findById(user.getRoleId()).get());
-        User addUser = userRepository.save(user);
+    public ResponseEntity<ResponseObject> addUser(@RequestBody User user){
+        User addUser = userService.add(user);
         if(addUser != null){
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Add success", addUser)
@@ -79,5 +80,19 @@ public class UserController {
             );
         }
     }
+    
+    @DeleteMapping("/delete/{id}")
+     public ResponseEntity<ResponseObject> deleteUser(@PathVariable Long id){
+        boolean isDeleted = userService.delete(id);
+        if(isDeleted){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                   new ResponseObject(200, "Delete sucessfully ", "")
+            );
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject(500, "Cant delete product", "")
+            );
+        }
+     }
 }
 

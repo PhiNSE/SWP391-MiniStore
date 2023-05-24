@@ -8,6 +8,7 @@ package com.sitesquad.ministore.controller;
 import com.sitesquad.ministore.model.ResponseObject;
 import com.sitesquad.ministore.model.Role;
 import com.sitesquad.ministore.repository.RoleRepository;
+import com.sitesquad.ministore.service.RoleService;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +28,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/role")
 public class RoleController {
     @Autowired
+    RoleService roleService;
+    
+    @Autowired
     RoleRepository roleRepository;
     
     @GetMapping()
     public ResponseEntity<ResponseObject> getAllRole(){
-        List<Role> roleList = roleRepository.findAll();
+        List<Role> roleList = roleService.findAll();
         if(!roleList.isEmpty()){
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Role List found", roleList)
@@ -45,8 +49,8 @@ public class RoleController {
     
     @GetMapping("/{id}")
     public ResponseEntity<ResponseObject> getRoleById(Long id){
-        Optional<Role> foundRole = roleRepository.findById(id);
-        if(!foundRole.isPresent()){
+        Role foundRole = roleService.findById(id);
+        if(foundRole != null){
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Role found", foundRole)
             );
@@ -58,15 +62,15 @@ public class RoleController {
     }
     
     @PostMapping("/add")
-    public ResponseEntity<ResponseObject> addProduct(@RequestBody Role role){
-        Role addRole = roleRepository.save(role);
+    public ResponseEntity<ResponseObject> addRole(@RequestBody Role role){
+        Role addRole = roleService.add(role);
         if(addRole != null){
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Add sucessfully ", addRole)
             );
         }else{
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(500, "Add failed ", addRole)
+                    new ResponseObject(405, "Method not allowed", addRole)
             );
         }
     }
