@@ -43,9 +43,6 @@
           <element id="library" level="project" name="Maven: org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework.boot:spring-boot-starter-web:2.7.11" />
           <element id="library" level="project" name="Maven: org.springframework.boot:spring-boot-starter-json:2.7.11" />
-          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.13.5" />
-          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.13.5" />
-          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.13.5" />
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.13.5" />
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.5" />
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.module:jackson-module-parameter-names:2.13.5" />
@@ -71,6 +68,10 @@
           <element id="library" level="project" name="Maven: com.sun.istack:istack-commons-runtime:3.0.12" />
           <element id="library" level="project" name="Maven: com.sun.activation:jakarta.activation:1.2.2" />
           <element id="library" level="project" name="Maven: javax.xml.bind:jaxb-api:2.3.0" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.11.3" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.13.5" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.13.5" />
+          <element id="library" level="project" name="Maven: org.json:json:20220924" />
           <element id="library" level="project" name="Maven: org.springframework.boot:spring-boot-starter-mail:2.7.3" />
           <element id="library" level="project" name="Maven: org.springframework:spring-context-support:5.3.27" />
           <element id="library" level="project" name="Maven: com.sun.mail:jakarta.mail:1.6.7" />
