@@ -74,5 +74,10 @@ public class Product implements Serializable{
     @JsonIgnore
     @ToString.Exclude
     private Collection<ProductVoucher> productVouchers;
+            
+    @OneToMany(mappedBy = "product")
+    @JsonIgnore
+    @ToString.Exclude
+    private Collection<OrderDetails> orderDetails;
  
 }
