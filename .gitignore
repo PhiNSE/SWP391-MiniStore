@@ -1,1 +1,36 @@
-/.metadata/
+/ministore/HELP.md
+/ministore/target/
+/ministore/!.mvn/wrapper/maven-wrapper.jar
+/ministore/!**/src/main/**/target/
+/ministore/!**/src/test/**/target/
+
+### STS ###
+/ministore/.apt_generated
+/ministore/.classpath
+/ministore/.factorypath
+/ministore/.project
+/ministore/.settings
+/ministore/.springBeans
+/ministore/.sts4-cache
+
+### IntelliJ IDEA ###
+/ministore/.idea
+/ministore/*.iws
+/ministore/*.iml
+/ministore/*.ipr
+
+### NetBeans ###
+/ministore//nbproject/private/
+/ministore//nbbuild/
+/ministore//dist/
+/ministore//nbdist/
+/ministore//.nb-gradle/
+/ministore/build/
+/ministore/!**/src/main/**/build/
+/ministore/!**/src/test/**/build/
+
+### VS Code ###
+/ministore/.vscode/
+/ministore/.metadata
+/ministore//.idea
+/ministore/.mvn
