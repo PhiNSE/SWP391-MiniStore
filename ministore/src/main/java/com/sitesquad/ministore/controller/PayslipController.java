@@ -5,11 +5,13 @@ import com.sitesquad.ministore.model.Payslip;
 import com.sitesquad.ministore.model.ResponseObject;
 import com.sitesquad.ministore.repository.PayslipRepository;
 import com.sitesquad.ministore.repository.UserRepository;
+import com.sitesquad.ministore.service.PayslipService;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,21 +27,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class PayslipController {
 
     @Autowired
-    PayslipRepository payslipRepository;
-    
-    @Autowired
-    UserRepository userRepository;
+    PayslipService payslipService;
 
     @GetMapping("/payslip")
     public List<Payslip> getAllPayslips() {
-        List<Payslip> payslips = payslipRepository.findAll();
-        return payslips;
+        return payslipService.findAll();
     }
 
     @GetMapping("/payslip/{id}")
     public ResponseEntity<ResponseObject> findById(@PathVariable Long id) {
-        Optional<Payslip> foundPayslip = payslipRepository.findById(id);
-        if (foundPayslip.isPresent()) {
+        Payslip foundPayslip = payslipService.findById(id);
+        if (foundPayslip != null) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Found Payslip id = " + id, foundPayslip)
             );
@@ -51,8 +49,9 @@ public class PayslipController {
     }
 
     @GetMapping("/payslip/search")
-    public ResponseEntity<ResponseObject> findByUserId(@RequestParam Long id, @RequestParam String name) {
-        List<Payslip> foundPayslips = payslipRepository.findByUserId(id);
+    public ResponseEntity<ResponseObject> findByUserId(@RequestParam Long id) {
+//        List<Payslip> foundPayslips = payslipService.findByUserId(id);
+        List<Payslip> foundPayslips = payslipService.findAll();
 //        List<Order> foundOrders = orderRepository.findByUserIdAndName(id, name);
         if (!foundPayslips.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
@@ -67,8 +66,7 @@ public class PayslipController {
 
     @PostMapping("/payslip")
     public ResponseEntity<ResponseObject> createPayslip(@RequestBody Payslip payslip) {
-        payslip.setUser(userRepository.findById(payslip.getUserId()).get());
-        Payslip addPayslip = payslipRepository.save(payslip);
+        Payslip addPayslip = payslipService.add(payslip);
         if (addPayslip != null) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Add sucessfully ", addPayslip)
@@ -79,4 +77,35 @@ public class PayslipController {
             );
         }
     }
+    
+    @DeleteMapping("/payslip/delete/{id}")
+    public ResponseEntity<ResponseObject> deletePayslip(@PathVariable Long id){
+        Boolean isDeleted = payslipService.delete(id);
+        if (!isDeleted) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "Delete sucessfully ", "")
+            );
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject(500, "Cant delete payslip", "")
+            );
+        }
+    }
+    
+    //    @PutMapping("/order")
+//    public ResponseEntity<ResponseObject> editOrder(@RequestBody Order order) {
+//        order.setOrderUser(userRepository.findById(order.getUserId()).get());
+//        Order addOrder = orderRepository.save(order);
+//        if (addOrder != null) {
+////            orderRepository.findById(order.getId()).get().setIsDeleted(true);
+//            return ResponseEntity.status(HttpStatus.OK).body(
+//                    new ResponseObject(200, "Edit sucessfully ", addOrder)
+//            );
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+//                    new ResponseObject(500, "Cant edit order", order)
+//            );
+//        }
+//
+//    }
 }

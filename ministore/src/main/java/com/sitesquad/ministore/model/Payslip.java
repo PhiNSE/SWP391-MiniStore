@@ -36,6 +36,7 @@ import lombok.ToString;
 public class Payslip {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "payslip_id")
     private Long id;
 
@@ -54,7 +55,7 @@ public class Payslip {
     @Column(name = "salary")
     private double salary;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     @JsonIgnore
     @ToString.Exclude

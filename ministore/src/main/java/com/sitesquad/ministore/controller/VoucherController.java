@@ -4,11 +4,13 @@ import com.sitesquad.ministore.model.Order;
 import com.sitesquad.ministore.model.ResponseObject;
 import com.sitesquad.ministore.model.Voucher;
 import com.sitesquad.ministore.repository.VoucherRepository;
+import com.sitesquad.ministore.service.VoucherService;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,18 +26,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class VoucherController {
 
     @Autowired
-    VoucherRepository voucherRepository;
+    VoucherService voucherService;
 
     @GetMapping("/voucher")
     public List<Voucher> getAllVoucher() {
-        List<Voucher> vouchers = voucherRepository.findAll();
-        return vouchers;
+        return voucherService.findAll();
     }
 
     @GetMapping("/voucher/{id}")
     public ResponseEntity<ResponseObject> findById(@PathVariable Long id) {
-        Optional<Voucher> foundVoucher = voucherRepository.findById(id);
-        if (foundVoucher.isPresent()) {
+        Voucher foundVoucher = voucherService.findById(id);
+        if (foundVoucher != null) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Found Voucher id = " + id, foundVoucher)
             );
@@ -49,7 +50,7 @@ public class VoucherController {
     @PostMapping("/voucher")
     public ResponseEntity<ResponseObject> createVoucher(@RequestBody Voucher voucher) {
 //        order.setOrderUser(userRepository.findById(order.getUserId()).get());
-        Voucher addVoucher = voucherRepository.save(voucher);
+        Voucher addVoucher = voucherService.add(voucher);
         if (addVoucher != null) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Add sucessfully ", addVoucher)
@@ -57,6 +58,20 @@ public class VoucherController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObject(500, "Cant add voucher", addVoucher)
+            );
+        }
+    }
+    
+    @DeleteMapping("/voucher/delete/{id}")
+    public ResponseEntity<ResponseObject> deleteVoucher(@PathVariable Long id){
+        Boolean isDeleted = voucherService.delete(id);
+        if (!isDeleted) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "Delete sucessfully ", "")
+            );
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject(500, "Cant delete voucher", "")
             );
         }
     }

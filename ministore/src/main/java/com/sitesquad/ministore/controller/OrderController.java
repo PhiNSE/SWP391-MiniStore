@@ -4,6 +4,7 @@ import com.sitesquad.ministore.model.Order;
 import com.sitesquad.ministore.model.ResponseObject;
 import com.sitesquad.ministore.repository.OrderRepository;
 import com.sitesquad.ministore.repository.UserRepository;
+import com.sitesquad.ministore.service.OrderService;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,21 +26,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
 
     @Autowired
-    OrderRepository orderRepository;
-
-    @Autowired
-    UserRepository userRepository;
+    OrderService orderService;
 
     @GetMapping("/order")
     public List<Order> getAllOrder() {
-        List<Order> orders = orderRepository.findAll();
-        return orders;
+        return orderService.findAll();
     }
 
     @GetMapping("/order/{id}")
     public ResponseEntity<ResponseObject> findById(@PathVariable Long id) {
-        Optional<Order> foundOrder = orderRepository.findById(id);
-        if (foundOrder.isPresent()) {
+        Order foundOrder = orderService.findById(id);
+        if (foundOrder != null) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Found Order id = " + id, foundOrder)
             );
@@ -51,8 +48,9 @@ public class OrderController {
     }
 
     @GetMapping("/order/search")
-    public ResponseEntity<ResponseObject> findByUserId(@RequestParam Long id, @RequestParam String name) {
-        List<Order> foundOrders = orderRepository.findByUserId(id);
+    public ResponseEntity<ResponseObject> search(@RequestParam(required = false) Long id) {
+//        List<Order> foundOrders = orderRepository.findByUserId(id);
+        List<Order> foundOrders = orderService.findAll();
 //        List<Order> foundOrders = orderRepository.findByUserIdAndName(id, name);
         if (!foundOrders.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
@@ -67,8 +65,7 @@ public class OrderController {
 
     @PostMapping("/order")
     public ResponseEntity<ResponseObject> createOrder(@RequestBody Order order) {
-        order.setOrderUser(userRepository.findById(order.getUserId()).get());
-        Order addOrder = orderRepository.save(order);
+        Order addOrder = orderService.add(order);
         if (addOrder != null) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Add sucessfully ", addOrder)
@@ -79,6 +76,7 @@ public class OrderController {
             );
         }
     }
+    
 
 //    @PutMapping("/order")
 //    public ResponseEntity<ResponseObject> editOrder(@RequestBody Order order) {

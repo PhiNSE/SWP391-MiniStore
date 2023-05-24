@@ -33,6 +33,7 @@ import lombok.ToString;
 public class Voucher {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "voucher_id")
     private Long id;
 
@@ -56,11 +57,10 @@ public class Voucher {
 
     @Column(name = "expired_date")
     private Date expiredDate;
-        
+
     @OneToMany(mappedBy = "voucher")
     @JsonIgnore
     @ToString.Exclude
     private Collection<ProductVoucher> productVouchers;
-    
-    
+
 }
