@@ -22,7 +22,7 @@ public class ProductService {
     private ProductTypeRepository productTypeRepository;
 
     public List<Product> findAll() {
-        List<Product> products = productRepository.findAll();
+        List<Product> products = productRepository.findByIsDeletedIsNull();
         return products;
     }
 
