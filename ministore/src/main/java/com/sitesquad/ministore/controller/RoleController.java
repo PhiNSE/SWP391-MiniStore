@@ -12,6 +12,7 @@ import com.sitesquad.ministore.service.RoleService;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,13 +27,12 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(path = "/role")
+@EntityScan(basePackages = "com.sitesquad.ministore.service.RoleService")
 public class RoleController {
     @Autowired
     RoleService roleService;
     
-    @Autowired
-    RoleRepository roleRepository;
-    
+
     @GetMapping()
     public ResponseEntity<ResponseObject> getAllRole(){
         List<Role> roleList = roleService.findAll();
