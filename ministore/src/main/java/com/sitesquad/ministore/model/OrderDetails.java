@@ -19,6 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.lang.Nullable;
 
 /**
  *
@@ -35,43 +36,44 @@ import lombok.ToString;
 public class OrderDetails {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_detail_id")
     private Long id;
-    
+
     @Column(name = "product_id", insertable = false, updatable = false)
     private Long productId;
 
     @Column(name = "order_id", insertable = false, updatable = false)
     private Long orderId;
 
-    @Column(name = "quantity")
-    private int quantity;
+    @Column(name = "quantity", nullable = true)
+    private Long quantity;
 
-    @Column(name = "price")
-    private double price;
+    @Column(name = "price", nullable = true)
+    private Double price;
 
-    @Column(name = "total")
-    private double total;
+    @Column(name = "total", nullable = true)
+    private Double total;
 
-    @Column(name = "product_voucher_id", insertable = false, updatable = false)
+    @Column(name = "product_voucher_id", nullable = true, insertable = false, updatable = false)
     private Long productVoucherId;
-    
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id", referencedColumnName = "order_id")
     @JsonBackReference
     @ToString.Exclude
     private Order orderDet;
-    
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_voucher_id", referencedColumnName = "product_voucher_id")
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = true)
+    @JoinColumn(name = "product_voucher_id", referencedColumnName = "product_voucher_id", nullable = true)
     @JsonIgnore
     @ToString.Exclude
     private ProductVoucher productVoucher;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id", referencedColumnName = "product_id")
     @JsonIgnore
     @ToString.Exclude
     private Product product;
-    
+
 }

@@ -41,19 +41,19 @@ public class Voucher {
     private String description;
 
     @Column(name = "quantity")
-    private int quantity;
+    private Integer quantity;
 
     @Column(name = "min_item")
-    private int minItem;
+    private Integer minItem;
 
     @Column(name = "min_total")
-    private int minTotal;
+    private Integer minTotal;
 
     @Column(name = "max_percent")
-    private double maxPercent;
+    private Double maxPercent;
 
     @Column(name = "percent_discount")
-    private double percentDiscount;
+    private Double percentDiscount;
 
     @Column(name = "expired_date")
     private Date expiredDate;

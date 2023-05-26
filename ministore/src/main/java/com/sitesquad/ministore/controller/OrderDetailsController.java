@@ -7,6 +7,7 @@ import com.sitesquad.ministore.repository.OrderDetailsRepository;
 import com.sitesquad.ministore.repository.OrderRepository;
 import com.sitesquad.ministore.repository.ProductRepository;
 import com.sitesquad.ministore.repository.ProductVoucherRepository;
+import com.sitesquad.ministore.service.OrderDetailsService;
 import org.springframework.http.ResponseEntity;
 import java.util.List;
 import java.util.Optional;
@@ -29,27 +30,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderDetailsController {
     
     @Autowired
-    OrderDetailsRepository orderDetailRepository;
-
-    @Autowired
-    OrderRepository orderRepository;
-    
-    @Autowired
-    ProductRepository productRepository;
-    
-    @Autowired
-    ProductVoucherRepository productVoucherRepository;
+    OrderDetailsService orderDetailsService;
 
     @GetMapping("/orderDetail")
     public List<OrderDetails> getAllOrderDetails() {
-        List<OrderDetails> orders = orderDetailRepository.findAll();
-        return orders;
+        return orderDetailsService.findAll();
     }
 
     @GetMapping("/orderDetail/{id}")
     public ResponseEntity<ResponseObject> findById(@PathVariable Long id) {
-        Optional<OrderDetails> foundOrderDetail = orderDetailRepository.findById(id);
-        if (foundOrderDetail.isPresent()) {
+        OrderDetails foundOrderDetail = orderDetailsService.findById(id);
+        if (foundOrderDetail != null) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Found OrderDetail id = " + id, foundOrderDetail)
             );
@@ -60,57 +51,54 @@ public class OrderDetailsController {
         }
     }
 
-    @GetMapping("/orderDetail/search/order")
-    public ResponseEntity<ResponseObject> findByOrderId(@RequestParam Long id) {
-        List<OrderDetails> foundOrders = orderDetailRepository.findByOrderId(id);
-//        List<Order> foundOrders = orderRepository.findByUserIdAndName(id, name);
-        if (!foundOrders.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "Found OrderDetails ", foundOrders)
-            );
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject(404, "Cant find any OrderDetails matched", "")
-            );
-        }
-    }
+//    @GetMapping("/orderDetail/search/order")
+//    public ResponseEntity<ResponseObject> findByOrderId(@RequestParam Long id) {
+//        List<OrderDetails> foundOrders = orderDetailsService.findByOrderId(id);
+////        List<Order> foundOrders = orderRepository.findByUserIdAndName(id, name);
+//        if (!foundOrders.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.OK).body(
+//                    new ResponseObject(200, "Found OrderDetails ", foundOrders)
+//            );
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+//                    new ResponseObject(404, "Cant find any OrderDetails matched", "")
+//            );
+//        }
+//    }
         
-    @GetMapping("/orderDetail/search/product")
-    public ResponseEntity<ResponseObject> findByProductId(@RequestParam Long id) {
-        List<OrderDetails> foundOrders = orderDetailRepository.findByProductId(id);
-//        List<Order> foundOrders = orderRepository.findByUserIdAndName(id, name);
-        if (!foundOrders.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "Found OrderDetails ", foundOrders)
-            );
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject(404, "Cant find any OrderDetails matched", "")
-            );
-        }
-    }
+//    @GetMapping("/orderDetail/search/product")
+//    public ResponseEntity<ResponseObject> findByProductId(@RequestParam Long id) {
+//        List<OrderDetails> foundOrders = orderDetailRepository.findByProductId(id);
+////        List<Order> foundOrders = orderRepository.findByUserIdAndName(id, name);
+//        if (!foundOrders.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.OK).body(
+//                    new ResponseObject(200, "Found OrderDetails ", foundOrders)
+//            );
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+//                    new ResponseObject(404, "Cant find any OrderDetails matched", "")
+//            );
+//        }
+//    }
     
-    @GetMapping("/orderDetail/search/productvoucher")
-    public ResponseEntity<ResponseObject> findByProductVoucherId(@RequestParam Long id) {
-        List<OrderDetails> foundOrders = orderDetailRepository.findByProductVoucherId(id);
-//        List<Order> foundOrders = orderRepository.findByUserIdAndName(id, name);
-        if (!foundOrders.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "Found OrderDetails ", foundOrders)
-            );
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject(404, "Cant find any OrderDetails matched", "")
-            );
-        }
-    }
+//    @GetMapping("/orderDetail/search/productvoucher")
+//    public ResponseEntity<ResponseObject> findByProductVoucherId(@RequestParam Long id) {
+//        List<OrderDetails> foundOrders = orderDetailRepository.findByProductVoucherId(id);
+////        List<Order> foundOrders = orderRepository.findByUserIdAndName(id, name);
+//        if (!foundOrders.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.OK).body(
+//                    new ResponseObject(200, "Found OrderDetails ", foundOrders)
+//            );
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+//                    new ResponseObject(404, "Cant find any OrderDetails matched", "")
+//            );
+//        }
+//    }
 
     @PostMapping("/orderDetail")
-    public ResponseEntity<ResponseObject> createOrder(@RequestBody OrderDetails orderDetail) {
-        orderDetail.setOrderDet(orderRepository.findById(orderDetail.getOrderId()).get());
-        orderDetail.setProduct(productRepository.findById(orderDetail.getProductId()).get());
-        orderDetail.setProductVoucher(productVoucherRepository.findById(orderDetail.getProductVoucherId()).get());
-        OrderDetails addOrderDetail = orderDetailRepository.save(orderDetail);
+    public ResponseEntity<ResponseObject> createOrderDetail(@RequestBody OrderDetails orderDetail) {
+        OrderDetails addOrderDetail = orderDetailsService.add(orderDetail);
         if (addOrderDetail != null) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Add sucessfully ", addOrderDetail)

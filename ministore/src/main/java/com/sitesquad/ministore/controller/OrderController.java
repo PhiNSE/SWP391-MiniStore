@@ -72,7 +72,7 @@ public class OrderController {
             );
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject(500, "Cant add order", addOrder)
+                    new ResponseObject(500, "Cant add order detail", addOrder)
             );
         }
     }

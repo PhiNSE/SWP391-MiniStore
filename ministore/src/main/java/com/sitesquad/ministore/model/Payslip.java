@@ -50,10 +50,10 @@ public class Payslip {
     private Date endDate;
 
     @Column(name = "shift_count")
-    private int shiftCount;
+    private Integer shiftCount;
 
     @Column(name = "salary")
-    private double salary;
+    private Double salary;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")

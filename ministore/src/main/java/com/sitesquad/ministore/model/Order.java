@@ -43,7 +43,7 @@ public class Order {
     private Long id;
 
     @Column(name = "type")
-    private boolean type;
+    private Boolean type;
 
     @Column(name = "user_id", insertable = false, updatable = false)
     private Long userId;
