@@ -76,7 +76,7 @@ public class OrderCreator {
             } else {
                 ordDet = orderDetailsService.add(ordDet);
                 if (ordDet.getProductVoucherId() != null) {
-                    ordDet.setTotal(ordDet.getPrice() * ordDet.getQuantity() * ordDet.getProductVoucher().getVoucher().getPercentDiscount());
+                    ordDet.setTotal(ordDet.getPrice() * ordDet.getQuantity() * (1 - ordDet.getProductVoucher().getVoucher().getPercentDiscount()));
                 } else {
                     ordDet.setTotal(ordDet.getPrice() * ordDet.getQuantity());
                 }
