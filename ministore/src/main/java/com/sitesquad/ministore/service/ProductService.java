@@ -6,6 +6,7 @@ import com.sitesquad.ministore.repository.ProductTypeRepository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,7 +23,7 @@ public class ProductService {
     private ProductTypeRepository productTypeRepository;
 
     public List<Product> findAll() {
-        List<Product> products = productRepository.findAll();
+        List<Product> products = productRepository.findByIsDeletedIsNull();
         return products;
     }
 
@@ -31,10 +32,21 @@ public class ProductService {
         return foundProduct.get();
     }
 
-    public List<Product> search() {
-        List<Product> products = productRepository.findAll();
-        return products;
-    }
+    public List<Product> search(Long id, String keyword, Long productTypeId, String productCode, String priceSort) {
+        String name = keyword;
+        String type = keyword;
+        Sort sort = null;
+        if (priceSort != null && priceSort.equals("asc")) {
+            sort = Sort.by(Sort.Direction.ASC, "price");
+        } else if (priceSort != null && priceSort.equals("desc")) {
+            sort = Sort.by(Sort.Direction.DESC, "price");
+        }
+            List<Product> products =
+            productRepository.findByIdOrNameContainingIgnoreCaseOrProductTypes_NameContainingIgnoreCaseOrProductTypeIdOrProductCodeAndIsDeletedIsNull(id,type,name, productTypeId, productCode, sort);
+            return products;
+        }
+
+    
 
     public Product add(Product product) {
         product.setProductTypes(productTypeRepository.findById(product.getProductTypeId()).get());
@@ -45,16 +57,17 @@ public class ProductService {
         Product oldProduct = productRepository.findById(newProduct.getId()).get();
         newProduct.setId(null);
         Product editedProduct = add(newProduct);
-        if (editedProduct!= null) {
+        if (editedProduct != null) {
             oldProduct.setIsDeleted(true);
             productRepository.save(oldProduct);
         }
         return editedProduct;
     }
-    public boolean delete(Long id){
+
+    public boolean delete(Long id) {
         Product product = new Product();
         product.setId(id);
         product.setIsDeleted(true);
-        return productRepository.findById(id).get().getIsDeleted()==true;
+        return productRepository.findById(id).get().getIsDeleted() == true;
     }
 }
