@@ -33,16 +33,16 @@ import lombok.ToString;
 public class Shift implements Serializable {
     @Id
     @Column(name = "shift_id")
-    Long id;
+    private Long id;
     
     @Column(name = "start_work_hour")
-    private Date startWorkHour;
+    private Double startWorkHour;
     
     @Column(name = "end_work_hour")
-    private Date endWorkHour;
+    private Double endWorkHour;
     
     @Column(name = "coefficient")
-    private int coefficient;
+    private Double coefficient;
     
     @OneToMany(mappedBy = "shifts")
     @JsonIgnore
