@@ -8,7 +8,7 @@ com\sitesquad\ministore\service\VoucherService.class
 com\sitesquad\ministore\model\ProductVoucher.class
 com\sitesquad\ministore\controller\RoleController.class
 com\sitesquad\ministore\service\ProductService.class
-com\sitesquad\ministore\controller\VoucherController.class
+com\sitesquad\ministore\controller\LogInController.class
 com\sitesquad\ministore\model\ProductType_.class
 com\sitesquad\ministore\model\Product_.class
 com\sitesquad\ministore\repository\ProductVoucherRepository.class
@@ -24,8 +24,11 @@ com\sitesquad\ministore\model\OrderDetails_.class
 com\sitesquad\ministore\controller\PayslipController.class
 com\sitesquad\ministore\model\Role_.class
 com\sitesquad\ministore\model\Order.class
+com\sitesquad\ministore\controller\admin\ProductTypeController.class
 com\sitesquad\ministore\controller\TamController.class
+com\sitesquad\ministore\service\LogInService.class
 com\sitesquad\ministore\service\ProductTypeService.class
+com\sitesquad\ministore\controller\admin\UserController.class
 com\sitesquad\ministore\service\OrderDetailsService.class
 com\sitesquad\ministore\service\UserService.class
 com\sitesquad\ministore\controller\DatController.class
@@ -42,9 +45,8 @@ com\sitesquad\ministore\model\UserShift_.class
 com\sitesquad\ministore\repository\PayslipRepository.class
 com\sitesquad\ministore\repository\UserShiftRepository.class
 com\sitesquad\ministore\HomeController.class
-com\sitesquad\ministore\controller\UserController.class
+com\sitesquad\ministore\model\RequestLogin.class
 com\sitesquad\ministore\utils\JwtUtil.class
-com\sitesquad\ministore\controller\ProductTypeController.class
 com\sitesquad\ministore\repository\ProductTypeRepository.class
 com\sitesquad\ministore\repository\ShiftRepository.class
 com\sitesquad\ministore\controller\SalaryCalculator.class
@@ -52,10 +54,11 @@ com\sitesquad\ministore\constant\SystemConstant.class
 com\sitesquad\ministore\controller\PhiController.class
 com\sitesquad\ministore\repository\OrderDetailsRepository.class
 com\sitesquad\ministore\service\OrderService.class
+com\sitesquad\ministore\controller\admin\ProductController.class
 com\sitesquad\ministore\constant\ShiftConstant.class
-com\sitesquad\ministore\controller\ProductController.class
 com\sitesquad\ministore\controller\UserShiftController.class
 com\sitesquad\ministore\model\ProductType.class
+com\sitesquad\ministore\controller\admin\VoucherController.class
 com\sitesquad\ministore\controller\OrderDetailsController.class
 com\sitesquad\ministore\repository\RoleRepository.class
 com\sitesquad\ministore\model\User.class
