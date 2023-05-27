@@ -1,8 +1,4 @@
 /ministore/HELP.md
-/ministore/target/
-/ministore/!.mvn/wrapper/maven-wrapper.jar
-/ministore/!**/src/main/**/target/
-/ministore/!**/src/test/**/target/
 
 ### STS ###
 /ministore/.apt_generated

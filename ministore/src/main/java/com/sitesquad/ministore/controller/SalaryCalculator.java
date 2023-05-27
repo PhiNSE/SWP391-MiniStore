@@ -38,7 +38,13 @@ public class SalaryCalculator {
             //create payslip
             Payslip payslip = new Payslip();
             UserShift userShift = new UserShift();
+            
             payslip.setUserId(u.getId());
+//            payslip.setShiftCount();
+//            payslip.setSalary();
+            payslip = payslipService.add(payslip);
+            
+            payslipList.add(payslip);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new ResponseObject(200, "Successfull", payslipList)
