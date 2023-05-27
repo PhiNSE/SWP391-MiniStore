@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.sitesquad.ministore.controller;
+package com.sitesquad.ministore.controller.admin;
 
 
 import com.sitesquad.ministore.model.ResponseObject;

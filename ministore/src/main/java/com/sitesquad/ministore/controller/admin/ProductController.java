@@ -1,4 +1,4 @@
-package com.sitesquad.ministore.controller;
+package com.sitesquad.ministore.controller.admin;
 
 import com.sitesquad.ministore.model.Product;
 import com.sitesquad.ministore.model.ResponseObject;
@@ -32,7 +32,7 @@ public class ProductController {
     @GetMapping("/product")
     public List<Product> getProducts() {
         return productService.findAll();
-        
+
     }
 
     @GetMapping("/product/{id}")
@@ -51,9 +51,11 @@ public class ProductController {
 
     @GetMapping("/product/search")
     public ResponseEntity<ResponseObject> search(@RequestParam(required = false) Long id,
-                                                @RequestParam(required = false) String name
-                                                ) {
-        List<Product> foundProducts = productService.search();
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Long productTypeId,
+            @RequestParam(required = false) String productCode,
+            @RequestParam(required = false) String priceSort) {
+        List<Product> foundProducts = productService.search(id, keyword, productTypeId, productCode, priceSort);
         if (!foundProducts.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Found Products ", foundProducts)
@@ -84,7 +86,6 @@ public class ProductController {
     public ResponseEntity<ResponseObject> editProduct(@RequestBody Product product) {
         Product editedProduct = productService.edit(product);
         if (editedProduct != null) {
-
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Edit sucessfully ", editedProduct)
             );
@@ -94,8 +95,9 @@ public class ProductController {
             );
         }
     }
+
     @DeleteMapping("/product/{id}")
-    public ResponseEntity<ResponseObject> deleteProduct(@PathVariable Long id){
+    public ResponseEntity<ResponseObject> deleteProduct(@PathVariable Long id) {
         Boolean isDeleted = productService.delete(id);
         if (isDeleted) {
             return ResponseEntity.status(HttpStatus.OK).body(

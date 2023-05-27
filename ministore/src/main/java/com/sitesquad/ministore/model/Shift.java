@@ -43,7 +43,7 @@ public class Shift implements Serializable {
     
     @Column(name = "coefficient")
     private Double coefficient;
-    
+
     @OneToMany(mappedBy = "shifts")
     @JsonIgnore
     @ToString.Exclude

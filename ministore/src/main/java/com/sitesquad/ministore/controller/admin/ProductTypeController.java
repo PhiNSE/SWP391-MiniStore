@@ -1,4 +1,4 @@
-package com.sitesquad.ministore.controller;
+package com.sitesquad.ministore.controller.admin;
 
 import com.sitesquad.ministore.model.ProductType;
 import com.sitesquad.ministore.model.ResponseObject;
