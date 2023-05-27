@@ -61,7 +61,10 @@ public class UserShift {
     @Column(name = "is_weekend")
     private boolean isWeekend;
 
-    @Column(name = "is_present")
-    private boolean isPresent;
+    @Column(name = "is_checked_in")
+    private boolean isCheckedIn;
+    
+    @Column(name = "is_checked_out")
+    private boolean isCheckedOut;    
     
 }
