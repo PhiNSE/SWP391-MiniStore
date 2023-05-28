@@ -1,5 +1,9 @@
-FROM eclipse-temurin:1.8-jdk-alpine
-VOLUME /tmp
-COPY target/*.war app.war
-ENTRYPOINT ["java","-jar","/app.war"]
+FROM openjdk:8-jdk-alpine
+
+WORKDIR /app
+
+COPY target/ministore.war /app/ministore.war
+
+ENTRYPOINT ["java", "-jar", "/app/ministore.war"]
+
 EXPOSE 8080

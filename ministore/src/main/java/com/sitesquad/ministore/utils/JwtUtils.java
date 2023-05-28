@@ -60,27 +60,6 @@ public class JwtUtils {
      }
     }
     
-//    public static Claims verifyJwtToken(String token) {
-//        try {
-//            // Parse the secret key into a Key object
-//            byte[] decodedKey = Base64.getDecoder().decode(secretKey);
-//
-//            Key key = new SecretKeySpec(decodedKey, "HmacSHA512");
-//
-//            // Verify and parse the token
-//            Jws<Claims> claimsJws = Jwts.parser
-//                    .setSigningKey(key)
-//                    .build()
-//                    .parseClaimsJws(token);
-//
-//            // If the verification is successful, the parsed claims will be returned
-//            return claimsJws.getBody();
-//        } catch (Exception e) {
-//            // If the token is invalid or verification fails
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
  
     public static void main(String[] args) {
         Jws<Claims> jwt = Jwts.parser()                  
