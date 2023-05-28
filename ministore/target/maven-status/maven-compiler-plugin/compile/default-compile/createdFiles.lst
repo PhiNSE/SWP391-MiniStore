@@ -25,6 +25,7 @@ com\sitesquad\ministore\controller\PayslipController.class
 com\sitesquad\ministore\model\Role_.class
 com\sitesquad\ministore\model\Order.class
 com\sitesquad\ministore\controller\admin\ProductTypeController.class
+com\sitesquad\ministore\utils\JwtUtils.class
 com\sitesquad\ministore\controller\TamController.class
 com\sitesquad\ministore\service\LogInService.class
 com\sitesquad\ministore\service\ProductTypeService.class
@@ -46,7 +47,6 @@ com\sitesquad\ministore\repository\PayslipRepository.class
 com\sitesquad\ministore\repository\UserShiftRepository.class
 com\sitesquad\ministore\HomeController.class
 com\sitesquad\ministore\model\RequestLogin.class
-com\sitesquad\ministore\utils\JwtUtil.class
 com\sitesquad\ministore\repository\ProductTypeRepository.class
 com\sitesquad\ministore\repository\ShiftRepository.class
 com\sitesquad\ministore\controller\SalaryCalculator.class

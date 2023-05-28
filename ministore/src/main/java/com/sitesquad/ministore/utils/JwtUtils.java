@@ -2,9 +2,16 @@ package com.sitesquad.ministore.utils;
 
 import com.sitesquad.ministore.model.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
+import java.util.Base64;
 import java.util.Date;
+import java.util.logging.Logger;
+import javax.crypto.spec.SecretKeySpec;
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,7 +20,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class JwtUtils {
-    private static String secretKey = "tamDepTrai";
+    private static String secretKey = "123456";
     private static long expriryDuration = 60*60;
     
     public String generateJWT(User user){
@@ -29,7 +36,7 @@ public class JwtUtils {
                 .setIssuedAt(issuedAt)
                 .setExpiration(expiryAt);
         
-        claims.put("role id", user.getRoles().getName());
+        claims.put("role", user.getRoles().getName());
         claims.put("name", user.getName());
         claims.put("email", user.getEmail());
         // generate jwt
@@ -40,4 +47,46 @@ public class JwtUtils {
     }
     
     
+        public Jws<Claims> verify(String token){
+        try {
+//        Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+         Jws<Claims> jwt = Jwts.parser()                  
+                .setSigningKey(secretKey)                    
+                .parseClaimsJws(token);
+                return jwt;
+            } catch (SignatureException jwtException) {
+        jwtException.printStackTrace();
+        return null;
+     }
+    }
+    
+//    public static Claims verifyJwtToken(String token) {
+//        try {
+//            // Parse the secret key into a Key object
+//            byte[] decodedKey = Base64.getDecoder().decode(secretKey);
+//
+//            Key key = new SecretKeySpec(decodedKey, "HmacSHA512");
+//
+//            // Verify and parse the token
+//            Jws<Claims> claimsJws = Jwts.parser
+//                    .setSigningKey(key)
+//                    .build()
+//                    .parseClaimsJws(token);
+//
+//            // If the verification is successful, the parsed claims will be returned
+//            return claimsJws.getBody();
+//        } catch (Exception e) {
+//            // If the token is invalid or verification fails
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
+ 
+    public static void main(String[] args) {
+        Jws<Claims> jwt = Jwts.parser()                  
+                .setSigningKey(secretKey)                    
+                .parseClaimsJws("eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiIxIiwiaWF0IjoxNjg1MjQ1NjQ3LCJleHAiOjE2ODUyNDkyNDcsInJvbGUiOiJhZG1pbiIsIm5hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIn0.y1w5-uFAqZO_D3xjv-nVxgflW9m1KH6OzBjCAoASt_fIUarlFc0FLxXYngFZpkrAqqFuPjX3lf1xM4V_3gQpfw");
+        
+        System.out.println(jwt);
+    }
 }

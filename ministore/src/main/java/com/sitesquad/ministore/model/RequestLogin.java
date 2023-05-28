@@ -13,6 +13,9 @@ public class RequestLogin {
     String email;
     String password;
 
+    public RequestLogin() {
+    }
+
     public RequestLogin(String email, String password) {
         this.email = email;
         this.password = password;
