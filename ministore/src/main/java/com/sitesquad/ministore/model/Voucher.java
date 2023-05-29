@@ -35,7 +35,7 @@ public class Voucher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "voucher_id")
-    private Long id;
+    private Long voucherId;
 
     @Column(name = "description")
     private String description;

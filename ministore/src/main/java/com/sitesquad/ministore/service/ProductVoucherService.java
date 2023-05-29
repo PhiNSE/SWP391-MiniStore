@@ -33,6 +33,11 @@ public class ProductVoucherService {
         Optional<ProductVoucher> foundProductVoucher = productVoucherRepository.findById(id);
         return foundProductVoucher.get();
     }
+    
+//    public List<ProductVoucher> findByProductId(Long id) {
+//        Optional<ProductVoucher> foundProductVoucher = productVoucherRepository.findById(id);
+//        return foundProductVoucher.get();
+//    }
 
     public ProductVoucher add(ProductVoucher productVoucher) {
         productVoucher.setProduct(productRepository.findById(productVoucher.getProductId()).get());

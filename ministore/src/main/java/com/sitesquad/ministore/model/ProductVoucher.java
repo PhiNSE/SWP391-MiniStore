@@ -39,7 +39,7 @@ public class ProductVoucher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_voucher_id")
-    private Long id;
+    private Long productVoucherId;
     
     @Column(name = "voucher_id", insertable = false, updatable = false)
     private Long voucherId;

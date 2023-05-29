@@ -61,14 +61,14 @@ public class OrderCreator {
         return orderService.add(order);
     }
 
-    @GetMapping("/orderDetail/create")
+    @PostMapping("/orderDetail/create")
     public ResponseEntity<ResponseObject> viewOrderDetail(@RequestBody List<OrderDetails> orderDetails) {
         List<OrderDetails> orderDetailList = new ArrayList<>();
         Order order = createOrder();
 
         for (OrderDetails ordDet : orderDetails) {
             //create orderDetail
-            ordDet.setOrderId(order.getId());
+            ordDet.setOrderId(order.getOrderId());
             if (ordDet.getQuantity() > productService.findById(ordDet.getProductId()).getQuantity()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                         new ResponseObject(500, "Quantity is not enough", "")
@@ -88,4 +88,13 @@ public class OrderCreator {
                 new ResponseObject(200, "Successfull", orderDetailList)
         );
     }
+
+//    @GetMapping("/orderDetail/voucher")
+//    public ResponseEntity<ResponseObject> searchVoucherByProductId() {
+//        List<ProductVoucher> productVoucherList = productVoucherService.findByProductId()
+//        
+//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+//                new ResponseObject(200, "Successfull", )
+//        );
+//    }
 }

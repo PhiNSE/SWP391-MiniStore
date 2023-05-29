@@ -17,7 +17,7 @@ public abstract class User_ {
 	public static volatile SingularAttribute<User, String> name;
 	public static volatile CollectionAttribute<User, Order> orders;
 	public static volatile CollectionAttribute<User, Payslip> payslips;
-	public static volatile SingularAttribute<User, Long> id;
+	public static volatile SingularAttribute<User, Long> userId;
 	public static volatile SingularAttribute<User, String> email;
 
 	public static final String PASSWORD = "password";
@@ -28,7 +28,7 @@ public abstract class User_ {
 	public static final String NAME = "name";
 	public static final String ORDERS = "orders";
 	public static final String PAYSLIPS = "payslips";
-	public static final String ID = "id";
+	public static final String USER_ID = "userId";
 	public static final String EMAIL = "email";
 
 }

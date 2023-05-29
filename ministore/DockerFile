@@ -1,9 +1,3 @@
-FROM openjdk:8-jdk-alpine
-
-WORKDIR /app
-
-COPY target/ministore.war /app/ministore.war
-
-ENTRYPOINT ["java", "-jar", "/app/ministore.war"]
-
-EXPOSE 8080
+FROM openjdk:11-jre-slim
+COPY target/*.jar demo.jar
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/demo.jar"]

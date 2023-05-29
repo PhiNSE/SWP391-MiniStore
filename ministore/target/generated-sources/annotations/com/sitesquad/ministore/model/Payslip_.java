@@ -11,7 +11,7 @@ public abstract class Payslip_ {
 
 	public static volatile SingularAttribute<Payslip, Date> endDate;
 	public static volatile SingularAttribute<Payslip, Integer> shiftCount;
-	public static volatile SingularAttribute<Payslip, Long> id;
+	public static volatile SingularAttribute<Payslip, Long> payslipId;
 	public static volatile SingularAttribute<Payslip, Double> salary;
 	public static volatile SingularAttribute<Payslip, Long> userId;
 	public static volatile SingularAttribute<Payslip, User> user;
@@ -19,7 +19,7 @@ public abstract class Payslip_ {
 
 	public static final String END_DATE = "endDate";
 	public static final String SHIFT_COUNT = "shiftCount";
-	public static final String ID = "id";
+	public static final String PAYSLIP_ID = "payslipId";
 	public static final String SALARY = "salary";
 	public static final String USER_ID = "userId";
 	public static final String USER = "user";

@@ -38,7 +38,7 @@ public class OrderDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_detail_id")
-    private Long id;
+    private Long orderDetailId;
 
     @Column(name = "product_id", insertable = false, updatable = false)
     private Long productId;

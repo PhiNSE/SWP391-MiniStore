@@ -39,7 +39,7 @@ public class SalaryCalculator {
             Payslip payslip = new Payslip();
             UserShift userShift = new UserShift();
             
-            payslip.setUserId(u.getId());
+            payslip.setUserId(u.getUserId());
 //            payslip.setShiftCount();
 //            payslip.setSalary();
             payslip = payslipService.add(payslip);
