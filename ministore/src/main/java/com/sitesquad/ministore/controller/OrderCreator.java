@@ -84,7 +84,7 @@ public class OrderCreator {
                 orderDetailList.add(ordDet);
             }
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+        return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(200, "Successfull", orderDetailList)
         );
     }
