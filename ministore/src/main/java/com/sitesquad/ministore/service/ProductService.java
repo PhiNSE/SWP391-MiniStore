@@ -46,11 +46,9 @@ public class ProductService {
             sort = Sort.by(Sort.Direction.DESC, "price");
         }
             List<Product> products =
-<<<<<<< HEAD
-            productRepository.findByIdOrNameContainingIgnoreCaseAndProductTypes_NameContainingIgnoreCaseAndProductTypeIdAndProductCodeAndIsDeletedIsNull(id,type,name, productTypeId, productCode, sort);
-=======
+
             productRepository.findByProductIdOrNameContainingIgnoreCaseOrProductTypes_NameContainingIgnoreCaseOrProductTypeIdOrProductCodeAndIsDeletedIsNull(id,type,name, productTypeId, productCode, sort);
->>>>>>> 3aea01d2072efdea3f47845904267ad1e62f3d3d
+
             return products;
         }
 
