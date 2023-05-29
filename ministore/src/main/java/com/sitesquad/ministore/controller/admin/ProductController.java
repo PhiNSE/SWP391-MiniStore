@@ -8,6 +8,7 @@ import com.sitesquad.ministore.service.ProductService;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,10 +30,18 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
-    @GetMapping("/product")
-    public List<Product> getProducts() {
-        return productService.findAll();
-
+    @GetMapping("/productList/{offset}")
+    public ResponseEntity<ResponseObject> getProducts(@PathVariable int offset) {
+        Page<Product> productList = productService.findAll(offset);
+        if (productList != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "Found Product List", productList)
+            );
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject(500, "Cant find product list", "")
+            );
+        }
     }
 
     @GetMapping("/product/{id}")
@@ -49,14 +58,15 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/product/search")
-    public ResponseEntity<ResponseObject> search(@RequestParam(required = false) Long id,
+    @GetMapping("/product/search/{offset}")
+    public ResponseEntity<ResponseObject> search(
+            @RequestParam(required = false) Long id,
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) Long productTypeId,
             @RequestParam(required = false) String productCode,
             @RequestParam(required = false) String priceSort) {
-        List<Product> foundProducts = productService.search(id, keyword, productTypeId, productCode, priceSort);
-        if (!foundProducts.isEmpty()) {
+        List<Product> foundProducts = productService.search( id, keyword, productTypeId, productCode, priceSort);
+        if (foundProducts != null) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Found Products ", foundProducts)
             );

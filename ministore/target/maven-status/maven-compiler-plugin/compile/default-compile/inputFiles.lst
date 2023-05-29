@@ -6,6 +6,7 @@ D:\Ministore\SWP391-MiniStore\ministore\src\main\java\com\sitesquad\ministore\se
 D:\Ministore\SWP391-MiniStore\ministore\src\main\java\com\sitesquad\ministore\service\ProductVoucherService.java
 D:\Ministore\SWP391-MiniStore\ministore\src\main\java\com\sitesquad\ministore\repository\VoucherRepository.java
 D:\Ministore\SWP391-MiniStore\ministore\src\main\java\com\sitesquad\ministore\model\Product.java
+D:\Ministore\SWP391-MiniStore\ministore\src\main\java\com\sitesquad\ministore\model\PaginationMeta.java
 D:\Ministore\SWP391-MiniStore\ministore\src\main\java\com\sitesquad\ministore\controller\admin\ProductController.java
 D:\Ministore\SWP391-MiniStore\ministore\src\main\java\com\sitesquad\ministore\controller\OrderCreator.java
 D:\Ministore\SWP391-MiniStore\ministore\src\main\java\com\sitesquad\ministore\model\ProductType.java
