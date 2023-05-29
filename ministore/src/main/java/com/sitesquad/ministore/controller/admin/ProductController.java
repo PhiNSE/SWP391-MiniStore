@@ -48,7 +48,7 @@ public class ProductController {
     @GetMapping("/productList")
     public ResponseEntity<ResponseObject> getProducts(@RequestParam(required = false) Integer offset) {
         if (offset==null) {
-            offset = 1;
+            offset = 0;
         }
         Page<Product> productList = productService.findAll(offset);
         if (productList != null) {
