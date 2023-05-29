@@ -26,7 +26,11 @@ public class ProductService {
     @Autowired
     private ProductTypeRepository productTypeRepository;
 
+    public List<Product> findAll() {
+        List<Product> productList = productRepository.findByIsDeletedFalseOrIsDeletedIsNull();
+        return productList;
 
+    }
 
     public Page<Product> findAll(int offset) {
         Page<Product> productList = productRepository.findByIsDeletedFalseOrIsDeletedIsNull(PageRequest.of(offset, 9));
@@ -48,12 +52,10 @@ public class ProductService {
         } else if (priceSort != null && priceSort.equals("desc")) {
             sort = Sort.by(Sort.Direction.DESC, "price");
         }
-            List<Product> products =
-            productRepository.findByCustomQuery(id,type,name, productTypeId, productCode, sort);
-            return products;
-        }
-
-    
+        List<Product> products
+                = productRepository.findByCustomQuery(id, type, name, productTypeId, productCode, sort);
+        return products;
+    }
 
     public Product add(Product product) {
         product.setProductTypes(productTypeRepository.findById(product.getProductTypeId()).get());
@@ -73,12 +75,12 @@ public class ProductService {
 
     public boolean delete(Long id) {
         Product product = productRepository.findById(id).orElse(null);
-        if(product==null){
+        if (product == null) {
             return false;
-        }else{
+        } else {
             product.setIsDeleted(true);
             productRepository.save(product);
             return true;
-        }     
+        }
     }
 }

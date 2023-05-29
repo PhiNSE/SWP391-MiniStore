@@ -19,7 +19,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product>, PagingAndSortingRepository<Product, Long>{
 
-
+    List<Product> findByIsDeletedFalseOrIsDeletedIsNull();
+    
     Page<Product> findByIsDeletedFalseOrIsDeletedIsNull(Pageable pageable);
 
     List<Product> findByProductTypeId(Long productTypeId);
