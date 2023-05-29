@@ -1,11 +1,15 @@
 package com.sitesquad.ministore.service;
 
 import com.sitesquad.ministore.model.Product;
+import com.sitesquad.ministore.model.ResponseObject;
 import com.sitesquad.ministore.repository.ProductRepository;
 import com.sitesquad.ministore.repository.ProductTypeRepository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +26,12 @@ public class ProductService {
     @Autowired
     private ProductTypeRepository productTypeRepository;
 
-    public List<Product> findAll() {
-        List<Product> products = productRepository.findByIsDeletedFalseOrIsDeletedIsNull();
-        return products;
+
+
+    public Page<Product> findAll(int offset) {
+        Page<Product> productList = productRepository.findByIsDeletedFalseOrIsDeletedIsNull(PageRequest.of(offset, 9));
+        return productList;
+
     }
 
     public Product findById(Long id) {
@@ -54,8 +61,8 @@ public class ProductService {
     }
 
     public Product edit(Product newProduct) {
-        Product oldProduct = productRepository.findById(newProduct.getId()).get();
-        newProduct.setId(null);
+        Product oldProduct = productRepository.findById(newProduct.getProductId()).get();
+        newProduct.setProductId(null);
         Product editedProduct = add(newProduct);
         if (editedProduct != null) {
             oldProduct.setIsDeleted(true);
@@ -72,6 +79,6 @@ public class ProductService {
             product.setIsDeleted(true);
             productRepository.save(product);
             return true;
-        }      
+        }     
     }
 }

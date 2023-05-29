@@ -63,7 +63,7 @@ public class UserShiftService {
     @Scheduled(cron = "0 0 0 */7 * *")
     public void generateUserShifts() {
         System.out.print("Generating shifts...");
-        List<UserShift> existShifts = userShiftRepository.findByIdOrderByEndTimeDesc(null);
+        List<UserShift> existShifts = userShiftRepository.findByUserShiftIdOrderByEndTimeDesc(null);
         ZonedDateTime startDate = SystemConstant.ZONE_DATE_TIME_NOW.withHour(0).withMinute(0).withSecond(0);
         if (!existShifts.isEmpty()) {
             startDate = existShifts.get(0).getEndTime().withHour(0).withMinute(0).withSecond(0);
@@ -88,7 +88,7 @@ public class UserShiftService {
 
     public UserShift getUserShift(Shift shift, ZonedDateTime shiftDate, Boolean isEndNextDay) {
         UserShift userShift = new UserShift();
-        userShift.setShiftId(shift.getId());
+        userShift.setShiftId(shift.getShiftId());
         userShift.setStartTime(shiftDate.withHour(shift.getStartWorkHour().intValue()));
         if (isEndNextDay) {
             userShift.setEndTime(shiftDate.withHour(shift.getEndWorkHour().intValue()).plusDays(1));

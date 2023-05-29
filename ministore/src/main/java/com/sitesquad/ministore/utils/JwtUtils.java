@@ -32,7 +32,7 @@ public class JwtUtils {
         Date expiryAt = new Date(expiryTime);
         
         Claims claims = Jwts.claims()
-                .setIssuer(user.getId().toString())
+                .setIssuer(user.getUserId().toString())
                 .setIssuedAt(issuedAt)
                 .setExpiration(expiryAt);
         
@@ -64,7 +64,7 @@ public class JwtUtils {
     public static void main(String[] args) {
         Jws<Claims> jwt = Jwts.parser()                  
                 .setSigningKey(secretKey)                    
-                .parseClaimsJws("eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiIxIiwiaWF0IjoxNjg1MjQ1NjQ3LCJleHAiOjE2ODUyNDkyNDcsInJvbGUiOiJhZG1pbiIsIm5hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIn0.y1w5-uFAqZO_D3xjv-nVxgflW9m1KH6OzBjCAoASt_fIUarlFc0FLxXYngFZpkrAqqFuPjX3lf1xM4V_3gQpfw");
+                .parseClaimsJws("eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiIxIiwiaWF0IjoxNjg1MzI4MzYxLCJleHAiOjE2ODUzMzE5NjEsInJvbGUiOiJhZG1pbiIsIm5hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIn0.K5a-FmBdK0CV1IPgeMHdKIuxbVCF3LK2c9n1ND7Iw2RCGk3kANBNlv5kdr9zRoaRbOL7Y6K_bkm1Qyxtoh1d-w");
         
         System.out.println(jwt);
     }

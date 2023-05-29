@@ -40,7 +40,7 @@ public class UserShift {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_shift_id")
-    Long id;
+    Long userShiftId;
 
     @Column(name = "user_id", nullable = true, insertable = false, updatable = false)
     private Long userId;

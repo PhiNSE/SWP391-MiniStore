@@ -36,7 +36,7 @@ public class Shift implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "shift_id")
-    private Long id;
+    private Long shiftId;
     
     @Column(name = "start_work_hour")
     private Double startWorkHour;

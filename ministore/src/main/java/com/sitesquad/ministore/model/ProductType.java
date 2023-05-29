@@ -29,14 +29,14 @@ import lombok.ToString;
 @EqualsAndHashCode
 //@JsonIdentityInfo(
 //        generator = ObjectIdGenerators.PropertyGenerator.class,
-//        property = "id")
+//        property = "productTypeId")
 //@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 @Table(name = "product_type")
 public class ProductType{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_type_id")
-    private Long id;
+    private Long productTypeId;
     
     @Column(name = "name")
     private String name;
