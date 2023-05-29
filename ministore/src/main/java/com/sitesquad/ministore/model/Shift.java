@@ -33,7 +33,7 @@ import lombok.ToString;
 public class Shift implements Serializable {
     @Id
     @Column(name = "shift_id")
-    private Long id;
+    private Long shiftId;
     
     @Column(name = "start_work_hour")
     private Double startWorkHour;

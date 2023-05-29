@@ -32,7 +32,7 @@ import lombok.ToString;
 public class Role implements Serializable {
     @Id
     @Column(name = "role_id")
-    Long id;
+    Long roleId;
     
     @Column(name = "name")
     String name;

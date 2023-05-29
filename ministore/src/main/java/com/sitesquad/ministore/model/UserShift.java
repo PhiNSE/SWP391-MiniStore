@@ -32,7 +32,7 @@ import lombok.ToString;
 public class UserShift {
     @Id
     @Column(name = "user_shift_id")
-    Long id;
+    Long userShiftId;
     
     @Column(name = "user_id" , insertable = false, updatable = false)
     private Long userId;

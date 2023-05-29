@@ -21,7 +21,9 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     List<Product> findByProductTypeId(Long productTypeId);
 
-    List<Product> findByIdOrNameContainingIgnoreCaseAndProductTypes_NameContainingIgnoreCaseAndProductTypeIdAndProductCodeAndIsDeletedIsNull(
-            Long id, String name,String productTypeName, Long productTypeId, String productCode, Sort sort);
+
+    List<Product> findByProductIdOrNameContainingIgnoreCaseOrProductTypes_NameContainingIgnoreCaseOrProductTypeIdOrProductCodeAndIsDeletedIsNull(
+            Long productId, String name,String productTypeName, Long productTypeId, String productCode, Sort sort);
+
   
 }

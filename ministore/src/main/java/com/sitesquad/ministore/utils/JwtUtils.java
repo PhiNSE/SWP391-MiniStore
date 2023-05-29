@@ -32,7 +32,7 @@ public class JwtUtils {
         Date expiryAt = new Date(expiryTime);
         
         Claims claims = Jwts.claims()
-                .setIssuer(user.getId().toString())
+                .setIssuer(user.getUserId().toString())
                 .setIssuedAt(issuedAt)
                 .setExpiration(expiryAt);
         

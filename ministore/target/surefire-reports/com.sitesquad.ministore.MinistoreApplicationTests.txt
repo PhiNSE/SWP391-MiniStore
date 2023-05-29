@@ -1,4 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: com.sitesquad.ministore.MinistoreApplicationTests
 -------------------------------------------------------------------------------
+<<<<<<< HEAD
 Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.671 s - in com.sitesquad.ministore.MinistoreApplicationTests
+=======
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 12.263 s - in com.sitesquad.ministore.MinistoreApplicationTests
+>>>>>>> 3aea01d2072efdea3f47845904267ad1e62f3d3d

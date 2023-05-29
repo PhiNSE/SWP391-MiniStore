@@ -46,7 +46,11 @@ public class ProductService {
             sort = Sort.by(Sort.Direction.DESC, "price");
         }
             List<Product> products =
+<<<<<<< HEAD
             productRepository.findByIdOrNameContainingIgnoreCaseAndProductTypes_NameContainingIgnoreCaseAndProductTypeIdAndProductCodeAndIsDeletedIsNull(id,type,name, productTypeId, productCode, sort);
+=======
+            productRepository.findByProductIdOrNameContainingIgnoreCaseOrProductTypes_NameContainingIgnoreCaseOrProductTypeIdOrProductCodeAndIsDeletedIsNull(id,type,name, productTypeId, productCode, sort);
+>>>>>>> 3aea01d2072efdea3f47845904267ad1e62f3d3d
             return products;
         }
 
@@ -58,8 +62,8 @@ public class ProductService {
     }
 
     public Product edit(Product newProduct) {
-        Product oldProduct = productRepository.findById(newProduct.getId()).get();
-        newProduct.setId(null);
+        Product oldProduct = productRepository.findById(newProduct.getProductId()).get();
+        newProduct.setProductId(null);
         Product editedProduct = add(newProduct);
         if (editedProduct != null) {
             oldProduct.setIsDeleted(true);
@@ -70,7 +74,7 @@ public class ProductService {
 
     public boolean delete(Long id) {
         Product product = new Product();
-        product.setId(id);
+        product.setProductId(id);
         product.setIsDeleted(true);
         return productRepository.findById(id).get().getIsDeleted() == true;
     }

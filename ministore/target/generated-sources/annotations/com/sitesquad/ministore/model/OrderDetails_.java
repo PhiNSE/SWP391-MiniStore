@@ -17,7 +17,7 @@ public abstract class OrderDetails_ {
 	public static volatile SingularAttribute<OrderDetails, Order> orderDet;
 	public static volatile SingularAttribute<OrderDetails, Long> orderId;
 	public static volatile SingularAttribute<OrderDetails, Double> price;
-	public static volatile SingularAttribute<OrderDetails, Long> id;
+	public static volatile SingularAttribute<OrderDetails, Long> orderDetailId;
 
 	public static final String PRODUCT_VOUCHER_ID = "productVoucherId";
 	public static final String PRODUCT_VOUCHER = "productVoucher";
@@ -28,7 +28,7 @@ public abstract class OrderDetails_ {
 	public static final String ORDER_DET = "orderDet";
 	public static final String ORDER_ID = "orderId";
 	public static final String PRICE = "price";
-	public static final String ID = "id";
+	public static final String ORDER_DETAIL_ID = "orderDetailId";
 
 }
 

@@ -38,7 +38,7 @@ public class Payslip {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "payslip_id")
-    private Long id;
+    private Long payslipId;
 
     @Column(name = "user_id", insertable = false, updatable = false)
     private Long userId;

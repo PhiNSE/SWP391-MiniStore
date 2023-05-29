@@ -15,7 +15,7 @@ public abstract class UserShift_ {
 	public static volatile SingularAttribute<UserShift, Boolean> isCheckedIn;
 	public static volatile SingularAttribute<UserShift, Boolean> isHoliday;
 	public static volatile SingularAttribute<UserShift, Shift> shifts;
-	public static volatile SingularAttribute<UserShift, Long> id;
+	public static volatile SingularAttribute<UserShift, Long> userShiftId;
 	public static volatile SingularAttribute<UserShift, Boolean> isWeekend;
 	public static volatile SingularAttribute<UserShift, Long> userId;
 	public static volatile SingularAttribute<UserShift, User> users;
@@ -26,7 +26,7 @@ public abstract class UserShift_ {
 	public static final String IS_CHECKED_IN = "isCheckedIn";
 	public static final String IS_HOLIDAY = "isHoliday";
 	public static final String SHIFTS = "shifts";
-	public static final String ID = "id";
+	public static final String USER_SHIFT_ID = "userShiftId";
 	public static final String IS_WEEKEND = "isWeekend";
 	public static final String USER_ID = "userId";
 	public static final String USERS = "users";

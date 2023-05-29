@@ -14,9 +14,9 @@ public abstract class Voucher_ {
 	public static volatile SingularAttribute<Voucher, Double> maxPercent;
 	public static volatile SingularAttribute<Voucher, Integer> quantity;
 	public static volatile SingularAttribute<Voucher, Integer> minTotal;
+	public static volatile SingularAttribute<Voucher, Long> voucherId;
 	public static volatile SingularAttribute<Voucher, Date> expiredDate;
 	public static volatile SingularAttribute<Voucher, String> description;
-	public static volatile SingularAttribute<Voucher, Long> id;
 	public static volatile CollectionAttribute<Voucher, ProductVoucher> productVouchers;
 	public static volatile SingularAttribute<Voucher, Double> percentDiscount;
 
@@ -24,9 +24,9 @@ public abstract class Voucher_ {
 	public static final String MAX_PERCENT = "maxPercent";
 	public static final String QUANTITY = "quantity";
 	public static final String MIN_TOTAL = "minTotal";
+	public static final String VOUCHER_ID = "voucherId";
 	public static final String EXPIRED_DATE = "expiredDate";
 	public static final String DESCRIPTION = "description";
-	public static final String ID = "id";
 	public static final String PRODUCT_VOUCHERS = "productVouchers";
 	public static final String PERCENT_DISCOUNT = "percentDiscount";
 
