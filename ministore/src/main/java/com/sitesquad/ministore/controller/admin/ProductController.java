@@ -30,8 +30,17 @@ public class ProductController {
     ProductService productService;
 
     @GetMapping("/product")
-    public List<Product> getProducts() {
-        return productService.findAll();
+    public ResponseEntity<ResponseObject> getProducts() {
+        List<Product> products = productService.findAll();
+        if (products != null && !products.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "Product list", products)
+            );
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(404, "Empty product list", "")
+            );
+        }
 
     }
 

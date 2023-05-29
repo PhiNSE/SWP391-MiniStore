@@ -23,7 +23,7 @@ public class ProductService {
     private ProductTypeRepository productTypeRepository;
 
     public List<Product> findAll() {
-        List<Product> products = productRepository.findByIsDeletedIsNull();
+        List<Product> products = productRepository.findByIsDeletedFalseOrIsDeletedIsNull();
         return products;
     }
 
@@ -42,7 +42,7 @@ public class ProductService {
             sort = Sort.by(Sort.Direction.DESC, "price");
         }
             List<Product> products =
-            productRepository.findByIdOrNameContainingIgnoreCaseOrProductTypes_NameContainingIgnoreCaseOrProductTypeIdOrProductCodeAndIsDeletedIsNull(id,type,name, productTypeId, productCode, sort);
+            productRepository.findByCustomQuery(id,type,name, productTypeId, productCode, sort);
             return products;
         }
 
@@ -65,9 +65,13 @@ public class ProductService {
     }
 
     public boolean delete(Long id) {
-        Product product = new Product();
-        product.setId(id);
-        product.setIsDeleted(true);
-        return productRepository.findById(id).get().getIsDeleted() == true;
+        Product product = productRepository.findById(id).orElse(null);
+        if(product==null){
+            return false;
+        }else{
+            product.setIsDeleted(true);
+            productRepository.save(product);
+            return true;
+        }      
     }
 }
