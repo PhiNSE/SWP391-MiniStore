@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -32,6 +34,7 @@ import lombok.ToString;
 @Table(name = "shift")
 public class Shift implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "shift_id")
     private Long shiftId;
     
@@ -44,7 +47,7 @@ public class Shift implements Serializable {
     @Column(name = "coefficient")
     private Double coefficient;
 
-    @OneToMany(mappedBy = "shifts")
+    @OneToMany(mappedBy = "shift")
     @JsonIgnore
     @ToString.Exclude
     private Collection<UserShift> userShifts;

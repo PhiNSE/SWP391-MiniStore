@@ -1,6 +1,7 @@
 package com.sitesquad.ministore.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.util.Collection;
 import java.util.Date;
@@ -30,6 +31,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @Table(name = "voucher")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Voucher {
 
     @Id

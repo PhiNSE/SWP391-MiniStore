@@ -6,7 +6,7 @@ import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.model.UserShift;
 import com.sitesquad.ministore.service.PayslipService;
 import com.sitesquad.ministore.service.UserService;
-import com.sitesquad.ministore.service.UserShiftService;
+import com.sitesquad.ministore.service.shift.UserShiftService;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

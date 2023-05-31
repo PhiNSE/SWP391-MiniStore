@@ -6,6 +6,7 @@
 package com.sitesquad.ministore.repository;
 
 import com.sitesquad.ministore.model.UserShift;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -13,6 +14,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  *
  * @author ACER
  */
-public interface UserShiftRepository extends JpaRepository<UserShift, Long>, JpaSpecificationExecutor<UserShift>{
-    
+public interface UserShiftRepository extends JpaRepository<UserShift, Long>, JpaSpecificationExecutor<UserShift> {
+
+    public List<UserShift> findByUserShiftIdOrderByEndTimeDesc(Long id);
 }
