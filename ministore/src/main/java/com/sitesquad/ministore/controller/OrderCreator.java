@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
+
 /**
  *
  * @author admin
@@ -96,12 +97,12 @@ public class OrderCreator {
     }
 
     @GetMapping("/orderDetail/product")
-    public ResponseEntity<ResponseObject> searchVoucherByProductId(@RequestParam(required = false) Long productId) {
-        System.out.println(productId);
+    public ResponseEntity<ResponseObject> searchVoucherByProductId(@RequestParam(required = false) Long productId,
+            @RequestParam(required = false) int results) {
         List<Voucher> voucherList = new ArrayList<>();
         List<ProductVoucher> productVoucherList = productVoucherService.findByProductId(productId);
-        for (ProductVoucher productVoucher : productVoucherList) {
-            Voucher voucher = voucherService.findById(productVoucher.getVoucherId());
+        for (int i = 0; i < results && i < productVoucherList.size(); i++) {
+            Voucher voucher = voucherService.findById(productVoucherList.get(i).getVoucherId());
             voucherList.add(voucher);
         }
         if (voucherList.isEmpty()) {

@@ -59,6 +59,12 @@ public class Voucher {
 
     @Column(name = "expired_date")
     private Date expiredDate;
+    
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
+    
+    @Column(name = "voucher_img")
+    private String voucherImg;
 
     @OneToMany(mappedBy = "voucher")
     @JsonIgnore
