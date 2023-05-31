@@ -98,6 +98,7 @@ public class ProductController {
 
     @PostMapping("/product")
     public ResponseEntity<ResponseObject> addProduct(@RequestBody Product product) {
+        product.setIsDeleted(Boolean.FALSE);
         Product addProduct = productService.add(product);
         if (addProduct != null) {
             return ResponseEntity.status(HttpStatus.OK).body(
