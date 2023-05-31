@@ -30,7 +30,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     @Query("SELECT p FROM Product p WHERE (:productId IS NULL OR p.id = :productId) " +
            "AND (:name IS NULL OR LOWER(p.name) LIKE CONCAT('%', LOWER(:name), '%')) " +
-           "AND (:productTypeName IS NULL OR LOWER(p.productTypes.name) LIKE CONCAT('%', LOWER(:productTypeName), '%')) " +
+           "AND (:productTypeName IS NULL OR LOWER(p.productType.name) LIKE CONCAT('%', LOWER(:productTypeName), '%')) " +
            "AND (:productTypeId IS NULL OR p.productTypeId = :productTypeId) " +
            "AND (:productCode IS NULL OR p.productCode = :productCode) " +
            "AND (p.isDeleted = false OR p.isDeleted IS NULL)")

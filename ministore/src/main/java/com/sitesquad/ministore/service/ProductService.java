@@ -58,7 +58,7 @@ public class ProductService {
     }
 
     public Product add(Product product) {
-        product.setProductTypes(productTypeRepository.findById(product.getProductTypeId()).get());
+        product.setProductType(productTypeRepository.findById(product.getProductTypeId()).get());
         return productRepository.save(product);
     }
 
