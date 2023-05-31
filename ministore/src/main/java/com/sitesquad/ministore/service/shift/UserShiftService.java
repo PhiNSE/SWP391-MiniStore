@@ -63,27 +63,21 @@ public class UserShiftService {
     @Scheduled(cron = "0 0 0 */7 * *")
     public void generateUserShifts() {
         System.out.print("Generating shifts...");
-        List<UserShift> existShifts = userShiftRepository.findByUserShiftIdOrderByEndTimeDesc(null);
+        UserShift lastShift = userShiftRepository.findTop1ByOrderByEndTimeDesc();
         ZonedDateTime startDate = SystemConstant.ZONE_DATE_TIME_NOW.withHour(0).withMinute(0).withSecond(0);
-        if (!existShifts.isEmpty()) {
-            startDate = existShifts.get(0).getEndTime().withHour(0).withMinute(0).withSecond(0);
+        if (lastShift!=null) {
+            startDate = lastShift.getEndTime().withHour(0).withMinute(0).withSecond(0);
         }
         Shift salerMorningShift = shiftRepository.findById(ShiftConstant.SALER_MORNING_SHIFT).orElse(null);
         Shift salerAfternoonShift = shiftRepository.findById(ShiftConstant.SALER_AFTERNOON_SHIFT).orElse(null);
         Shift salerEveningShift = shiftRepository.findById(ShiftConstant.SALER_EVENING_SHIFT).orElse(null);
         ZonedDateTime shiftDate = startDate;
         for (int i = 0; i < 7; i++) {
-            System.out.println(add(getUserShift(salerMorningShift, shiftDate, false)));
-            System.out.println(add(getUserShift(salerAfternoonShift, shiftDate, false)));
-            System.out.println(add(getUserShift(salerEveningShift, shiftDate, true)));
+            add(getUserShift(salerMorningShift, shiftDate, false));
+            add(getUserShift(salerAfternoonShift, shiftDate, false));
+            add(getUserShift(salerEveningShift, shiftDate, true));
             shiftDate = shiftDate.plusDays(1);
         }
-
-        UserShift lastUserShift = existShifts.get(0);
-        if (lastUserShift.getStartTime().isAfter(SystemConstant.ZONE_DATE_TIME_NOW.plusDays(7))) {
-            return;
-        }
-
     }
 
     public UserShift getUserShift(Shift shift, ZonedDateTime shiftDate, Boolean isEndNextDay) {
@@ -100,4 +94,8 @@ public class UserShiftService {
         System.out.println(userShift);
         return userShift;
     }
+// @Scheduled(cron = "* * * ? * *")
+//    public void test(){
+//        System.out.println(SystemConstant.ZONE_DATE_TIME_NOW);
+//    }
 }
