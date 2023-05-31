@@ -11,6 +11,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -18,7 +21,7 @@ import org.springframework.stereotype.Service;
  * @author ADMIN
  */
 @Service
-public class ProductService {
+public class ProductService implements UserDetailsService {
 
     @Autowired
     private ProductRepository productRepository;
@@ -82,5 +85,10 @@ public class ProductService {
             productRepository.save(product);
             return true;
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return null;
     }
 }

@@ -19,6 +19,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  *
@@ -32,7 +34,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @Table(name = "tbl_user")
-public class User implements Serializable {
+public class User implements UserDetails {
 
     @Id
     @Column(name = "user_id")
@@ -55,7 +57,9 @@ public class User implements Serializable {
 
     @Column(name = "role_id" , insertable = false, updatable = false)
     private Long roleId;
-    
+
+    boolean locked;
+    boolean enable;
     @ManyToOne(targetEntity = Role.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     @ToString.Exclude
@@ -71,4 +75,34 @@ public class User implements Serializable {
     @JsonIgnore
     @ToString.Exclude
     private Collection<Payslip> payslips;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return locked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enable;
+    }
 }
