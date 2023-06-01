@@ -17,8 +17,9 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
         System.out.println(request.getRequestURI());
         String auth = request.getHeader("token");
 
-        jwtUtils.verify(auth);
-
+        if(!request.getRequestURI().contains("login")) {
+            jwtUtils.verify(auth);
+        }
         System.out.println("PRE-HANDLE");
         return super.preHandle(request,response,handler);
     }

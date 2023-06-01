@@ -11,6 +11,7 @@ public class CustomWebConfig extends WebMvcConfigurerAdapter {
     JwtInterceptor jwtInterceptor;
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+
         registry.addInterceptor(jwtInterceptor);
     }
 }
