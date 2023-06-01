@@ -47,16 +47,16 @@ public class JwtUtils {
     }
     
     
-        public Jws<Claims>  verify(String token) {
+        public Claims  verify(String token) {
         try {
-//        Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
-//        System.out.println(claims.get("name"));
-//        return claims;
+        Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+        System.out.println(claims.get("name"));
+        return claims;
 
-         Jws<Claims> jwt = Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token);
-                return jwt;
+//         Jws<Claims> jwt = Jwts.parser()
+//                .setSigningKey(secretKey)
+//                .parseClaimsJws(token);
+//                return jwt;
 
             } catch (SignatureException jwtException) {
                 jwtException.printStackTrace();

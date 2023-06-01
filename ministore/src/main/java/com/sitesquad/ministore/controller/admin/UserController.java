@@ -6,6 +6,7 @@
 package com.sitesquad.ministore.controller.admin;
 
 
+import com.sitesquad.ministore.model.RequestMeta;
 import com.sitesquad.ministore.model.ResponseObject;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.repository.RoleRepository;
@@ -33,10 +34,15 @@ public class UserController {
     
     @Autowired
     RoleRepository roleRepository;
-    
+
+    @Autowired
+    RequestMeta requestMeta;
+
     @GetMapping()
     public ResponseEntity<ResponseObject> getAllUser(){
+        System.out.println(requestMeta.getName());
         List<User> userList = userRepository.findAll();
+
         if(!userList.isEmpty()){
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "User List found", userList)
