@@ -46,17 +46,8 @@ public class ProductService implements UserDetailsService {
         return foundProduct.get();
     }
 
-    public List<Product> search(Long id, String keyword, Long productTypeId, String productCode, String priceSort) {
-        String name = keyword;
-        String type = keyword;
-        Sort sort = null;
-        if (priceSort != null && priceSort.equals("asc")) {
-            sort = Sort.by(Sort.Direction.ASC, "price");
-        } else if (priceSort != null && priceSort.equals("desc")) {
-            sort = Sort.by(Sort.Direction.DESC, "price");
-        }
-        List<Product> products
-                = productRepository.findByCustomQuery(id, type, name, productTypeId, productCode, sort);
+    public Page<Product> search(String keyword, int offset) {
+        Page<Product> products = productRepository.findByCustomQuery(keyword,PageRequest.of(offset,9));
         return products;
     }
 

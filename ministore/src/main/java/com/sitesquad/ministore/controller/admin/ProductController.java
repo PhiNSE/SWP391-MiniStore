@@ -48,7 +48,7 @@ public class ProductController {
     }
 
     @GetMapping("/productList")
-    public ResponseEntity<ResponseObject> getProducts(@RequestHeader Integer offset) {
+    public ResponseEntity<ResponseObject> getProducts(@RequestParam int offset) {
       
         Page<Product> productList = productService.findAll(offset);
         if (productList != null) {
@@ -76,14 +76,32 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/product/search/{offset}")
+//    @GetMapping("/product/search")
+//    public ResponseEntity<ResponseObject> search(
+//            @RequestParam int offset,
+//            @RequestParam(required = false) Long id,
+//            @RequestParam(required = false) String keyword,
+//            @RequestParam(required = false) Long productTypeId,
+//            @RequestParam(required = false) String productCode
+//    ) {
+//        Page<Product> foundProducts = productService.search( id, keyword, productTypeId, productCode, offset);
+//        if (foundProducts != null) {
+//            return ResponseEntity.status(HttpStatus.OK).body(
+//                    new ResponseObject(200, "Found Products ", foundProducts)
+//            );
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+//                    new ResponseObject(404, "Cant find any Products matched", "")
+//            );
+//        }
+//    }
+
+    @GetMapping("/product/search")
     public ResponseEntity<ResponseObject> search(
-            @RequestParam(required = false) Long id,
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) Long productTypeId,
-            @RequestParam(required = false) String productCode,
-            @RequestParam(required = false) String priceSort) {
-        List<Product> foundProducts = productService.search( id, keyword, productTypeId, productCode, priceSort);
+            @RequestParam(required = false,defaultValue = "0") int offset,
+            @RequestParam (required = false)String keyword
+    ) {
+        Page<Product> foundProducts = productService.search( keyword, offset);
         if (foundProducts != null) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Found Products ", foundProducts)

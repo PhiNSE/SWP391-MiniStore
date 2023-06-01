@@ -5,14 +5,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -34,9 +28,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 @ToString
 @EqualsAndHashCode
 @Table(name = "tbl_user")
-public class User implements UserDetails {
+public class User implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+
     @Column(name = "user_id")
     private Long userId;
 
@@ -58,8 +55,6 @@ public class User implements UserDetails {
     @Column(name = "role_id" , insertable = false, updatable = false)
     private Long roleId;
 
-    boolean locked;
-    boolean enable;
     @ManyToOne(targetEntity = Role.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     @ToString.Exclude
@@ -76,33 +71,5 @@ public class User implements UserDetails {
     @ToString.Exclude
     private Collection<Payslip> payslips;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
 
-    @Override
-    public String getUsername() {
-        return null;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return locked;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enable;
-    }
 }
