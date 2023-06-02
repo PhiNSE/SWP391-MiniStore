@@ -26,13 +26,13 @@ public class ProductTypeController {
     @Autowired
     ProductTypeService productTypeService;
 
-    @GetMapping("/product-type")
+    @GetMapping("/productType")
     public List<ProductType> getProductTypes() {
         return productTypeService.findAll();
         
     }
 
-    @GetMapping("/product-type/{id}")
+    @GetMapping("/productType/{id}")
     public ResponseEntity<ResponseObject> findById(@PathVariable Long id) {
         ProductType foundProductType = productTypeService.findById(id);
         if (foundProductType != null) {
@@ -46,7 +46,7 @@ public class ProductTypeController {
         }
     }
 
-    @PostMapping("/product-type")
+    @PostMapping("/productType")
     public ResponseEntity<ResponseObject> addProductType(@RequestBody ProductType productType) {
         ProductType addProductType = productTypeService.add(productType);
         if (addProductType != null) {
@@ -61,7 +61,7 @@ public class ProductTypeController {
 
     }
 
-    @PutMapping("/product-type")
+    @PutMapping("/productType")
     public ResponseEntity<ResponseObject> editProductType(@RequestBody ProductType productType) {
         ProductType editedProductType = productTypeService.edit(productType);
         if (editedProductType != null) {
@@ -75,7 +75,7 @@ public class ProductTypeController {
             );
         }
     }
-    @DeleteMapping("/product-type/{id}")
+    @DeleteMapping("/productType/{id}")
     public ResponseEntity<ResponseObject> deleteProductType(@PathVariable Long id){
         Boolean isDeleted = productTypeService.delete(id);
         if (isDeleted) {

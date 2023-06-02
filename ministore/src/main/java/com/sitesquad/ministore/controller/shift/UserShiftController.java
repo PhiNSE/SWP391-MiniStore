@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserShiftController {
     @Autowired
     UserShiftService userShiftService;
-    @GetMapping("/gen")
+    @GetMapping("/userShift/generate")
     public void generateUserShifts(){
         userShiftService.generateUserShifts();
     }

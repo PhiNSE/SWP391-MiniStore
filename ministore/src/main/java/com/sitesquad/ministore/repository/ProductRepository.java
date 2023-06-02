@@ -25,8 +25,8 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     List<Product> findByProductTypeId(Long productTypeId);
 
-//    List<Product> findProductByIdOrNameContainingIgnoreCaseOrProductTypes_NameContainingIgnoreCaseOrProductTypeIdOrProductCodeAndIsDeletedFalse(
-//            Long id, String name, String productTypeName, Long productTypeId, String productCode, Sort sort);
+    Page<Product> findProductByProductIdOrNameContainingIgnoreCaseOrProductType_NameContainingIgnoreCaseOrProductTypeIdOrProductCodeAndIsDeletedFalse(
+            Long productId, String name, String productTypeName, Long productTypeId, String productCode,Pageable pageable);
 
     @Query("SELECT p FROM Product p WHERE (:productId IS NULL OR p.id = :productId) " +
            "AND (:name IS NULL OR LOWER(p.name) LIKE CONCAT('%', LOWER(:name), '%')) " +

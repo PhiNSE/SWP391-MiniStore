@@ -1,5 +1,6 @@
 package com.sitesquad.ministore.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -27,10 +28,10 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "productTypeId")
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "productTypeId")
+//@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 @Table(name = "product_type")
 public class ProductType{
     @Id
@@ -42,7 +43,8 @@ public class ProductType{
     private String name;
     
     @OneToMany(mappedBy = "productType")
-//    @JsonIgnore
+    @JsonIgnore
+//    @JsonBackReference
     @ToString.Exclude
     private Collection<Product> products;
     

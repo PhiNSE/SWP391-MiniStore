@@ -29,10 +29,10 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "productId")
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "productId")
+//@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 @Table(name = "product")
 public class Product implements Serializable{
     @Id
@@ -66,7 +66,9 @@ public class Product implements Serializable{
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "product_type_id", referencedColumnName = "product_type_id")
-//    @JsonIgnore
+    @JsonIgnore
+//    @JsonManagedReference
+//    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ToString.Exclude
     private ProductType productType;
     
