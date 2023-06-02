@@ -58,11 +58,11 @@ public class RoleController {
     }
     
     @PostMapping("/add")
-    public ResponseEntity<ResponseObject> addProduct(@RequestBody Role role){
+    public ResponseEntity<ResponseObject> addRole(@RequestBody Role role){
         Role addRole = roleRepository.save(role);
         if(addRole != null){
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "Add sucessfully ", addRole)
+                    new ResponseObject(200, "Add successfully ", addRole)
             );
         }else{
             return ResponseEntity.status(HttpStatus.OK).body(

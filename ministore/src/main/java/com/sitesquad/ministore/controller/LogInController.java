@@ -57,7 +57,7 @@ public class LogInController {
     }
     
     @GetMapping("/privateApi")
-    public ResponseEntity<ResponseObject> privateApi(@RequestHeader (value = "token",defaultValue = "") String authToken){
+    public ResponseEntity<ResponseObject> privateApi(@RequestHeader (value = "token",defaultValue = "") String authToken) throws Exception{
         ResponseObject responseObj = new ResponseObject();
         Claims data = jwtUtils.verify(authToken);
         

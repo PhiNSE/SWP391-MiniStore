@@ -72,7 +72,7 @@ public class UserController {
 //    public ResponseEntity<ResponseObject> getUserByRoleName()
     
     @PostMapping("/add")
-    public ResponseEntity<ResponseObject> addProduct(@RequestBody User user){
+    public ResponseEntity<ResponseObject> addUser(@RequestBody User user){
         user.setRoles(roleRepository.findById(user.getRoleId()).get());
         User addUser = userRepository.save(user);
         if(addUser != null){
