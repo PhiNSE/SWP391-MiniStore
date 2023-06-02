@@ -32,28 +32,21 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 //    List<Product> findProductByIdOrNameContainingIgnoreCaseOrProductTypes_NameContainingIgnoreCaseOrProductTypeIdOrProductCodeAndIsDeletedFalse(
 //            Long id, String name, String productTypeName, Long productTypeId, String productCode, Sort sort);
 
-//    @Query(value = "SELECT p FROM Product p WHERE (:productId IS NULL OR p.id = :productId) " +
-//           "AND (:name IS NULL OR LOWER(p.name) LIKE CONCAT('%', LOWER(:name), '%')) " +
-//           "AND (:productTypeName IS NULL OR LOWER(p.productTypes.name) LIKE CONCAT('%', LOWER(:productTypeName), '%')) " +
-//           "AND (:productTypeId IS NULL OR p.productTypeId = :productTypeId) " +
-//           "AND (:productCode IS NULL OR p.productCode = :productCode) " +
-//           "AND (p.isDeleted = false OR p.isDeleted IS NULL)", nativeQuery = true)
-    @Query(value="SELECT p.product_id, p.name, p.quantity, p.product_type_id, p.price, p.cost, p.product_img,p.product_code, p.is_deleted FROM product p " +
-            "WHERE p.product_id like %:keyword% or p.name like %:keyword% or " +
-            "p.quantity like %:keyword% or p.price like %:keyword% or " +
-            "p.product_code like %:keyword% and p.is_deleted = NULL ",
-            countQuery = " SELECT COUNT(*) " +
-                        "FROM product p " +
-                    "WHERE p.product_id like %:keyword% or p.name like %:keyword% or " +
-                    "p.quantity like %:keyword% or p.price like %:keyword% or " +
-                    "p.product_code like %:keyword% and p.is_deleted = NULL ",
-            nativeQuery = true)
-    Page<Product> findByCustomQuery(@Param("keyword") String keyword , Pageable pageable );
+
+    @Query("SELECT p FROM Product p WHERE (:productId IS NULL OR p.id = :productId) " +
+           "AND (:name IS NULL OR LOWER(p.name) LIKE CONCAT('%', LOWER(:name), '%')) " +
+           "AND (:productTypeName IS NULL OR LOWER(p.productType.name) LIKE CONCAT('%', LOWER(:productTypeName), '%')) " +
+           "AND (:productTypeId IS NULL OR p.productTypeId = :productTypeId) " +
+           "AND (:productCode IS NULL OR p.productCode = :productCode) " +
+           "AND (p.isDeleted = false OR p.isDeleted IS NULL)")
+    List<Product> findByCustomQuery(@Param("productId") Long id, @Param("name") String name,
+                                    @Param("productTypeName") String productTypeName, @Param("productTypeId") Long productTypeId,
+                                    @Param("productCode") String productCode, Sort sort);
 
 //    Page<Product> findByIsDeletedIsNull(Pageable pageable);
 //
 //
-    Page<Product> findByProductIdOrNameContainingIgnoreCaseOrProductTypes_NameContainingIgnoreCaseOrProductTypeIdOrProductCodeAndIsDeletedIsNull(
+    Page<Product> findProductByProductIdOrNameContainingIgnoreCaseOrProductType_NameContainingIgnoreCaseOrProductTypeIdOrProductCodeAndIsDeletedFalse(
             Long productId, String name,String productTypeName, Long productTypeId, String productCode,Pageable pageable);
 
   

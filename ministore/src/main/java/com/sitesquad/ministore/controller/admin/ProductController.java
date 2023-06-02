@@ -1,5 +1,7 @@
 package com.sitesquad.ministore.controller.admin;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.sitesquad.ministore.dto.ProductDTO;
 import com.sitesquad.ministore.model.Product;
 import com.sitesquad.ministore.model.ResponseObject;
 import com.sitesquad.ministore.repository.ProductRepository;
@@ -11,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
+
 /**
  *
  * @author ADMIN
@@ -32,25 +34,25 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
-
+    //    @GetMapping("/product")
+//    public ResponseEntity<ResponseObject> getProducts() {
+//        List<ProductDTO> products = productService.findAll();
+//        if (products != null && !products.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.OK).body(
+//                    new ResponseObject(200, "Product list", products)
+//            );
+//        } else {
+//            return ResponseEntity.status(HttpStatus.OK).body(
+//                    new ResponseObject(404, "Empty product list", "")
+//            );
+//        }
+//    }
     @GetMapping("/product")
-    public ResponseEntity<ResponseObject> getProducts() {
-        List<Product> products = productService.findAll();
-        if (products != null && !products.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "Product list", products)
-            );
-        } else {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(404, "Empty product list", "")
-            );
+    public ResponseEntity<ResponseObject> getProducts(@RequestParam(required = false) Integer offset) {
+        if (offset == null) {
+            offset = 0;
         }
-    }
-
-    @GetMapping("/productList")
-    public ResponseEntity<ResponseObject> getProducts(@RequestParam int offset) {
-      
-        Page<Product> productList = productService.findAll(offset);
+        Page<ProductDTO> productList = productService.findAll(offset);
         if (productList != null) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Found Product List", productList)
@@ -60,6 +62,7 @@ public class ProductController {
                     new ResponseObject(500, "Cant find product list", "")
             );
         }
+
     }
 
     @GetMapping("/product/{id}")
@@ -76,32 +79,20 @@ public class ProductController {
         }
     }
 
-//    @GetMapping("/product/search")
-//    public ResponseEntity<ResponseObject> search(
-//            @RequestParam int offset,
-//            @RequestParam(required = false) Long id,
-//            @RequestParam(required = false) String keyword,
-//            @RequestParam(required = false) Long productTypeId,
-//            @RequestParam(required = false) String productCode
-//    ) {
-//        Page<Product> foundProducts = productService.search( id, keyword, productTypeId, productCode, offset);
-//        if (foundProducts != null) {
-//            return ResponseEntity.status(HttpStatus.OK).body(
-//                    new ResponseObject(200, "Found Products ", foundProducts)
-//            );
-//        } else {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-//                    new ResponseObject(404, "Cant find any Products matched", "")
-//            );
-//        }
-//    }
-
     @GetMapping("/product/search")
     public ResponseEntity<ResponseObject> search(
-            @RequestParam(required = false,defaultValue = "0") int offset,
-            @RequestParam (required = false)String keyword
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Long productTypeId,
+            @RequestParam(required = false) String productCode,
+            @RequestParam(required = false) String priceSort,
+            @RequestParam(required = false) Integer offset
     ) {
-        Page<Product> foundProducts = productService.search( keyword, offset);
+        if (offset == null) {
+            offset = 0;
+        }
+        Page<ProductDTO> foundProducts;
+        foundProducts = productService.search(id, keyword, productTypeId, productCode, priceSort, offset);
         if (foundProducts != null) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Found Products ", foundProducts)
@@ -115,6 +106,7 @@ public class ProductController {
 
     @PostMapping("/product")
     public ResponseEntity<ResponseObject> addProduct(@RequestBody Product product) {
+        product.setIsDeleted(Boolean.FALSE);
         Product addProduct = productService.add(product);
         if (addProduct != null) {
             return ResponseEntity.status(HttpStatus.OK).body(

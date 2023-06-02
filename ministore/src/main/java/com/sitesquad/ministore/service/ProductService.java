@@ -1,27 +1,26 @@
 package com.sitesquad.ministore.service;
 
+import com.sitesquad.ministore.dto.ProductDTO;
 import com.sitesquad.ministore.model.Product;
-import com.sitesquad.ministore.model.ResponseObject;
 import com.sitesquad.ministore.repository.ProductRepository;
 import com.sitesquad.ministore.repository.ProductTypeRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
 /**
  *
  * @author ADMIN
  */
 @Service
-public class ProductService implements UserDetailsService {
+public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
@@ -29,15 +28,30 @@ public class ProductService implements UserDetailsService {
     @Autowired
     private ProductTypeRepository productTypeRepository;
 
-    public List<Product> findAll() {
+    public List<ProductDTO> findAll() {
         List<Product> productList = productRepository.findByIsDeletedFalseOrIsDeletedIsNull();
-        return productList;
+        List<ProductDTO> productDTOList = new ArrayList<>();
+        for (Product product : productList) {
+            ProductDTO productDTO = new ProductDTO();
+            productDTO.setProductId(product.getProductId());
+            productDTO.setName(product.getName());
+            productDTO.setQuantity(product.getQuantity());
+            productDTO.setProductTypeName(product.getProductType().getName());
+            productDTO.setPrice(product.getPrice());
+            productDTO.setCost(product.getCost());
+            productDTO.setProductImg(product.getProductImg());
+            productDTO.setProductCode(product.getProductCode());
+            productDTO.setIsDeleted(product.getIsDeleted());
+            productDTOList.add(productDTO);
+        }
+        return productDTOList;
 
     }
 
-    public Page<Product> findAll(int offset) {
-        Page<Product> productList = productRepository.findByIsDeletedFalseOrIsDeletedIsNull(PageRequest.of(offset, 9));
-        return productList;
+    public Page<ProductDTO> findAll(Integer offset) {
+        Page<Product> productPage = productRepository.findByIsDeletedFalseOrIsDeletedIsNull(PageRequest.of(offset, 9));
+        Page<ProductDTO> productDTOPage = mapDTO(productPage);
+        return productDTOPage;
 
     }
 
@@ -46,13 +60,40 @@ public class ProductService implements UserDetailsService {
         return foundProduct.get();
     }
 
-    public Page<Product> search(String keyword, int offset) {
-        Page<Product> products = productRepository.findByCustomQuery(keyword,PageRequest.of(offset,9));
-        return products;
+    public Page<ProductDTO> search(Long productId, String keyword, Long productTypeId, String productCode, String priceSort, Integer offset) {
+        String name = keyword;
+        String productTypeName = keyword;
+        Sort sort = null;
+        if (priceSort != null && priceSort.equals("asc")) {
+            sort = Sort.by(Sort.Direction.ASC, "price");
+        } else if (priceSort != null && priceSort.equals("desc")) {
+            sort = Sort.by(Sort.Direction.DESC, "price");
+        }
+        Page<Product> productPage
+                = productRepository.findProductByProductIdOrNameContainingIgnoreCaseOrProductType_NameContainingIgnoreCaseOrProductTypeIdOrProductCodeAndIsDeletedFalse(productId, name, productTypeName, productTypeId, productCode, PageRequest.of(offset, 9));
+        Page<ProductDTO> productDTOPage = mapDTO(productPage);
+        return productDTOPage;
+    }
+
+    public Page<ProductDTO> mapDTO(Page<Product> productPage) {
+        Page<ProductDTO> productDTOPage = productPage.map(product -> {
+            ProductDTO productDTO = new ProductDTO();
+            productDTO.setProductId(product.getProductId());
+            productDTO.setName(product.getName());
+            productDTO.setQuantity(product.getQuantity());
+            productDTO.setProductTypeName(product.getProductType().getName());
+            productDTO.setPrice(product.getPrice());
+            productDTO.setCost(product.getCost());
+            productDTO.setProductImg(product.getProductImg());
+            productDTO.setProductCode(product.getProductCode());
+            productDTO.setIsDeleted(product.getIsDeleted());
+            return productDTO;
+        });
+        return productDTOPage;
     }
 
     public Product add(Product product) {
-        product.setProductTypes(productTypeRepository.findById(product.getProductTypeId()).get());
+        product.setProductType(productTypeRepository.findById(product.getProductTypeId()).get());
         return productRepository.save(product);
     }
 
@@ -76,10 +117,5 @@ public class ProductService implements UserDetailsService {
             productRepository.save(product);
             return true;
         }
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
     }
 }

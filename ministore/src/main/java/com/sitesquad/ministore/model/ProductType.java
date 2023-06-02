@@ -27,10 +27,10 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-//@JsonIdentityInfo(
-//        generator = ObjectIdGenerators.PropertyGenerator.class,
-//        property = "productTypeId")
-//@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "productTypeId")
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 @Table(name = "product_type")
 public class ProductType{
     @Id
@@ -41,8 +41,8 @@ public class ProductType{
     @Column(name = "name")
     private String name;
     
-    @OneToMany(mappedBy = "productTypes")
-    @JsonIgnore
+    @OneToMany(mappedBy = "productType")
+//    @JsonIgnore
     @ToString.Exclude
     private Collection<Product> products;
     
