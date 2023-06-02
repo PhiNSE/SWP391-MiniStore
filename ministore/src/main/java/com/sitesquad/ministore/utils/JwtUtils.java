@@ -1,5 +1,6 @@
 package com.sitesquad.ministore.utils;
 
+import com.sitesquad.ministore.exception.AccessDeniedException;
 import com.sitesquad.ministore.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -47,16 +48,19 @@ public class JwtUtils {
     }
     
     
-        public Jws<Claims> verify(String token){
+        public Claims  verify(String token) throws Exception{
         try {
-//        Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-         Jws<Claims> jwt = Jwts.parser()                  
-                .setSigningKey(secretKey)                    
-                .parseClaimsJws(token);
-                return jwt;
-            } catch (SignatureException jwtException) {
-        jwtException.printStackTrace();
-        return null;
+        Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+        System.out.println(claims.get("name"));
+        return claims;
+
+//         Jws<Claims> jwt = Jwts.parser()
+//                .setSigningKey(secretKey)
+//                .parseClaimsJws(token);
+//                return jwt;
+
+            } catch (Exception e) {
+                throw  new AccessDeniedException("Access Denied");
      }
     }
     
