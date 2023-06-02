@@ -29,7 +29,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     List<Product> findByProductTypeId(Long productTypeId);
 
-    Page<Product> findProductByProductIdOrNameContainingIgnoreCaseOrProductType_NameContainingIgnoreCaseOrProductTypeIdOrProductCodeAndIsDeletedFalse(
+    Page<Product> findProductByProductIdOrNameContainingIgnoreCaseOrProductType_NameContainingIgnoreCaseAndProductTypeIdAndProductCodeAndIsDeletedFalse(
             Long productId, String name, String productTypeName, Long productTypeId, String productCode,Pageable pageable);
 
 
@@ -46,8 +46,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 //    Page<Product> findByIsDeletedIsNull(Pageable pageable);
 //
 //
-//    Page<Product> findProductByProductIdOrNameContainingIgnoreCaseOrProductType_NameContainingIgnoreCaseOrProductTypeIdOrProductCodeAndIsDeletedFalse(
-//            Long productId, String name,String productTypeName, Long productTypeId, String productCode,Pageable pageable);
 
   
 }

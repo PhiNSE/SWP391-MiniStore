@@ -70,7 +70,7 @@ public class ProductService {
             sort = Sort.by(Sort.Direction.DESC, "price");
         }
         Page<Product> productPage
-                = productRepository.findProductByProductIdOrNameContainingIgnoreCaseOrProductType_NameContainingIgnoreCaseOrProductTypeIdOrProductCodeAndIsDeletedFalse(productId, name, productTypeName, productTypeId, productCode, PageRequest.of(offset, 9));
+                = productRepository.findProductByProductIdOrNameContainingIgnoreCaseOrProductType_NameContainingIgnoreCaseAndProductTypeIdAndProductCodeAndIsDeletedFalse(productId, name, productTypeName, productTypeId, productCode, PageRequest.of(offset, 9));
         Page<ProductDTO> productDTOPage = mapDTO(productPage);
         return productDTOPage;
     }
