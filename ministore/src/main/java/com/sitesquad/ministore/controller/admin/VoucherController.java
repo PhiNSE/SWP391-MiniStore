@@ -47,6 +47,14 @@ public class VoucherController {
         }
     }
 
+    @GetMapping("voucher/search")
+    public ResponseEntity<ResponseObject> search(@RequestParam(required = false) String description) {
+        List<Voucher> foundVouchers = voucherService.findByDescription(description);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(200, "Found!", foundVouchers)
+        );
+    }
+
     @PostMapping("/voucher")
     public ResponseEntity<ResponseObject> createVoucher(@RequestBody Voucher voucher) {
 //        order.setOrderUser(userRepository.findById(order.getUserId()).get());
@@ -61,9 +69,9 @@ public class VoucherController {
             );
         }
     }
-    
+
     @DeleteMapping("/voucher/delete/{id}")
-    public ResponseEntity<ResponseObject> deleteVoucher(@PathVariable Long id){
+    public ResponseEntity<ResponseObject> deleteVoucher(@PathVariable Long id) {
         Boolean isDeleted = voucherService.delete(id);
         if (!isDeleted) {
             return ResponseEntity.status(HttpStatus.OK).body(
