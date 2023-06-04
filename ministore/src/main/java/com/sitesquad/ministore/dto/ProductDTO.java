@@ -30,4 +30,7 @@ public class ProductDTO implements Serializable{
     private String productCode;
 
     private Boolean isDeleted;
+
+    private Long minimum;
+
 }

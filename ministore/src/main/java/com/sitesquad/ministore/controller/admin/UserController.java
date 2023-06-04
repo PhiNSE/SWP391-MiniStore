@@ -6,6 +6,7 @@
 package com.sitesquad.ministore.controller.admin;
 
 
+import com.sitesquad.ministore.dto.UserDTO;
 import com.sitesquad.ministore.model.RequestMeta;
 import com.sitesquad.ministore.model.ResponseObject;
 import com.sitesquad.ministore.model.User;
@@ -13,14 +14,13 @@ import com.sitesquad.ministore.repository.RoleRepository;
 import com.sitesquad.ministore.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
+
+import com.sitesquad.ministore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
@@ -29,6 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/user")
 public class UserController {
+    @Autowired
+    UserService userService;
     @Autowired
     UserRepository userRepository;
     
@@ -39,9 +41,12 @@ public class UserController {
     RequestMeta requestMeta;
 
     @GetMapping()
-    public ResponseEntity<ResponseObject> getAllUser(){
+    public ResponseEntity<ResponseObject> getAllUser(@RequestParam(required = false)  Integer offset){
         System.out.println(requestMeta.getName());
-        List<User> userList = userRepository.findAll();
+        if (offset == null) {
+            offset = 0;
+        }
+        Page<UserDTO> userList = userService.findAll(offset);
 
         if(!userList.isEmpty()){
             return ResponseEntity.status(HttpStatus.OK).body(
@@ -54,10 +59,10 @@ public class UserController {
         }
     }
     
-    @GetMapping("/{id}")
-    public ResponseEntity<ResponseObject> getUserById(Long id){
-        Optional<User> foundUser = userRepository.findById(id);
-        if(!foundUser.isPresent()){
+    @GetMapping("/details")
+    public ResponseEntity<ResponseObject> getUserById(@RequestParam Long id){
+        UserDTO foundUser = userService.findById(id);
+        if(foundUser != null){
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "User found", foundUser)
             );

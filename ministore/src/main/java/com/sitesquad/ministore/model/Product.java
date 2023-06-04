@@ -64,6 +64,10 @@ public class Product implements Serializable{
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 
+    @Column(name = "minimum")
+    private Long minimum;
+
+
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "product_type_id", referencedColumnName = "product_type_id")
     @JsonIgnore
