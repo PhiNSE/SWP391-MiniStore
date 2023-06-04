@@ -25,6 +25,11 @@ public class VoucherService {
         Optional<Voucher> foundVoucher = voucherRepository.findById(id);
         return foundVoucher.get();
     }
+    
+    public List<Voucher> findByDescription(String description) {
+        List<Voucher> foundVouchers = voucherRepository.searchByDescription(description);
+        return foundVouchers;
+    }
 
     public Voucher add(Voucher voucher) {
 //        voucherRepository.findById(voucher.getId()).get();

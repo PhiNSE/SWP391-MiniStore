@@ -1,4 +1,4 @@
-package com.sitesquad.ministore.controller;
+package com.sitesquad.ministore.controller.order;
 
 import com.sitesquad.ministore.model.Order;
 import com.sitesquad.ministore.model.ResponseObject;

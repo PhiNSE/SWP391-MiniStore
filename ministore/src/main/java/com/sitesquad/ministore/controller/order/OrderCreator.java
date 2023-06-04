@@ -1,5 +1,7 @@
-package com.sitesquad.ministore.controller;
+package com.sitesquad.ministore.controller.order;
 
+import com.sitesquad.ministore.dto.OrderDetailRequest;
+import com.sitesquad.ministore.dto.VoucherRequest;
 import com.sitesquad.ministore.model.Order;
 import com.sitesquad.ministore.model.OrderDetails;
 import com.sitesquad.ministore.model.Product;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  *
@@ -59,26 +62,37 @@ public class OrderCreator {
     @Autowired
     ProductVoucherService productVoucherService;
 
-    public Order createOrder() {
+    public Order createOrder(Voucher voucher) {
         Order order = new Order();
         order.setType(false);
         order.setUserId(new Long(1));
         Date date = new Date();
         order.setDate(new Timestamp(date.getTime()));
+        System.out.println(voucher);
+        if (voucher != null) {
+            order.setVoucherId(voucher.getVoucherId());
+        }
         return orderService.add(order);
     }
 
     @PostMapping("/orderDetail/create")
-    public ResponseEntity<ResponseObject> viewOrderDetail(@RequestBody List<OrderDetails> orderDetails) {
-        List<OrderDetails> orderDetailList = new ArrayList<>();
-        Order order = createOrder();
+    public ResponseEntity<ResponseObject> createOrderDetail(@RequestBody OrderDetailRequest orderDetailRequest) {
+        List<OrderDetails> orderDetails = orderDetailRequest.getOrderDetailList();
+        System.out.println(orderDetails);
+        Voucher voucher = orderDetailRequest.getVoucher();
+        System.out.println(voucher);
 
+        List<OrderDetails> orderDetailList = new ArrayList<>();
+        Order order = createOrder(voucher);
+        System.out.println(order);
+
+        Double totalOrder = 0.0;
         for (OrderDetails ordDet : orderDetails) {
             //create orderDetail
             ordDet.setOrderId(order.getOrderId());
             if (ordDet.getQuantity() > productService.findById(ordDet.getProductId()).getQuantity()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                        new ResponseObject(500, "Quantity is not enough", "")
+                        new ResponseObject(500, "Quantity is not enough", ordDet.getProductId())
                 );
             } else {
                 ordDet = orderDetailsService.add(ordDet);
@@ -89,14 +103,21 @@ public class OrderCreator {
                 }
                 ordDet = orderDetailsService.edit(ordDet);
                 orderDetailList.add(ordDet);
+                if (voucher != null) {
+                    totalOrder += ordDet.getTotal();
+                }
             }
         }
+        order.setTotal(totalOrder);
+        order = orderService.edit(order);
+        orderDetailRequest.setOrderDetailList(orderDetailList);
+        orderDetailRequest.setVoucher(voucher);
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject(200, "Successfull", orderDetailList)
+                new ResponseObject(200, "Successfull", orderDetailRequest)
         );
     }
 
-    @GetMapping("/orderDetail/product")
+    @GetMapping("/getVoucherByProductId")
     public ResponseEntity<ResponseObject> searchVoucherByProductId(@RequestParam(required = false) Long productId,
             @RequestParam(required = false) int results) {
         List<Voucher> voucherList = new ArrayList<>();
@@ -115,4 +136,40 @@ public class OrderCreator {
             );
         }
     }
+
+    @PostMapping("/applyVoucherToProducts")
+    public ResponseEntity<ResponseObject> applyVoucherToProducts(@RequestBody VoucherRequest voucherRequest) {
+        List<Product> productList = voucherRequest.getProductList();
+        Voucher voucher = voucherRequest.getVoucher();
+
+        voucher = voucherService.add(voucher);
+        List<ProductVoucher> productVoucherList = new ArrayList<>();
+
+        for (Product p : productList) {
+            ProductVoucher productVoucher = new ProductVoucher();
+            productVoucher.setVoucherId(voucher.getVoucherId());
+            productVoucher.setProductId(p.getProductId());
+            productVoucher = productVoucherService.add(productVoucher);
+            productVoucherList.add(productVoucher);
+        }
+        System.out.println(productVoucherList);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(200, "Successfull", "")
+        );
+    }
+
+    @GetMapping("/getAllVouchers")
+    public ResponseEntity<ResponseObject> getAllVoucher() {
+        List<Voucher> voucherList = voucherService.findAll();
+        List<Voucher> filteredVoucherList = new ArrayList<>();
+        for (Voucher v : voucherList) {
+            if (v.getIsApplyAll() == true) {
+                filteredVoucherList.add(v);
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(200, "Successfull", filteredVoucherList)
+        );
+    }
+
 }

@@ -41,6 +41,9 @@ public class Voucher {
 
     @Column(name = "description")
     private String description;
+    
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "quantity")
     private Integer quantity;
@@ -65,10 +68,18 @@ public class Voucher {
     
     @Column(name = "voucher_img")
     private String voucherImg;
+    
+    @Column(name = "is_apply_all")
+    private Boolean isApplyAll;
 
     @OneToMany(mappedBy = "voucher")
     @JsonIgnore
     @ToString.Exclude
     private Collection<ProductVoucher> productVouchers;
+    
+    @OneToMany(mappedBy = "voucher")
+    @JsonIgnore
+    @ToString.Exclude
+    private Collection<Order> orders;
 
 }
