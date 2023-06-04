@@ -79,9 +79,13 @@ public class UserService {
         userRepository.deleteById(id);
         return userRepository.findById(id)==null;
     }
-    
+
+    public boolean checkUserExist(String email, String phone){
+        return userRepository.findOneByEmailIgnoreCaseOrPhone(email,phone) != null;
+    }
     public User add (User user){
         user.setRoles(roleRepository.findById(user.getRoleId()).get());
+        user.setDeleted(false);
         return userRepository.save(user);
     }
     
