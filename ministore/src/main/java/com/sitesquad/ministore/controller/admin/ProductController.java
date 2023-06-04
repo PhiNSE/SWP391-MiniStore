@@ -85,14 +85,15 @@ public class ProductController {
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) Long productTypeId,
             @RequestParam(required = false) String productCode,
-            @RequestParam(required = false) String priceSort,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortType,
             @RequestParam(required = false) Integer offset
     ) {
         if (offset == null) {
             offset = 0;
         }
         Page<ProductDTO> foundProducts;
-        foundProducts = productService.search(id, keyword, productTypeId, productCode, priceSort, offset);
+        foundProducts = productService.search(id, keyword, productTypeId, productCode, sortBy, sortType, offset);
         if (foundProducts != null) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Found Products ", foundProducts)
