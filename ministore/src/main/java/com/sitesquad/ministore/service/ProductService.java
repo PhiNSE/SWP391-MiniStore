@@ -127,4 +127,10 @@ public class ProductService {
             return true;
         }
     }
+    
+    public boolean minusQuantityOfProduct(Long orderQuantity, Long productId) {
+        Product product = findById(productId);
+        product.setQuantity(product.getQuantity() - orderQuantity);
+        return true;
+    }
 }

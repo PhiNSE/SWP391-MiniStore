@@ -38,6 +38,12 @@ public class ProductVoucherService {
         List<ProductVoucher> foundProductVoucher = productVoucherRepository.findByProductId(id);
         return foundProductVoucher;
     }
+    
+    public ProductVoucher findByVoucherIdAndProductId(Long voucherId, Long productId) {
+        ProductVoucher foundProductVoucher = productVoucherRepository.findByVoucherIdAndProductId(voucherId, productId);
+        System.out.println(foundProductVoucher);
+        return foundProductVoucher;
+    }
 
     public ProductVoucher add(ProductVoucher productVoucher) {
         productVoucher.setProduct(productRepository.findById(productVoucher.getProductId()).get());
