@@ -19,36 +19,32 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 
-
 @Transactional(readOnly = true)
-public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product>, PagingAndSortingRepository<Product, Long>{
+public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product>, PagingAndSortingRepository<Product, Long> {
 
     List<Product> findByIsDeletedFalseOrIsDeletedIsNull();
-    
+
     Page<Product> findByIsDeletedFalseOrIsDeletedIsNull(Pageable pageable);
 
     List<Product> findByProductTypeId(Long productTypeId);
 
+//    Page<Product> findProductByProductIdOrNameContainingIgnoreCaseOrProductType_NameContainingIgnoreCaseAndProductTypeIdAndProductCodeAndIsDeletedFalse(
+//            Long productId, String name, String productTypeName, Long productTypeId, String productCode,Pageable pageable);
     Page<Product> findProductByProductIdOrNameContainingIgnoreCaseOrProductType_NameContainingIgnoreCaseAndProductTypeIdAndProductCodeAndIsDeletedFalse(
-            Long productId, String name, String productTypeName, Long productTypeId, String productCode,Pageable pageable);
+            Long productId, String name, String productTypeName, Long productTypeId, String productCode, Pageable pageable);
 
-
-    @Query("SELECT p FROM Product p WHERE (:productId IS NULL OR p.id = :productId) " +
-           "AND (:name IS NULL OR LOWER(p.name) LIKE CONCAT('%', LOWER(:name), '%')) " +
-           "AND (:productTypeName IS NULL OR LOWER(p.productType.name) LIKE CONCAT('%', LOWER(:productTypeName), '%')) " +
-           "AND (:productTypeId IS NULL OR p.productTypeId = :productTypeId) " +
-           "AND (:productCode IS NULL OR p.productCode = :productCode) " +
-           "AND (p.isDeleted = false OR p.isDeleted IS NULL)")
-    List<Product> findByCustomQuery(@Param("productId") Long id, @Param("name") String name,
-                                    @Param("productTypeName") String productTypeName, @Param("productTypeId") Long productTypeId,
-                                    @Param("productCode") String productCode, Sort sort);
-
+    @Query("SELECT p FROM Product p JOIN p.productType pt "
+            + "WHERE (:productId IS NULL OR p.id = :productId) "
+            + "AND ((:name IS NULL OR LOWER(p.name) LIKE CONCAT('%', LOWER(:name), '%')) "
+            + "OR (:productTypeName IS NULL OR LOWER(pt.name) LIKE CONCAT('%', LOWER(:productTypeName), '%'))) "
+            + "AND (:productTypeId IS NULL OR p.productTypeId = :productTypeId) "
+            + "AND (:productCode IS NULL OR p.productCode = :productCode) "
+            + "AND (p.isDeleted = false OR p.isDeleted IS NULL)")
+    Page<Product> findByCustomQuery(@Param("productId") Long id, @Param("name") String name,
+            @Param("productTypeName") String productTypeName, @Param("productTypeId") Long productTypeId,
+            @Param("productCode") String productCode, Pageable pageable);
+ 
 //    Page<Product> findByIsDeletedIsNull(Pageable pageable);
 //
 //
-
-  
 }
-
-
-

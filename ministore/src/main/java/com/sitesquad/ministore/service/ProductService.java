@@ -60,17 +60,26 @@ public class ProductService {
         return foundProduct.get();
     }
 
-    public Page<ProductDTO> search(Long productId, String keyword, Long productTypeId, String productCode, String priceSort, Integer offset) {
+    public Page<ProductDTO> search(Long productId, String keyword, Long productTypeId, String productCode, String sortBy, String sortType, Integer offset) {
         String name = keyword;
         String productTypeName = keyword;
         Sort sort = null;
-        if (priceSort != null && priceSort.equals("asc")) {
-            sort = Sort.by(Sort.Direction.ASC, "price");
-        } else if (priceSort != null && priceSort.equals("desc")) {
-            sort = Sort.by(Sort.Direction.DESC, "price");
+        Sort.Direction sortDirection = Sort.Direction.ASC;
+        if (sortType != null && sortType.equalsIgnoreCase("desc")) {
+            sortDirection = Sort.Direction.DESC;
         }
+        if (sortBy != null && sortBy.equalsIgnoreCase("price")) {
+            sort = Sort.by(sortDirection, "price");
+        } else if (sortBy != null && sortBy.equalsIgnoreCase("name")) {
+            sort = Sort.by(sortDirection, "name");
+        } else if (sortBy != null && sortBy.equalsIgnoreCase("cost")) {
+            sort = Sort.by(sortDirection, "cost");
+        } else if (sortBy != null && sortBy.equalsIgnoreCase("quantity")) {
+            sort = Sort.by(sortDirection, "quantity");
+        }
+        System.out.println(productTypeId);
         Page<Product> productPage
-                = productRepository.findProductByProductIdOrNameContainingIgnoreCaseOrProductType_NameContainingIgnoreCaseAndProductTypeIdAndProductCodeAndIsDeletedFalse(productId, name, productTypeName, productTypeId, productCode, PageRequest.of(offset, 9));
+                = productRepository.findByCustomQuery(productId, name, productTypeName, productTypeId, productCode, PageRequest.of(offset, 9, sort));
         Page<ProductDTO> productDTOPage = mapDTO(productPage);
         return productDTOPage;
     }
