@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
  * @author ACER
  */
 @RestController
+@CrossOrigin
 @RequestMapping(path = "/user")
 public class UserController {
     @Autowired
@@ -43,18 +44,24 @@ public class UserController {
     @GetMapping()
     public ResponseEntity<ResponseObject> getAllUser(@RequestParam(required = false)  Integer offset){
         System.out.println(requestMeta.getName());
-        if (offset == null) {
-            offset = 0;
-        }
-        Page<UserDTO> userList = userService.findAll(offset);
+        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")){
+            if (offset == null) {
+                offset = 0;
+            }
+            Page<UserDTO> userList = userService.findAll(offset);
 
-        if(!userList.isEmpty()){
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "User List found", userList)
-            );
-        }else{
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(404, "User List not found", userList)
+            if (!userList.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject(200, "User List found", userList)
+                );
+            } else {
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject(404, "User List not found", userList)
+                );
+            }
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(
+                    new ResponseObject(40, "Access denied", "")
             );
         }
     }
