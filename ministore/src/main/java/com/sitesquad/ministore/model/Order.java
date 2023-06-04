@@ -47,7 +47,13 @@ public class Order {
 
     @Column(name = "user_id", insertable = false, updatable = false)
     private Long userId;
+    
+    @Column(name = "voucher_id",nullable = true, insertable = false, updatable = false)
+    private Long voucherId;
 
+    @Column(name = "total")
+    private Double total;
+    
     @Column(name = "date")
     private Timestamp date;
 
@@ -56,6 +62,12 @@ public class Order {
     @JsonIgnore
     @ToString.Exclude
     private User orderUser;
+    
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = true)
+    @JoinColumn(name = "voucher_id", referencedColumnName = "voucher_id")
+    @JsonIgnore
+    @ToString.Exclude
+    private Voucher voucher;
 
     @OneToMany(mappedBy = "orderDet")
     @JsonIgnore

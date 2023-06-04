@@ -6,12 +6,12 @@
 package com.sitesquad.ministore.controller;
 
 import com.sitesquad.ministore.model.RequestLogin;
+import com.sitesquad.ministore.model.RequestMeta;
 import com.sitesquad.ministore.model.ResponseObject;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.repository.UserRepository;
 import com.sitesquad.ministore.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,20 +34,25 @@ public class LogInController {
     
     @Autowired
     private JwtUtils jwtUtils;
+
+    @Autowired
+    private RequestMeta requestMeta;
     
     @PostMapping("/login")
     public ResponseEntity<ResponseObject> login(@RequestBody RequestLogin login){
-        
+
         ResponseObject responseObj = new ResponseObject();
         User user = userRepository.findOneByEmailIgnoreCaseAndPasswordIgnoreCase(login.getEmail(), login.getPassword());
-        
+
         if(user == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObject(404, "log in failed", null)
             );
         }
         String token = jwtUtils.generateJWT(user);
-        
+
+
+
         Map<String , Object> data = new HashMap<>();
         data.put("access token", token);
         responseObj.setStatus(200);
