@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     @Autowired
     UserService userService;
+
     @Autowired
     UserRepository userRepository;
     
@@ -82,18 +83,33 @@ public class UserController {
     
 //    @GetMapping("/search")
 //    public ResponseEntity<ResponseObject> getUserByRoleName()
+
+
     
     @PostMapping("/add")
     public ResponseEntity<ResponseObject> addUser(@RequestBody User user){
-        user.setRoles(roleRepository.findById(user.getRoleId()).get());
-        User addUser = userRepository.save(user);
-        if(addUser != null){
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "Add success", addUser)
-            );
+
+        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
+            boolean checkUser = userService.checkUserExist(user.getEmail(), user.getPhone());
+            if (checkUser == true) {
+                return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
+                        new ResponseObject(405, "User email or phone is already use", "")
+                );
+            } else {
+                User addUser = userService.add(user);
+                if (addUser != null) {
+                    return ResponseEntity.status(HttpStatus.OK).body(
+                            new ResponseObject(200, "Add success", addUser)
+                    );
+                } else {
+                    return ResponseEntity.status(HttpStatus.OK).body(
+                            new ResponseObject(500, "Add failed", "")
+                    );
+                }
+            }
         }else{
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(500, "User not found", addUser)
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(
+                    new ResponseObject(40, "Access denied", "")
             );
         }
     }

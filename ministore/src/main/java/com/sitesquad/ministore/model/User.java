@@ -55,6 +55,9 @@ public class User implements Serializable {
     @Column(name = "role_id" , insertable = false, updatable = false)
     private Long roleId;
 
+    @Column
+    private boolean isDeleted;
+
     @ManyToOne(targetEntity = Role.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     @ToString.Exclude

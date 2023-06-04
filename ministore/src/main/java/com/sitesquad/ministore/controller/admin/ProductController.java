@@ -3,6 +3,7 @@ package com.sitesquad.ministore.controller.admin;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sitesquad.ministore.dto.ProductDTO;
 import com.sitesquad.ministore.model.Product;
+import com.sitesquad.ministore.model.RequestMeta;
 import com.sitesquad.ministore.model.ResponseObject;
 import com.sitesquad.ministore.repository.ProductRepository;
 import com.sitesquad.ministore.repository.ProductTypeRepository;
@@ -34,6 +35,9 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
+    @Autowired
+    RequestMeta requestMeta;
+
 //    @GetMapping("/product")
 //    public ResponseEntity<ResponseObject> getProducts() {
 //        List<ProductDTO> products = productService.findAll();
@@ -49,6 +53,9 @@ public class ProductController {
 //    }
     @GetMapping("/product")
     public ResponseEntity<ResponseObject> getProducts(@RequestParam(required = false) Integer offset) {
+        System.out.println(requestMeta.getUserId());
+        System.out.println(requestMeta.getName());
+        System.out.println(requestMeta.getRole());
         if (offset == null) {
             offset = 0;
         }

@@ -23,5 +23,6 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     List<User> findByRoleId(Long roleId);
     List<User> findAll();
     Page<User> findAll(Pageable pageable);
+    User findOneByEmailIgnoreCaseOrPhone(String email,String phone);
     User findOneByEmailIgnoreCaseAndPasswordIgnoreCase(String email, String password);
 }
