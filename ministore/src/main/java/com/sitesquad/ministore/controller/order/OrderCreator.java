@@ -80,9 +80,14 @@ public class OrderCreator {
         List<Map<String, Object>> orderDetails = (List<Map<String, Object>>) request.get("data");
 
         // Extract the voucher ID from the "voucherId" field
-        Long voucherIdApplyOrder = Long.parseLong(request.get("voucherId").toString());
+        Voucher voucher = new Voucher();
+        Long voucherIdApplyOrder = null;
+        if (request.get("voucherId") != null) {
+            voucherIdApplyOrder = Long.parseLong(request.get("voucherId").toString());
+            voucher = voucherService.findById(voucherIdApplyOrder);
+        }
 
-        Order order = createOrder(voucherService.findById(voucherIdApplyOrder));
+        Order order = createOrder(voucher);
 
         Double totalOrder = 0.0;
         // Process each object in the list
