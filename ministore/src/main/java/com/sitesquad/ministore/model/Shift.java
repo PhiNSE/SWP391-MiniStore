@@ -38,6 +38,9 @@ public class Shift implements Serializable {
     @Column(name = "shift_id")
     private Long shiftId;
     
+    @Column(name = "name")
+    private String name;
+    
     @Column(name = "start_work_hour")
     private Double startWorkHour;
     

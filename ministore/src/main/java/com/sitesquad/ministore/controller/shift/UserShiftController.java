@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -27,15 +28,18 @@ public class UserShiftController {
     UserShiftService userShiftService;
     
     @GetMapping("/userShift")
-    public ResponseEntity<ResponseObject> getUserShifts(){
-        List<UserShift> userShifts = userShiftService.findAll();
+    public ResponseEntity<ResponseObject> getUserShifts(@RequestParam(required = false) Integer offset){
+        if(offset == null){
+            offset = 0;
+        }
+        List<UserShift> userShifts = userShiftService.findOffset(offset);
         if (userShifts != null) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "Found ProductType list", userShifts)
+                    new ResponseObject(200, "Found User Shift list", userShifts)
             );
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject(500, "Not found ProductType list", "")
+                    new ResponseObject(500, "Not found User Shift  list", "")
             );
         }
     }

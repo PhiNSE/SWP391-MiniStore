@@ -17,4 +17,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 public interface UserShiftRepository extends JpaRepository<UserShift, Long>, JpaSpecificationExecutor<UserShift> {
 
     public UserShift findTop1ByOrderByEndTimeDesc();
+    
+   
 }
