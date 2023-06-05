@@ -26,8 +26,8 @@ public class VoucherService {
         return foundVoucher.get();
     }
     
-    public List<Voucher> findByDescription(String description) {
-        List<Voucher> foundVouchers = voucherRepository.searchByDescription(description);
+    public List<Voucher> findByDescription(String description, String name) {
+        List<Voucher> foundVouchers = voucherRepository.searchByDescriptionContainingIgnoreCaseAndNameContainingIgnoreCase(description, name);
         return foundVouchers;
     }
 

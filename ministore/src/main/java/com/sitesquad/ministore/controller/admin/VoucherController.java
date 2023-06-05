@@ -50,8 +50,9 @@ public class VoucherController {
     }
 
     @GetMapping("voucher/search")
-    public ResponseEntity<ResponseObject> search(@RequestParam(required = false) String description) {
-        List<Voucher> foundVouchers = voucherService.findByDescription(description);
+    public ResponseEntity<ResponseObject> search(@RequestParam(required = false) String description, 
+            @RequestParam(required = false) String name) {
+        List<Voucher> foundVouchers = voucherService.findByDescription(description, name);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(200, "Found!", foundVouchers)
         );

@@ -21,6 +21,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -76,44 +77,66 @@ public class OrderCreator {
     }
 
     @PostMapping("/orderDetail/create")
-    public ResponseEntity<ResponseObject> createOrderDetail(@RequestBody OrderDetailRequest orderDetailRequest) {
-        List<OrderDetails> orderDetails = orderDetailRequest.getOrderDetailList();
-        System.out.println(orderDetails);
-        Voucher voucher = orderDetailRequest.getVoucher();
-        System.out.println(voucher);
+    public ResponseEntity<ResponseObject> createOrderDetail(@RequestBody Map<String, Object> request) {
+        List<Map<String, Object>> orderDetails = (List<Map<String, Object>>) request.get("data");
 
-        List<OrderDetails> orderDetailList = new ArrayList<>();
-        Order order = createOrder(voucher);
+        // Extract the voucher ID from the "voucherId" field
+        Long voucherIdApplyOrder = Long.parseLong(request.get("voucherId").toString());
+
+        Order order = createOrder(voucherService.findById(voucherIdApplyOrder));
         System.out.println(order);
 
         Double totalOrder = 0.0;
-        for (OrderDetails ordDet : orderDetails) {
-            //create orderDetail
-            ordDet.setOrderId(order.getOrderId());
-            if (ordDet.getQuantity() > productService.findById(ordDet.getProductId()).getQuantity()) {
+        // Process each object in the list
+        for (Map<String, Object> object : orderDetails) {
+            Long productId = Long.parseLong(object.get("productId").toString());
+            Double price = Double.parseDouble(object.get("price").toString());
+            Long quantity = Long.parseLong(object.get("quantity").toString());
+            Long voucherId = null;
+            if (object.get("voucherId").toString() != null) {
+                voucherId = Long.parseLong(object.get("voucherId").toString());
+            }
+            System.out.println(object.get("voucherId").toString());
+
+            OrderDetails orderDetail = new OrderDetails();
+            orderDetail.setOrderId(order.getOrderId());
+            orderDetail.setProductId(productId);
+            orderDetail.setPrice(price);
+
+            if (quantity > productService.findById(productId).getQuantity()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                        new ResponseObject(500, "Quantity is not enough", ordDet.getProductId())
+                        new ResponseObject(500, "Quantity is not enough", orderDetail.getProductId())
                 );
             } else {
-                ordDet = orderDetailsService.add(ordDet);
-                if (ordDet.getProductVoucherId() != null) {
-                    ordDet.setTotal(ordDet.getPrice() * ordDet.getQuantity() * (1 - ordDet.getProductVoucher().getVoucher().getPercentDiscount()));
+                productService.minusQuantityOfProduct(quantity, productId);
+                orderDetail.setQuantity(quantity);
+                if (voucherId != null) {
+                    Long productVoucherId = productVoucherService.findByVoucherIdAndProductId(voucherId, productId).getProductVoucherId();
+                    System.out.println(productVoucherId);
+                    orderDetail.setProductVoucherId(productVoucherId);
+                    orderDetail = orderDetailsService.add(orderDetail);
+
+                    System.out.println(orderDetail.getProductVoucher().toString());
+                    orderDetail.setTotal(orderDetail.getPrice() * orderDetail.getQuantity() * (1 - orderDetail.getProductVoucher().getVoucher().getPercentDiscount()));
+                    orderDetail = orderDetailsService.edit(orderDetail);
                 } else {
-                    ordDet.setTotal(ordDet.getPrice() * ordDet.getQuantity());
+//                orderDetail.setProductVoucherId(null);
+                    orderDetail.setTotal(orderDetail.getPrice() * orderDetail.getQuantity());
+                    orderDetail = orderDetailsService.add(orderDetail);
                 }
-                ordDet = orderDetailsService.edit(ordDet);
-                orderDetailList.add(ordDet);
-                if (voucher != null) {
-                    totalOrder += ordDet.getTotal();
-                }
+
+                totalOrder += orderDetail.getTotal();
             }
         }
-        order.setTotal(totalOrder);
+
+        if (order.getVoucherId() == null) {
+            order.setTotal(totalOrder);
+        } else {
+            order.setTotal(totalOrder * (1 - order.getVoucher().getPercentDiscount()));
+        }
         order = orderService.edit(order);
-        orderDetailRequest.setOrderDetailList(orderDetailList);
-        orderDetailRequest.setVoucher(voucher);
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject(200, "Successfull", orderDetailRequest)
+                new ResponseObject(200, "Successfull", "")
         );
     }
 
