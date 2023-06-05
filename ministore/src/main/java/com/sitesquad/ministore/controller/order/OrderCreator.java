@@ -69,7 +69,6 @@ public class OrderCreator {
         order.setUserId(new Long(1));
         Date date = new Date();
         order.setDate(new Timestamp(date.getTime()));
-        System.out.println(voucher);
         if (voucher != null) {
             order.setVoucherId(voucher.getVoucherId());
         }
@@ -84,7 +83,6 @@ public class OrderCreator {
         Long voucherIdApplyOrder = Long.parseLong(request.get("voucherId").toString());
 
         Order order = createOrder(voucherService.findById(voucherIdApplyOrder));
-        System.out.println(order);
 
         Double totalOrder = 0.0;
         // Process each object in the list
@@ -93,10 +91,9 @@ public class OrderCreator {
             Double price = Double.parseDouble(object.get("price").toString());
             Long quantity = Long.parseLong(object.get("quantity").toString());
             Long voucherId = null;
-            if (object.get("voucherId").toString() != null) {
+            if (object.get("voucherId") != null) {
                 voucherId = Long.parseLong(object.get("voucherId").toString());
             }
-            System.out.println(object.get("voucherId").toString());
 
             OrderDetails orderDetail = new OrderDetails();
             orderDetail.setOrderId(order.getOrderId());
@@ -112,15 +109,12 @@ public class OrderCreator {
                 orderDetail.setQuantity(quantity);
                 if (voucherId != null) {
                     Long productVoucherId = productVoucherService.findByVoucherIdAndProductId(voucherId, productId).getProductVoucherId();
-                    System.out.println(productVoucherId);
                     orderDetail.setProductVoucherId(productVoucherId);
                     orderDetail = orderDetailsService.add(orderDetail);
 
-                    System.out.println(orderDetail.getProductVoucher().toString());
                     orderDetail.setTotal(orderDetail.getPrice() * orderDetail.getQuantity() * (1 - orderDetail.getProductVoucher().getVoucher().getPercentDiscount()));
                     orderDetail = orderDetailsService.edit(orderDetail);
                 } else {
-//                orderDetail.setProductVoucherId(null);
                     orderDetail.setTotal(orderDetail.getPrice() * orderDetail.getQuantity());
                     orderDetail = orderDetailsService.add(orderDetail);
                 }
@@ -182,13 +176,20 @@ public class OrderCreator {
     }
 
     @GetMapping("/getAllVouchers")
-    public ResponseEntity<ResponseObject> getAllVoucher() {
+    public ResponseEntity<ResponseObject> getAllVoucher() throws NullPointerException {
         List<Voucher> voucherList = voucherService.findAll();
         List<Voucher> filteredVoucherList = new ArrayList<>();
         for (Voucher v : voucherList) {
-            if (v.getIsApplyAll() == true) {
-                filteredVoucherList.add(v);
+            if (v.getIsApplyAll() != null) {
+                if (v.getIsApplyAll() == true) {
+                    filteredVoucherList.add(v);
+                }
             }
+        }
+        if (filteredVoucherList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject(404, "Voucher not found", "")
+            );
         }
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(200, "Successfull", filteredVoucherList)
