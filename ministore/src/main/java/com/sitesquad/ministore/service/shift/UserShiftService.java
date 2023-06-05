@@ -42,6 +42,24 @@ public class UserShiftService {
         return userShiftRepository.findAll();
     }
 
+    public List<UserShift> findOffset(Integer offset) {
+        List<UserShift> userShifts = userShiftRepository.findAll();
+        if(userShifts == null || userShifts.isEmpty()){
+            return null;
+        }
+        ZonedDateTime period = SystemConstant.ZONE_DATE_TIME_NOW;
+        if(offset!=null){
+            period.withMonth(SystemConstant.ZONE_DATE_TIME_NOW.getMonthValue()+offset);
+        }
+        List<UserShift> viewShifts = new ArrayList<>();
+        for (UserShift userShift : userShifts) {
+            if(userShift.getStartTime().equals(period)){
+                viewShifts.add(userShift);
+            }
+        }
+        return viewShifts;
+    }
+
     public UserShift findById(Long id) {
         Optional<UserShift> foundOrder = userShiftRepository.findById(id);
         return foundOrder.get();
@@ -65,12 +83,12 @@ public class UserShiftService {
         System.out.print("Generating shifts...");
         UserShift lastShift = userShiftRepository.findTop1ByOrderByEndTimeDesc();
         ZonedDateTime startDate = SystemConstant.ZONE_DATE_TIME_NOW.withHour(0).withMinute(0).withSecond(0);
-        if (lastShift!=null) {
+        if (lastShift != null) {
             startDate = lastShift.getEndTime().withHour(0).withMinute(0).withSecond(0);
         }
-        Shift salerMorningShift = shiftRepository.findById(ShiftConstant.SALER_MORNING_SHIFT).orElse(null);
-        Shift salerAfternoonShift = shiftRepository.findById(ShiftConstant.SALER_AFTERNOON_SHIFT).orElse(null);
-        Shift salerEveningShift = shiftRepository.findById(ShiftConstant.SALER_EVENING_SHIFT).orElse(null);
+        Shift salerMorningShift = shiftRepository.findByName(ShiftConstant.SALER_MORNING_SHIFT).orElse(null);
+        Shift salerAfternoonShift = shiftRepository.findByName(ShiftConstant.SALER_AFTERNOON_SHIFT).orElse(null);
+        Shift salerEveningShift = shiftRepository.findByName(ShiftConstant.SALER_EVENING_SHIFT).orElse(null);
         ZonedDateTime shiftDate = startDate;
         for (int i = 0; i < 7; i++) {
             add(getUserShift(salerMorningShift, shiftDate, false));
@@ -80,7 +98,7 @@ public class UserShiftService {
         }
     }
 
-    public UserShift getUserShift(Shift shift, ZonedDateTime shiftDate, Boolean isEndNextDay) {
+    public UserShift getUserShift(Shift shift, ZonedDateTime shiftDate, Boolean isEndNextDay) throws NullPointerException{
         UserShift userShift = new UserShift();
         userShift.setShiftId(shift.getShiftId());
         userShift.setStartTime(shiftDate.withHour(shift.getStartWorkHour().intValue()));

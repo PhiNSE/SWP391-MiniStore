@@ -4,6 +4,11 @@ insert into [dbo].[role]([name]) values('admin')
 GO
 insert into [dbo].[tbl_user]([name],[email],[password],[phone],[address],[role_id],[is_deleted]) values('admintest','test@gmail.com','1','0931311835','111 test street','1','false')
 GO
+insert into [dbo].[shift]([name],[start_work_hour],[end_work_hour],[coefficient]) values('saler-morning',6,12,1),
+('saler-afternoon',12,18,1),
+('saler-night',18,6,1.5),
+('guard-day',6,18,1),
+('guard-morning',18,6,1.5)
 
 insert into [dbo].[product_type]([name]) values('nước ngọt')
 
