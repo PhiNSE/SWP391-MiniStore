@@ -79,4 +79,7 @@ public class UserShift {
     @Column(name = "is_checked_out")
     private boolean isCheckedOut;
 
+    @Column(name = "is_paid")
+    private boolean isPaid;
+
 }
