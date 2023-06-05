@@ -1,6 +1,10 @@
 USE [MinistoreManagement]
 GO
-insert into [dbo].[role]([name]) values('admin')
+insert into [dbo].[role] values('admin',null,0)
+GO
+insert into [dbo].[role] values('employee',20.00,0)
+GO
+insert into [dbo].[role] values('guard',15.00,0)
 GO
 insert into [dbo].[tbl_user]([name],[email],[password],[phone],[address],[role_id],[is_deleted]) values('admintest','test@gmail.com','1','0931311835','111 test street','1','false')
 GO
