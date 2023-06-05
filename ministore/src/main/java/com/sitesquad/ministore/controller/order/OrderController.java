@@ -31,8 +31,10 @@ public class OrderController {
     OrderService orderService;
 
     @GetMapping("/order")
-    public List<Order> getAllOrder() {
-        return orderService.findAll();
+    public ResponseEntity<ResponseObject> getAllOrder() {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(200, "Found Order", orderService.findAll())
+        );
     }
 
     @GetMapping("/order/{id}")
@@ -78,7 +80,6 @@ public class OrderController {
             );
         }
     }
-    
 
 //    @PutMapping("/order")
 //    public ResponseEntity<ResponseObject> editOrder(@RequestBody Order order) {

@@ -11,6 +11,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,14 +25,17 @@ import org.springframework.web.bind.annotation.RestController;
  * @author admin
  */
 @RestController
+@CrossOrigin
 public class PayslipController {
 
     @Autowired
     PayslipService payslipService;
 
     @GetMapping("/payslip")
-    public List<Payslip> getAllPayslips() {
-        return payslipService.findAll();
+    public ResponseEntity<ResponseObject> getAllPayslips() {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(200, "Found Payslips", payslipService.findAll())
+        );
     }
 
     @GetMapping("/payslip/{id}")
@@ -77,9 +81,9 @@ public class PayslipController {
             );
         }
     }
-    
+
     @DeleteMapping("/payslip/delete/{id}")
-    public ResponseEntity<ResponseObject> deletePayslip(@PathVariable Long id){
+    public ResponseEntity<ResponseObject> deletePayslip(@PathVariable Long id) {
         Boolean isDeleted = payslipService.delete(id);
         if (!isDeleted) {
             return ResponseEntity.status(HttpStatus.OK).body(
@@ -91,7 +95,7 @@ public class PayslipController {
             );
         }
     }
-    
+
     //    @PutMapping("/order")
 //    public ResponseEntity<ResponseObject> editOrder(@RequestBody Order order) {
 //        order.setOrderUser(userRepository.findById(order.getUserId()).get());
