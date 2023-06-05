@@ -53,20 +53,20 @@ public class ProductController {
 //    }
     @GetMapping("/product")
     public ResponseEntity<ResponseObject> getProducts(@RequestParam(required = false) Integer offset) {
-        System.out.println(requestMeta.getUserId());
-        System.out.println(requestMeta.getName());
-        System.out.println(requestMeta.getRole());
+        System.out.println("User Id: "+requestMeta.getUserId());
+        System.out.println("User Name: "+requestMeta.getName());
+        System.out.println("User Role: "+requestMeta.getRole());
         if (offset == null) {
             offset = 0;
         }
         Page<ProductDTO> productList = productService.findAll(offset);
-        if (productList != null) {
+        if (!productList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Found Product List", productList)
             );
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject(500, "Cant find product list", "")
+                    new ResponseObject(404, "Cant find product list", "")
             );
         }
 

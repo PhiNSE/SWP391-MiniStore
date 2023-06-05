@@ -42,4 +42,9 @@ public class Role implements Serializable {
     @ToString.Exclude
     private Collection<User> users;
 
+    @Column(name = "base_salary")
+    Double baseSalary;
+
+    @Column(name = "is_deleted")
+    Boolean isDeleted;
 }

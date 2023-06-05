@@ -3,13 +3,38 @@ package com.sitesquad.ministore.exception;
 import com.sitesquad.ministore.model.ResponseObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+@ControllerAdvice
 public class GlobalExceptionHandler {
+
+
     @ExceptionHandler
     public ResponseEntity handleAccessDeniedException(AccessDeniedException e){
         ResponseObject responseObject = new ResponseObject();
         responseObject.setStatus(HttpStatus.UNAUTHORIZED.value());
+        responseObject.setMessage("Access Denied");
+        System.out.println(e);
         return ResponseEntity.status(responseObject.getStatus()).body(responseObject);
     }
+
+    @ExceptionHandler
+    public ResponseEntity handleBadRequestException (BadRequestException e) {
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setStatus(HttpStatus.BAD_REQUEST.value());
+        responseObject.setMessage(e.getErrors().toString());
+        System.out.println(e);
+        return ResponseEntity.status(400).body(responseObject);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handleException(Exception e){
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setMessage("Oops..Something went wrong!");
+        responseObject.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        System.out.println(e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(responseObject);
+    }
+
 }

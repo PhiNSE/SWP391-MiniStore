@@ -6,6 +6,7 @@
 package com.sitesquad.ministore.service;
 
 import com.sitesquad.ministore.dto.UserDTO;
+import com.sitesquad.ministore.model.Role;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.repository.RoleRepository;
 import com.sitesquad.ministore.repository.UserRepository;
@@ -15,9 +16,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -51,17 +49,20 @@ public class UserService {
         return userRepository.findAll();
     }
 
+
+//    public Page<User> findAll(Integer offset){
+//        Page<User> user = userRepository.findAllByIsDeletedFalse(PageRequest.of(offset,9));
+//        return user;
+//    }
     public Page<UserDTO> findAll(Integer offset){
-        Page<User> user = userRepository.findAll(PageRequest.of(offset,9));
+        Page<User> user = userRepository.findAllByIsDeletedFalse(PageRequest.of(offset,9));
         Page<UserDTO>userDTOPage = mapDTO(user);
         return userDTOPage;
     }
     
     public UserDTO findById(Long id){
-        Optional<User> optionalUser = userRepository.findById(id);
-        if(optionalUser.isPresent()){
-            User user = optionalUser.get();
-
+        User user = userRepository.findByUserIdAndIsDeletedFalse(id);
+        if(user != null ){
             UserDTO userDTO = new UserDTO();
             userDTO.setUserId(user.getUserId());
             userDTO.setName(user.getName());
@@ -76,21 +77,48 @@ public class UserService {
     }
     
     public boolean delete(Long id){
-        userRepository.deleteById(id);
-        return userRepository.findById(id)==null;
+        User user = userRepository.findByUserIdAndIsDeletedFalse(id);
+        if(user == null){
+            return false;
+        }else{
+            user.setIsDeleted(true);
+            userRepository.save(user);
+            return true;
+        }
     }
 
     public boolean checkUserExist(String email, String phone){
         return userRepository.findOneByEmailIgnoreCaseOrPhone(email,phone) != null;
     }
-    public User add (User user){
-        user.setRoles(roleRepository.findById(user.getRoleId()).get());
-        user.setDeleted(false);
+
+    public List<User>findUserByRoleName(String name){
+        return userRepository.findUserByRoles_NameIgnoreCaseAndIsDeletedFalse(name);
+    }
+
+    public User add (String name,String email,String phone,String address, String roleName){
+        User user = new User();
+        Role roleNameAdd = roleRepository.findByNameIgnoreCaseAndIsDeletedIsFalse(roleName.trim());
+        user.setRoles(roleNameAdd);
+        System.out.println(roleNameAdd);
+        user.setRoleId(roleNameAdd.getRoleId());
+        user.setIsDeleted(false);
+        user.setName(name);
+        user.setEmail(email);
+        user.setPhone(phone);
+        user.setAddress(address);
+        user.setPassword("1");
         return userRepository.save(user);
     }
     
     public User edit (User newUser){
-        return null;
+        User oldUser = userRepository.findByUserIdAndIsDeletedFalse(newUser.getUserId());
+        newUser.setUserId(null);
+        User userChanged = newUser;
+        if(userChanged != null){
+            oldUser.setIsDeleted(Boolean.TRUE);
+            userRepository.save(userChanged);
+        }
+        return userChanged;
     }
 
 

@@ -13,6 +13,7 @@ import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.repository.RoleRepository;
 import com.sitesquad.ministore.repository.UserRepository;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.sitesquad.ministore.service.UserService;
@@ -21,6 +22,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -57,12 +60,12 @@ public class UserController {
                 );
             } else {
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject(404, "User List not found", userList)
+                        new ResponseObject(404, "User List not found", "")
                 );
             }
         }else {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(
-                    new ResponseObject(40, "Access denied", "")
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
+                    new ResponseObject(405, "Access denied", "")
             );
         }
     }
@@ -76,7 +79,7 @@ public class UserController {
             );
         }else{
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(404, "User not found", foundUser)
+                    new ResponseObject(404, "User not found", "")
             );
         }
     }
@@ -87,16 +90,27 @@ public class UserController {
 
     
     @PostMapping("/add")
-    public ResponseEntity<ResponseObject> addUser(@RequestBody User user){
+    public ResponseEntity<ResponseObject> addUser(@RequestBody Map<String, String> requestData){
+
+        String email = requestData.get("email");
+        String phone = requestData.get("phone");
+        String name = requestData.get("name");
+        String address = requestData.get("address");
+        String roleName = requestData.get("roleName");
+        System.out.println("Name: " + name);
+        System.out.println("Role Name: " + roleName);
+        System.out.println("Email: " + email);
+        System.out.println("Phone: " + phone);
+        System.out.println("Address: " + address);
 
         if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
-            boolean checkUser = userService.checkUserExist(user.getEmail(), user.getPhone());
+            boolean checkUser = userService.checkUserExist(email, phone);
             if (checkUser == true) {
                 return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
                         new ResponseObject(405, "User email or phone is already use", "")
                 );
             } else {
-                User addUser = userService.add(user);
+                User addUser = userService.add(name,email,phone,address,roleName);
                 if (addUser != null) {
                     return ResponseEntity.status(HttpStatus.OK).body(
                             new ResponseObject(200, "Add success", addUser)
@@ -108,8 +122,28 @@ public class UserController {
                 }
             }
         }else{
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(
-                    new ResponseObject(40, "Access denied", "")
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
+                    new ResponseObject(406, "Access denied", "")
+            );
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseObject> deleteUser (@PathVariable Long id){
+        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
+            boolean userDelete = userService.delete(id);
+            if (userDelete == true){
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject(200, "Delete success", "")
+                );
+            }else
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject(500, "Delete failed", "")
+                );
+
+        }else{
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
+                    new ResponseObject(406, "Access denied", "")
             );
         }
     }
