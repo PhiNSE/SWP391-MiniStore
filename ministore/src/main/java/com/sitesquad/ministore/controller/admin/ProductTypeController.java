@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,15 +22,25 @@ import org.springframework.web.bind.annotation.RestController;
  * @author ADMIN
  */
 @RestController
+@CrossOrigin
 public class ProductTypeController {
-    
+
     @Autowired
     ProductTypeService productTypeService;
 
     @GetMapping("/productType")
-    public List<ProductType> getProductTypes() {
-        return productTypeService.findAll();
-        
+    public ResponseEntity<ResponseObject> getProductTypes() {
+        List<ProductType> productTypes = productTypeService.findAll();
+        if (productTypes != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "Found ProductType list", productTypes)
+            );
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject(500, "Not found ProductType list", "")
+            );
+        }
+
     }
 
     @GetMapping("/productType/{id}")
@@ -75,8 +86,9 @@ public class ProductTypeController {
             );
         }
     }
+
     @DeleteMapping("/productType/{id}")
-    public ResponseEntity<ResponseObject> deleteProductType(@PathVariable Long id){
+    public ResponseEntity<ResponseObject> deleteProductType(@PathVariable Long id) {
         Boolean isDeleted = productTypeService.delete(id);
         if (isDeleted) {
             return ResponseEntity.status(HttpStatus.OK).body(
