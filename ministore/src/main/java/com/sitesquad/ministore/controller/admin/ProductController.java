@@ -53,20 +53,20 @@ public class ProductController {
 //    }
     @GetMapping("/product")
     public ResponseEntity<ResponseObject> getProducts(@RequestParam(required = false) Integer offset) {
-        System.out.println(requestMeta.getUserId());
-        System.out.println(requestMeta.getName());
-        System.out.println(requestMeta.getRole());
+        System.out.println("User Id: "+requestMeta.getUserId());
+        System.out.println("User Name: "+requestMeta.getName());
+        System.out.println("User Role: "+requestMeta.getRole());
         if (offset == null) {
             offset = 0;
         }
         Page<ProductDTO> productList = productService.findAll(offset);
-        if (productList != null) {
+        if (!productList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Found Product List", productList)
             );
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject(500, "Cant find product list", "")
+                    new ResponseObject(404, "Cant find product list", "")
             );
         }
 
@@ -114,15 +114,21 @@ public class ProductController {
 
     @PostMapping("/product")
     public ResponseEntity<ResponseObject> addProduct(@RequestBody Product product) {
-        product.setIsDeleted(Boolean.FALSE);
-        Product addProduct = productService.add(product);
-        if (addProduct != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "Add sucessfully ", addProduct)
-            );
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject(500, "Cant add product", product)
+        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
+            product.setIsDeleted(Boolean.FALSE);
+            Product addProduct = productService.add(product);
+            if (addProduct != null) {
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject(200, "Add sucessfully ", addProduct)
+                );
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        new ResponseObject(500, "Cant add product", product)
+                );
+            }
+        }else{
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
+                    new ResponseObject(406, "Access denied", "")
             );
         }
 
@@ -130,28 +136,40 @@ public class ProductController {
 
     @PutMapping("/product")
     public ResponseEntity<ResponseObject> editProduct(@RequestBody Product product) {
-        Product editedProduct = productService.edit(product);
-        if (editedProduct != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "Edit sucessfully ", editedProduct)
-            );
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject(500, "Cant edit product", product)
+        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
+            Product editedProduct = productService.edit(product);
+            if (editedProduct != null) {
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject(200, "Edit sucessfully ", editedProduct)
+                );
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        new ResponseObject(500, "Cant edit product", product)
+                );
+            }
+        }else{
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
+                    new ResponseObject(406, "Access denied", "")
             );
         }
     }
 
     @DeleteMapping("/product/{id}")
     public ResponseEntity<ResponseObject> deleteProduct(@PathVariable Long id) {
-        Boolean isDeleted = productService.delete(id);
-        if (isDeleted) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "Delete sucessfully ", "")
-            );
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject(500, "Cant delete product", "")
+        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
+            Boolean isDeleted = productService.delete(id);
+            if (isDeleted) {
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject(200, "Delete sucessfully ", "")
+                );
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        new ResponseObject(500, "Cant delete product", "")
+                );
+            }
+        }else{
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
+                    new ResponseObject(406, "Access denied", "")
             );
         }
     }

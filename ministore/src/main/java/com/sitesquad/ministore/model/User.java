@@ -55,7 +55,7 @@ public class User implements Serializable {
     @Column(name = "role_id" , insertable = false, updatable = false)
     private Long roleId;
 
-    @Column(name = "is_delete")
+    @Column(name = "is_deleted")
     private Boolean isDeleted;
 
     @ManyToOne(targetEntity = Role.class, cascade = CascadeType.ALL)
