@@ -35,14 +35,12 @@ public class SalaryCalculator {
 
     @GetMapping("/salary")
     public ResponseEntity<ResponseObject> calculateSalary() {
-        List<UserShift> userShiftList = userShiftService.findAllByIsPaid();
-        userShiftList = userShiftService.findAllByUserId(new Long(1));
+        List<UserShift> userShiftList = userShiftService.findAllByIsPaid(new Long(1));
         if(userShiftList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject(200, "Not Found User", "")
+                    new ResponseObject(404, "Not Found UserShift", "")
             );
         }
-        System.out.println(userShiftList);
 
         Payslip payslip = new Payslip();
         payslip.setUserId(userShiftList.get(0).getUserId());
@@ -50,7 +48,7 @@ public class SalaryCalculator {
         Double salary = new Double(0.0);
         
         for (UserShift userShift : userShiftList) {
-            Double salaryInADay = userShift.getUser().getBaseSalary() * userShift.getShift().getCoefficient();
+            Double salaryInADay = userShift.getUser().getRoles().getBaseSalary() * userShift.getShift().getCoefficient();
             if(userShift.isWeekend() == true) { // weekend
                 salaryInADay *= 2; // using coeffience const
             } else { // not weekend
@@ -64,10 +62,8 @@ public class SalaryCalculator {
             userShift.setPaid(true);
             userShift = userShiftService.edit(userShift);
         }
-        System.out.println(shiftCount);
         payslip.setShiftCount(shiftCount);
         System.out.println(salary);
-        payslip.setSalary(salary);
         payslip = payslipService.add(payslip);
         
         return ResponseEntity.status(HttpStatus.OK).body(

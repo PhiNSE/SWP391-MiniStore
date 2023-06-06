@@ -57,9 +57,6 @@ public class User implements Serializable {
 
     @Column(name = "is_delete")
     private boolean isDeleted;
-    
-    @Column(name = "base_salary")
-    private Double baseSalary;
 
     @ManyToOne(targetEntity = Role.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", referencedColumnName = "role_id")
