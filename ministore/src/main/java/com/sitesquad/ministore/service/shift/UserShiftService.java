@@ -7,6 +7,7 @@ package com.sitesquad.ministore.service.shift;
 
 import com.sitesquad.ministore.constant.ShiftConstant;
 import com.sitesquad.ministore.constant.SystemConstant;
+import com.sitesquad.ministore.model.ResponseObject;
 import com.sitesquad.ministore.model.Shift;
 import com.sitesquad.ministore.model.UserShift;
 import com.sitesquad.ministore.repository.ShiftRepository;
@@ -19,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -41,19 +44,27 @@ public class UserShiftService {
     public List<UserShift> findAll() {
         return userShiftRepository.findAll();
     }
+    
+    public List<UserShift> findAllByIsPaid() {
+        return userShiftRepository.findByIsPaidFalseOrIsPaidNull();
+    }
+    
+    public List<UserShift> findAllByUserId(Long id) {
+        return userShiftRepository.findByUserId(id);
+    }
 
     public List<UserShift> findOffset(Integer offset) {
         List<UserShift> userShifts = userShiftRepository.findAll();
-        if(userShifts == null || userShifts.isEmpty()){
+        if (userShifts == null || userShifts.isEmpty()) {
             return null;
         }
         ZonedDateTime period = SystemConstant.ZONE_DATE_TIME_NOW;
-        if(offset!=null){
-            period.withMonth(SystemConstant.ZONE_DATE_TIME_NOW.getMonthValue()+offset);
+        if (offset != null) {
+            period.withMonth(SystemConstant.ZONE_DATE_TIME_NOW.getMonthValue() + offset);
         }
         List<UserShift> viewShifts = new ArrayList<>();
         for (UserShift userShift : userShifts) {
-            if(userShift.getStartTime().equals(period)){
+            if (userShift.getStartTime().equals(period)) {
                 viewShifts.add(userShift);
             }
         }
@@ -98,7 +109,7 @@ public class UserShiftService {
         }
     }
 
-    public UserShift getUserShift(Shift shift, ZonedDateTime shiftDate, Boolean isEndNextDay) throws NullPointerException{
+    public UserShift getUserShift(Shift shift, ZonedDateTime shiftDate, Boolean isEndNextDay) throws NullPointerException {
         UserShift userShift = new UserShift();
         userShift.setShiftId(shift.getShiftId());
         userShift.setStartTime(shiftDate.withHour(shift.getStartWorkHour().intValue()));

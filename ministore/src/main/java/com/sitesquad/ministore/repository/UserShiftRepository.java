@@ -9,14 +9,17 @@ import com.sitesquad.ministore.model.UserShift;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author ACER
  */
+@Repository
 public interface UserShiftRepository extends JpaRepository<UserShift, Long>, JpaSpecificationExecutor<UserShift> {
 
     public UserShift findTop1ByOrderByEndTimeDesc();
-    
+    public List<UserShift> findByIsPaidFalseOrIsPaidNull();
+    public List<UserShift> findByUserId(Long userId);
    
 }
