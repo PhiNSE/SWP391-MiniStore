@@ -54,8 +54,8 @@ public class Voucher {
     @Column(name = "min_total")
     private Integer minTotal;
 
-    @Column(name = "max_percent")
-    private Double maxPercent;
+    @Column(name = "max_price")
+    private Double maxPrice;
 
     @Column(name = "percent_discount")
     private Double percentDiscount;

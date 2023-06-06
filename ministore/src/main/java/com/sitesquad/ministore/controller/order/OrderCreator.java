@@ -1,16 +1,13 @@
 package com.sitesquad.ministore.controller.order;
 
-import com.sitesquad.ministore.dto.OrderDetailRequest;
 import com.sitesquad.ministore.dto.VoucherRequest;
 import com.sitesquad.ministore.model.Order;
 import com.sitesquad.ministore.model.OrderDetails;
 import com.sitesquad.ministore.model.Product;
 import com.sitesquad.ministore.model.ProductVoucher;
 import com.sitesquad.ministore.model.ResponseObject;
-import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.model.Voucher;
 import com.sitesquad.ministore.repository.OrderDetailsRepository;
-import com.sitesquad.ministore.repository.OrderRepository;
 import com.sitesquad.ministore.service.OrderDetailsService;
 import com.sitesquad.ministore.service.OrderService;
 import com.sitesquad.ministore.service.ProductService;
@@ -21,7 +18,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,13 +25,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  *
@@ -120,7 +114,7 @@ public class OrderCreator {
             orderDetail.setPrice(price);
 
             if (quantity > productService.findById(productId).getQuantity()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObject(500, "Quantity is not enough", orderDetail.getProductId())
                 );
             } else {
@@ -163,7 +157,7 @@ public class OrderCreator {
             voucherList.add(voucher);
         }
         if (voucherList.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+            return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(404, "Voucher not found", "")
             );
         } else {
@@ -176,12 +170,13 @@ public class OrderCreator {
     @PostMapping("/applyVoucherToProducts")
     public ResponseEntity<ResponseObject> applyVoucherToProducts(@RequestBody VoucherRequest voucherRequest) {
         List<Product> productList = voucherRequest.getProductList();
+        Voucher voucher = voucherRequest.getVoucher();
         if (voucherRequest.getVoucher().getIsApplyAll() == true) {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(
-                    new ResponseObject(406, "This voucher can't be applied", "")
+            voucher = voucherService.add(voucher);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "Successfull", "")
             );
         }
-        Voucher voucher = voucherRequest.getVoucher();
 
         voucher = voucherService.add(voucher);
         List<ProductVoucher> productVoucherList = new ArrayList<>();
@@ -211,7 +206,7 @@ public class OrderCreator {
             }
         }
         if (filteredVoucherList.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+            return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(404, "Voucher not found", "")
             );
         }
