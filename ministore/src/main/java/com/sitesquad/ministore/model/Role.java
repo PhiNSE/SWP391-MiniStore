@@ -36,9 +36,7 @@ public class Role implements Serializable {
     
     @Column(name = "name")
     String name;
-        
-    @Column(name = "base_salary")
-    private Double baseSalary;
+    
 
     @OneToMany(mappedBy = "roles")
     @JsonIgnore
