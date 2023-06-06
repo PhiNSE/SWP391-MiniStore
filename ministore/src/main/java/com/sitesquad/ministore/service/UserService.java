@@ -85,7 +85,7 @@ public class UserService {
     }
     public User add (User user){
         user.setRoles(roleRepository.findById(user.getRoleId()).get());
-        user.setDeleted(false);
+        user.setIsDeleted(false);
         return userRepository.save(user);
     }
     
