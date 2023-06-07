@@ -23,33 +23,51 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin
 public class SalaryCalculator {
+
     @Autowired
     PayslipService payslipService;
-    
+
     @Autowired
     UserShiftService userShiftService;
-    
+
     @Autowired
     UserService userService;
-    
+
     @GetMapping("/salary")
     public ResponseEntity<ResponseObject> calculateSalary() {
-        List<User> userList = userService.findAll();
-        List<Payslip> payslipList = new ArrayList<>();
-        for(User u: userList) {
-            //create payslip
-            Payslip payslip = new Payslip();
-            UserShift userShift = new UserShift();
-            
-            payslip.setUserId(u.getUserId());
-//            payslip.setShiftCount();
-//            payslip.setSalary();
-            payslip = payslipService.add(payslip);
-            
-            payslipList.add(payslip);
+        List<UserShift> userShiftList = userShiftService.findAllByIsPaid(new Long(1));
+        if(userShiftList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject(404, "Not Found UserShift", "")
+            );
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                new ResponseObject(200, "Successfull", payslipList)
+
+        Payslip payslip = new Payslip();
+        payslip.setUserId(userShiftList.get(0).getUserId());
+        Integer shiftCount = new Integer(0);
+        Double salary = new Double(0.0);
+        
+        for (UserShift userShift : userShiftList) {
+            Double salaryInADay = userShift.getUser().getRoles().getBaseSalary() * userShift.getShift().getCoefficient();
+            if(userShift.isWeekend() == true) { // weekend
+                salaryInADay *= 2; // using coeffience const
+            } else { // not weekend
+                salaryInADay *= 1.5; // using coeffience const
+            }
+            if(userShift.isHoliday() == true) { // holiday
+                salaryInADay *= 3; // using coeffience const
+            }
+            salary += salaryInADay;
+            shiftCount++;
+            userShift.setPaid(true);
+            userShift = userShiftService.edit(userShift);
+        }
+        payslip.setShiftCount(shiftCount);
+        System.out.println(salary);
+        payslip = payslipService.add(payslip);
+        
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(200, "Successfull", payslip)
         );
     }
 }

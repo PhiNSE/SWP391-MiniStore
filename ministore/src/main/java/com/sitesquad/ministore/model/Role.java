@@ -36,10 +36,16 @@ public class Role implements Serializable {
     
     @Column(name = "name")
     String name;
+    
 
     @OneToMany(mappedBy = "roles")
     @JsonIgnore
     @ToString.Exclude
     private Collection<User> users;
 
+    @Column(name = "base_salary")
+    Double baseSalary;
+
+    @Column(name = "is_deleted")
+    Boolean isDeleted;
 }

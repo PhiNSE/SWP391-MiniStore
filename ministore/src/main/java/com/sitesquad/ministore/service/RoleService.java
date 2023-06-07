@@ -33,9 +33,24 @@ public class RoleService {
     }
     
     public boolean delete(Long id){
-        roleRepository.deleteById(id);
-        return roleRepository.findById(id) == null;
+        Role role = roleRepository.findById(id).orElse(null);
+        if(role == null){
+            return false;
+        }else{
+            role.setIsDeleted(Boolean.TRUE);
+            roleRepository.save(role);
+            return true;
+        }
     }
     
-    
+    public Role edit(Role newRole){
+        Role oldRole = roleRepository.findById(newRole.getRoleId()).get();
+        newRole.setRoleId(null);
+        Role editRole = add(newRole);
+        if(editRole != null){
+            oldRole.setIsDeleted(Boolean.TRUE);
+            roleRepository.save(oldRole);
+        }
+        return editRole;
+    }
 }

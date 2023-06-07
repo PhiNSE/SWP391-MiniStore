@@ -7,6 +7,7 @@ package com.sitesquad.ministore.service.shift;
 
 import com.sitesquad.ministore.constant.ShiftConstant;
 import com.sitesquad.ministore.constant.SystemConstant;
+import com.sitesquad.ministore.model.ResponseObject;
 import com.sitesquad.ministore.model.Shift;
 import com.sitesquad.ministore.model.UserShift;
 import com.sitesquad.ministore.repository.ShiftRepository;
@@ -19,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +43,10 @@ public class UserShiftService {
 
     public List<UserShift> findAll() {
         return userShiftRepository.findAll();
+    }
+    
+    public List<UserShift> findAllByIsPaid(Long id) {
+        return userShiftRepository.findByIsPaidFalseOrIsPaidNullAndUserId(id);
     }
 
     public List<UserShift> findOffset(Integer offset) {
