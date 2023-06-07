@@ -207,7 +207,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[user_shift](
 	[user_shift_id] [int] IDENTITY(1,1) NOT NULL,
-	[user_id] [int] NOT NULL,
+	[user_id] [int] NULL,
 	[shift_id] [int] NOT NULL,
 	[work_date] [date]  NULL,
 	[is_holiday] [bit]  NULL,
