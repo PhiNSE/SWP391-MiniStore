@@ -8,6 +8,8 @@ insert into [dbo].[role] values('guard',15.00,0)
 GO
 insert into [dbo].[tbl_user]([name],[email],[password],[phone],[address],[role_id],[is_deleted],[dob],[gender],[user_img]) values('admintest','test@gmail.com','1','0931311835','111 test street','1','false','2003-05-14',1,'tesst')
 GO
+insert into [dbo].[tbl_user]([name],[email],[password],[phone],[address],[role_id],[is_deleted],[dob],[gender],[user_img]) values('admin','admin@gmail.com','123','56565','111 test street','1','false','2003-05-14',1,'tesst')
+GO
 insert into [dbo].[shift]([name],[start_work_hour],[end_work_hour],[coefficient]) values('saler-morning',6,12,1),
 ('saler-afternoon',12,18,1),
 ('saler-night',18,6,1.5),
