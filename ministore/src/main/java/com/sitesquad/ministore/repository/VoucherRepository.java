@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface VoucherRepository extends JpaRepository<Voucher, Long>, JpaSpecificationExecutor<Voucher>{
-    List<Voucher> searchByDescriptionContainingIgnoreCaseAndNameContainingIgnoreCase(String description, String name);
+    List<Voucher> searchByDescriptionContainingIgnoreCaseOrNameContainingIgnoreCase(String description, String name);
 }

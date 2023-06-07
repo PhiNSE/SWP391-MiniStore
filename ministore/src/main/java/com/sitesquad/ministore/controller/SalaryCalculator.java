@@ -49,21 +49,22 @@ public class SalaryCalculator {
         
         for (UserShift userShift : userShiftList) {
             Double salaryInADay = userShift.getUser().getRoles().getBaseSalary() * userShift.getShift().getCoefficient();
-            if(userShift.isWeekend() == true) { // weekend
+            if(userShift.getIsWeekend() == true) { // weekend
                 salaryInADay *= 2; // using coeffience const
             } else { // not weekend
                 salaryInADay *= 1.5; // using coeffience const
             }
-            if(userShift.isHoliday() == true) { // holiday
+            if(userShift.getIsHoliday() == true) { // holiday
                 salaryInADay *= 3; // using coeffience const
             }
             salary += salaryInADay;
             shiftCount++;
-            userShift.setPaid(true);
+            userShift.setIsPaid(true);
             userShift = userShiftService.edit(userShift);
         }
         payslip.setShiftCount(shiftCount);
         System.out.println(salary);
+        payslip.setSalary(salary);
         payslip = payslipService.add(payslip);
         
         return ResponseEntity.status(HttpStatus.OK).body(

@@ -50,11 +50,12 @@ public class VoucherController {
     }
 
     @GetMapping("voucher/search")
-    public ResponseEntity<ResponseObject> search(@RequestParam(required = false) String description, 
-            @RequestParam(required = false) String name) {
-        List<Voucher> foundVouchers = voucherService.findByDescriptionAndName(description, name);
+    public ResponseEntity<ResponseObject> search(@RequestParam(required = false) String keyword) {
+        String description = keyword;
+        String name = keyword;
+        List<Voucher> foundVouchers = voucherService.findByDescriptionOrName(description, name);
         if(foundVouchers.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+            return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(404, "Not found!", "")
             );
         }
