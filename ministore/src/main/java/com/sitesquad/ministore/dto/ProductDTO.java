@@ -18,6 +18,8 @@ public class ProductDTO implements Serializable{
     private String name;
     
     private Long quantity;
+    
+    private Long productTypeId;
 
     private String productTypeName;
     

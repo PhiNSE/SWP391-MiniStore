@@ -44,16 +44,16 @@ public class UserShiftService {
 
     public List<UserShift> findOffset(Integer offset) {
         List<UserShift> userShifts = userShiftRepository.findAll();
-        if(userShifts == null || userShifts.isEmpty()){
+        if (userShifts == null || userShifts.isEmpty()) {
             return null;
         }
         ZonedDateTime period = SystemConstant.ZONE_DATE_TIME_NOW;
-        if(offset!=null){
-            period.withMonth(SystemConstant.ZONE_DATE_TIME_NOW.getMonthValue()+offset);
+        if (offset == null) {
+            offset =0;
         }
         List<UserShift> viewShifts = new ArrayList<>();
         for (UserShift userShift : userShifts) {
-            if(userShift.getStartTime().equals(period)){
+            if (userShift.getStartTime().getMonthValue() == period.getMonthValue() + offset) {
                 viewShifts.add(userShift);
             }
         }
@@ -98,7 +98,7 @@ public class UserShiftService {
         }
     }
 
-    public UserShift getUserShift(Shift shift, ZonedDateTime shiftDate, Boolean isEndNextDay) throws NullPointerException{
+    public UserShift getUserShift(Shift shift, ZonedDateTime shiftDate, Boolean isEndNextDay) throws NullPointerException {
         UserShift userShift = new UserShift();
         userShift.setShiftId(shift.getShiftId());
         userShift.setStartTime(shiftDate.withHour(shift.getStartWorkHour().intValue()));

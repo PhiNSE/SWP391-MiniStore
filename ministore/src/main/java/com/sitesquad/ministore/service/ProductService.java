@@ -90,6 +90,7 @@ public class ProductService {
             productDTO.setProductId(product.getProductId());
             productDTO.setName(product.getName());
             productDTO.setQuantity(product.getQuantity());
+            productDTO.setProductTypeId(product.getProductTypeId());
             productDTO.setProductTypeName(product.getProductType().getName());
             productDTO.setPrice(product.getPrice());
             productDTO.setCost(product.getCost());
