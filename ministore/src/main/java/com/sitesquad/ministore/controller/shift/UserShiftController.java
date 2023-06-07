@@ -19,17 +19,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
- * @author ACER 
+ * @author ACER
  */
 @RestController
 @CrossOrigin
 public class UserShiftController {
+
     @Autowired
     UserShiftService userShiftService;
-    
+
     @GetMapping("/userShift")
-    public ResponseEntity<ResponseObject> getUserShifts(@RequestParam(required = false) Integer offset){
-        if(offset == null){
+    public ResponseEntity<ResponseObject> getUserShifts(@RequestParam(required = false) Integer offset) {
+        if (offset == null) {
             offset = 0;
         }
         List<UserShift> userShifts = userShiftService.findOffset(offset);
@@ -44,8 +45,18 @@ public class UserShiftController {
         }
     }
     
+    @GetMapping("/userShift/assign")
+    public ResponseEntity<ResponseObject> assignUserShift(){
+                return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(200, "Generate user shifts for next 7 days successfully", "")
+        );
+    }
+
     @GetMapping("/userShift/generate")
-    public void generateUserShifts(){
+    public ResponseEntity<ResponseObject> generateUserShifts() {
         userShiftService.generateUserShifts();
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(200, "Generate user shifts for next 7 days successfully", "")
+        );
     }
 }

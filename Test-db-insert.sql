@@ -64,4 +64,23 @@ INSERT [dbo].[product] ([product_id], [name], [quantity], [product_type_id], [pr
 GO
 SET IDENTITY_INSERT [dbo].[product] OFF
 GO
+INSERT INTO [dbo].[holiday] ([holiday_date],[holiday_name]) VALUES
+    ('2023-01-01', N'Tết Dương Lịch'),
+    ('2023-01-02', N'Nghỉ Tết Dương Lịch'),
+    ('2023-01-21', N'Tết Nguyên Đán'),
+    ('2023-01-22', N'Tết Nguyên Đán'),
+    ('2023-01-23', N'Tết Nguyên Đán'),
+    ('2023-01-24', N'Tết Nguyên Đán'),
+    ('2023-01-25', N'Tết Nguyên Đán'),
+    ('2023-01-26', N'Tết Nguyên Đán'),
+    ('2023-01-27', N'Tết Nguyên Đán'),
+    ('2023-04-29', N'Giỗ Tổ Hùng Vương'),
+    ('2023-04-30', N'Ngày Thống nhất đất nước'),
+    ('2023-05-01', N'Ngày Quốc tế Lao động'),
+    ('2023-05-01', N'Nghỉ Giỗ Tổ Hùng Vương'),
+    ('2023-05-02', N'Nghỉ Ngày Thống nhất'),
+    ('2023-09-02', N'Ngày Quốc khánh'),
+    ('2023-09-04', N'Nghỉ Ngày Quốc khánh');
+GO
+
 

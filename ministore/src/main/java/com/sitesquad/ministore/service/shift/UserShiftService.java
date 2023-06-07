@@ -114,8 +114,9 @@ public class UserShiftService {
         } else {
             userShift.setEndTime(shiftDate.withHour(shift.getEndWorkHour().intValue()));
         }
-        userShift.setWeekend(DateUtil.isWeekend(shiftDate));
 
+        userShift.setIsWeekend(DateUtil.isWeekend(shiftDate));
+        userShift.setIsHoliday(false);
         System.out.println(userShift);
         return userShift;
     }
