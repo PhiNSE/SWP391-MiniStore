@@ -76,6 +76,8 @@ public class UserService {
             userDTO.setRoles(user.getRoles().getName());
             userDTO.setEmail(user.getEmail());
             userDTO.setPhone(user.getPhone());
+            userDTO.setDob(user.getDob());
+            userDTO.setGender(user.getGender());
             userDTO.setAddress(user.getAddress());
             return userDTO;
         }else{
@@ -139,10 +141,10 @@ public class UserService {
     public User edit (User newUser){
         User oldUser = userRepository.findByUserIdAndIsDeletedFalse(newUser.getUserId());
         newUser.setUserId(null);
-        User userChanged = newUser;
+        User userChanged = add(newUser.getName(),newUser.getEmail(),newUser.getPhone(),newUser.getAddress(),newUser.getDob().toString(),newUser.getGender().toString(),newUser.getRoles().toString(),newUser.getUserImg());
         if(userChanged != null){
             oldUser.setIsDeleted(Boolean.TRUE);
-            userRepository.save(userChanged);
+            userRepository.save(oldUser);
         }
         return userChanged;
     }
