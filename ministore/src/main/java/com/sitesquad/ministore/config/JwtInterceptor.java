@@ -5,11 +5,13 @@ import com.sitesquad.ministore.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 @Component
+@CrossOrigin
 public class JwtInterceptor extends HandlerInterceptorAdapter {
     @Autowired
     private JwtUtils jwtUtils;
@@ -26,7 +28,7 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
 
         String auth = request.getHeader("token");
 
-        if(!request.getRequestURI().contains("login")) {
+        if(request.getRequestURI().contains("login")) {
             Claims claims = jwtUtils.verify(auth);
 
             requestMeta.setUserId(Long.valueOf(claims.getIssuer()));

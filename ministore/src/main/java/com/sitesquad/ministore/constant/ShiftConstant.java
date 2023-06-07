@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author ADMIN
  */
+
 public class ShiftConstant{
     @Autowired
     ShiftRepository shiftRepository;
