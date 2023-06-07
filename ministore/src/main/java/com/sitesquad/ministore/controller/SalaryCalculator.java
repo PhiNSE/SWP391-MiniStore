@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -34,41 +35,46 @@ public class SalaryCalculator {
     UserService userService;
 
     @GetMapping("/salary")
-    public ResponseEntity<ResponseObject> calculateSalary() {
-        List<UserShift> userShiftList = userShiftService.findAllByIsPaid(new Long(1));
-        if(userShiftList.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject(404, "Not Found UserShift", "")
-            );
-        }
+    public ResponseEntity<ResponseObject> calculateSalary(@RequestBody List<User> userList) {
+        List<Payslip> payslipList = new ArrayList<>();
+        for (User user : userList) {
 
-        Payslip payslip = new Payslip();
-        payslip.setUserId(userShiftList.get(0).getUserId());
-        Integer shiftCount = new Integer(0);
-        Double salary = new Double(0.0);
-        
-        for (UserShift userShift : userShiftList) {
-            Double salaryInADay = userShift.getUser().getRoles().getBaseSalary() * userShift.getShift().getCoefficient();
-            if(userShift.getIsWeekend() == true) { // weekend
-                salaryInADay *= 2; // using coeffience const
-            } else { // not weekend
-                salaryInADay *= 1.5; // using coeffience const
+            List<UserShift> userShiftList = userShiftService.findAllByIsPaid(new Long(1));
+            if (userShiftList.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        new ResponseObject(404, "Not Found UserShift", "")
+                );
             }
-            if(userShift.getIsHoliday() == true) { // holiday
-                salaryInADay *= 3; // using coeffience const
+
+            Payslip payslip = new Payslip();
+            payslip.setUserId(userShiftList.get(0).getUserId());
+            Integer shiftCount = new Integer(0);
+            Double salary = new Double(0.0);
+
+            for (UserShift userShift : userShiftList) {
+                Double salaryInADay = userShift.getUser().getRoles().getBaseSalary() * userShift.getShift().getCoefficient();
+                if (userShift.getIsWeekend() == true) { // weekend
+                    salaryInADay *= 2; // using coeffience const
+                } else { // not weekend
+                    salaryInADay *= 1.5; // using coeffience const
+                }
+                if (userShift.getIsHoliday() == true) { // holiday
+                    salaryInADay *= 3; // using coeffience const
+                }
+                salary += salaryInADay;
+                shiftCount++;
+                userShift.setIsPaid(true);
+                userShift = userShiftService.edit(userShift);
             }
-            salary += salaryInADay;
-            shiftCount++;
-            userShift.setIsPaid(true);
-            userShift = userShiftService.edit(userShift);
+            payslip.setShiftCount(shiftCount);
+            System.out.println(salary);
+            payslip.setSalary(salary);
+            payslip = payslipService.add(payslip);
+
+            payslipList.add(payslip);
         }
-        payslip.setShiftCount(shiftCount);
-        System.out.println(salary);
-        payslip.setSalary(salary);
-        payslip = payslipService.add(payslip);
-        
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject(200, "Successfull", payslip)
+                new ResponseObject(200, "Successfull", payslipList)
         );
     }
 }
