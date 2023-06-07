@@ -68,18 +68,18 @@ public class UserShift {
     private ZonedDateTime endTime;
 
     @Column(name = "is_holiday")
-    private boolean isHoliday;
+    private Boolean isHoliday;
 
     @Column(name = "is_weekend")
-    private boolean isWeekend;
+    private Boolean isWeekend;
 
     @Column(name = "is_checked_in")
-    private boolean isCheckedIn;
+    private Boolean isCheckedIn;
 
     @Column(name = "is_checked_out")
-    private boolean isCheckedOut;
+    private Boolean isCheckedOut;
 
     @Column(name = "is_paid")
-    private boolean isPaid;
+    private Boolean isPaid;
 
 }
