@@ -63,7 +63,7 @@ public class ProductService {
     public Page<ProductDTO> search(Long productId, String keyword, Long productTypeId, String productCode, String sortBy, String sortType, Integer offset) {
         String name = keyword;
         String productTypeName = keyword;
-        Sort sort = null;
+        Sort sort = Sort.by(Sort.Direction.ASC,"productId");
         Sort.Direction sortDirection = Sort.Direction.ASC;
         if (sortType != null && sortType.equalsIgnoreCase("desc")) {
             sortDirection = Sort.Direction.DESC;
