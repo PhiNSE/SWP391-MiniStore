@@ -49,7 +49,7 @@ public class JwtUtils {
                 .compact();
     }
     
-    
+    @CrossOrigin
         public Claims  verify(String token) throws Exception{
         try {
         Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
