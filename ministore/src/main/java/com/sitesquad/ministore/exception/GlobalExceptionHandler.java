@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-@CrossOrigin
 
 public class GlobalExceptionHandler {
 
