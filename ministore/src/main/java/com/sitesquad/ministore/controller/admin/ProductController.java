@@ -38,19 +38,20 @@ public class ProductController {
     @Autowired
     RequestMeta requestMeta;
 
-//    @GetMapping("/product")
-//    public ResponseEntity<ResponseObject> getProducts() {
-//        List<ProductDTO> products = productService.findAll();
-//        if (products != null && !products.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.OK).body(
-//                    new ResponseObject(200, "Product list", products)
-//            );
-//        } else {
-//            return ResponseEntity.status(HttpStatus.OK).body(
-//                    new ResponseObject(404, "Empty product list", "")
-//            );
-//        }
-//    }
+    @GetMapping("/getAllProduct")
+    public ResponseEntity<ResponseObject> getProducts() {
+        List<ProductDTO> products = productService.findAll();
+        if (products != null && !products.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "Product list", products)
+            );
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(404, "Empty product list", "")
+            );
+        }
+    }
+    
     @GetMapping("/product")
     public ResponseEntity<ResponseObject> getProducts(@RequestParam(required = false) Integer offset) {
         System.out.println("User Id: "+requestMeta.getUserId());

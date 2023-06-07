@@ -44,6 +44,13 @@ public class UserShiftController {
             );
         }
     }
+    
+    @GetMapping("/userShift/assign")
+    public ResponseEntity<ResponseObject> assignUserShift(){
+                return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(200, "Generate user shifts for next 7 days successfully", "")
+        );
+    }
 
     @GetMapping("/userShift/generate")
     public ResponseEntity<ResponseObject> generateUserShifts() {
