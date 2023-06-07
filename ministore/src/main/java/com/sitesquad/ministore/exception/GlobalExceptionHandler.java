@@ -15,7 +15,7 @@ public class GlobalExceptionHandler {
         ResponseObject responseObject = new ResponseObject();
         responseObject.setStatus(HttpStatus.UNAUTHORIZED.value());
         responseObject.setMessage("Access Denied");
-        System.out.println(e);
+        e.printStackTrace();
         return ResponseEntity.status(responseObject.getStatus()).body(responseObject);
     }
 
@@ -24,16 +24,17 @@ public class GlobalExceptionHandler {
         ResponseObject responseObject = new ResponseObject();
         responseObject.setStatus(HttpStatus.BAD_REQUEST.value());
         responseObject.setMessage(e.getErrors().toString());
-        System.out.println(e);
+        e.printStackTrace();
         return ResponseEntity.status(400).body(responseObject);
     }
 
     @ExceptionHandler
     public ResponseEntity handleException(Exception e){
+        e.printStackTrace();
         ResponseObject responseObject = new ResponseObject();
         responseObject.setMessage("Oops..Something went wrong!");
         responseObject.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        System.out.println(e);
+
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(responseObject);
     }
 

@@ -12,6 +12,10 @@ import com.sitesquad.ministore.model.ResponseObject;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.repository.RoleRepository;
 import com.sitesquad.ministore.repository.UserRepository;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -97,6 +101,10 @@ public class UserController {
         String name = requestData.get("name");
         String address = requestData.get("address");
         String roleName = requestData.get("roleName");
+        String userImg = requestData.get("userImg");
+        String dob = requestData.get("dob");
+        String gender = requestData.get("gender");
+
         System.out.println("Name: " + name);
         System.out.println("Role Name: " + roleName);
         System.out.println("Email: " + email);
@@ -110,13 +118,14 @@ public class UserController {
                         new ResponseObject(405, "User email or phone is already use", "")
                 );
             } else {
-                User addUser = userService.add(name,email,phone,address,roleName);
+
+                User addUser = userService.add(name,email,phone,address,dob,gender,roleName,userImg);
                 if (addUser != null) {
                     return ResponseEntity.status(HttpStatus.OK).body(
                             new ResponseObject(200, "Add success", addUser)
                     );
                 } else {
-                    return ResponseEntity.status(HttpStatus.OK).body(
+                    return ResponseEntity.status(HttpStatus.METHOD_FAILURE).body(
                             new ResponseObject(500, "Add failed", "")
                     );
                 }
@@ -137,7 +146,7 @@ public class UserController {
                         new ResponseObject(200, "Delete success", "")
                 );
             }else
-                return ResponseEntity.status(HttpStatus.OK).body(
+                return ResponseEntity.status(HttpStatus.METHOD_FAILURE).body(
                         new ResponseObject(500, "Delete failed", "")
                 );
 
@@ -147,5 +156,26 @@ public class UserController {
             );
         }
     }
+
+    @PutMapping()
+    public ResponseEntity<ResponseObject> User (@RequestBody User user) {
+        if (requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
+            User editedUser = userService.edit(user);
+            if (editedUser != null) {
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject(200, "Edit success", editedUser)
+                );
+            } else {
+                return ResponseEntity.status(HttpStatus.METHOD_FAILURE).body(
+                        new ResponseObject(500, "Edit failed", "")
+                );
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
+                    new ResponseObject(406, "Access denied", "")
+            );
+        }
+    }
+
 }
 

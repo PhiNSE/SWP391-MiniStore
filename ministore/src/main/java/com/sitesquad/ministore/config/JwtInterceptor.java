@@ -26,7 +26,7 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
 
         String auth = request.getHeader("token");
 
-        if(request.getRequestURI().contains("login")) {
+        if(!request.getRequestURI().contains("login")) {
             Claims claims = jwtUtils.verify(auth);
 
             requestMeta.setUserId(Long.valueOf(claims.getIssuer()));
