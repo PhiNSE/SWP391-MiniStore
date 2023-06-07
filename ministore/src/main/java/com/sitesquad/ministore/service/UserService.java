@@ -10,6 +10,10 @@ import com.sitesquad.ministore.model.Role;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.repository.RoleRepository;
 import com.sitesquad.ministore.repository.UserRepository;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +44,9 @@ public class UserService {
            userDTO.setRoles(user.getRoles().getName());
            userDTO.setAddress(user.getAddress());
            userDTO.setPhone(user.getPhone());
+           userDTO.setDob(user.getDob());
+           userDTO.setGender(user.getGender());
+           userDTO.setUserImg(user.getUserImg());
            return userDTO;
         });
         return userDTOPage;
@@ -95,17 +102,36 @@ public class UserService {
         return userRepository.findUserByRoles_NameIgnoreCaseAndIsDeletedFalse(name);
     }
 
-    public User add (String name,String email,String phone,String address, String roleName){
+    public User add (String name,String email,String phone,String address,String dob, String gender ,String roleName, String userImg){
         User user = new User();
+
         Role roleNameAdd = roleRepository.findByNameIgnoreCaseAndIsDeletedIsFalse(roleName.trim());
         user.setRoles(roleNameAdd);
         System.out.println(roleNameAdd);
         user.setRoleId(roleNameAdd.getRoleId());
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date dobDate = dateFormat.parse(dob);
+            user.setDob(dobDate);
+        }catch (Exception e){
+            System.out.println(e);
+        }
+
+        Boolean genderBoolean = null;
+        if(gender.trim().toLowerCase() == "male"){
+            genderBoolean = true;
+        }else {
+            genderBoolean = false;
+        }
+        user.setGender(genderBoolean);
+
         user.setIsDeleted(false);
         user.setName(name);
         user.setEmail(email);
         user.setPhone(phone);
         user.setAddress(address);
+        user.setUserImg(userImg);
         user.setPassword("1");
         return userRepository.save(user);
     }
