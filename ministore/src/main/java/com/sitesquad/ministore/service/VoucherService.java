@@ -37,7 +37,13 @@ public class VoucherService {
     }
 
     public boolean delete(Long id) {
-        voucherRepository.deleteById(id);
-        return voucherRepository.findById(id) == null;
+        Voucher voucher = voucherRepository.findById(id).orElse(null);
+        if (voucher == null) {
+            return false;
+        } else {
+            voucher.setIsDeleted(true);
+            voucherRepository.save(voucher);
+            return true;
+        }
     }
 }

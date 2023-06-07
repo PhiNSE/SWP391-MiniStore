@@ -82,12 +82,12 @@ public class VoucherController {
     @DeleteMapping("/voucher/delete/{id}")
     public ResponseEntity<ResponseObject> deleteVoucher(@PathVariable Long id) {
         Boolean isDeleted = voucherService.delete(id);
-        if (!isDeleted) {
+        if (isDeleted) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Delete sucessfully ", "")
             );
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+            return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(500, "Cant delete voucher", "")
             );
         }
