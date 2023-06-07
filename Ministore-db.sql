@@ -1,3 +1,4 @@
+--phi-db
 DROP DATABASE [MinistoreManagement]
 USE [master]
 GO
