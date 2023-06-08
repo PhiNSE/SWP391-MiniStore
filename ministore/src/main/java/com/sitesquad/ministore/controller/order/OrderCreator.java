@@ -17,6 +17,7 @@ import com.sitesquad.ministore.service.VoucherService;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -142,8 +143,10 @@ public class OrderCreator {
             order.setTotal(totalOrder * (1 - order.getVoucher().getPercentDiscount()));
         }
         order = orderService.edit(order);
+        Map<Object, Object> invoice = new HashMap<>();
+        invoice.put(order, orderDetails);
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject(200, "Successfull", "")
+                new ResponseObject(200, "Successfull", invoice)
         );
     }
 

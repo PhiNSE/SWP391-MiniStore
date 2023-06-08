@@ -2,12 +2,17 @@ package com.sitesquad.ministore.controller.admin;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sitesquad.ministore.dto.ProductDTO;
+import com.sitesquad.ministore.model.Order;
+import com.sitesquad.ministore.model.OrderDetails;
 import com.sitesquad.ministore.model.Product;
 import com.sitesquad.ministore.model.RequestMeta;
 import com.sitesquad.ministore.model.ResponseObject;
 import com.sitesquad.ministore.repository.ProductRepository;
 import com.sitesquad.ministore.repository.ProductTypeRepository;
+import com.sitesquad.ministore.service.OrderService;
 import com.sitesquad.ministore.service.ProductService;
+import com.sun.javafx.scene.control.skin.VirtualFlow;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +42,9 @@ public class ProductController {
 
     @Autowired
     RequestMeta requestMeta;
+    
+    @Autowired
+    OrderService orderService;
 
     @GetMapping("/getAllProduct")
     public ResponseEntity<ResponseObject> getProducts() {
@@ -117,6 +125,9 @@ public class ProductController {
     public ResponseEntity<ResponseObject> addProduct(@RequestBody Product product) {
         if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
             product.setIsDeleted(Boolean.FALSE);
+            List<Product> products = new ArrayList<>();
+            products.add(product);
+            orderService.importOrder(products);
             Product addProduct = productService.add(product);
             if (addProduct != null) {
                 return ResponseEntity.status(HttpStatus.OK).body(

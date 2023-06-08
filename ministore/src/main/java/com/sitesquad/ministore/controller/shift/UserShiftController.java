@@ -6,7 +6,10 @@
 package com.sitesquad.ministore.controller.shift;
 
 import com.sitesquad.ministore.model.ResponseObject;
+import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.model.UserShift;
+import com.sitesquad.ministore.repository.UserRepository;
+import com.sitesquad.ministore.service.UserService;
 import com.sitesquad.ministore.service.shift.UserShiftService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,12 @@ public class UserShiftController {
     @Autowired
     UserShiftService userShiftService;
 
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    UserRepository userRepository;
+
     @GetMapping("/userShift")
     public ResponseEntity<ResponseObject> getUserShifts(@RequestParam(required = false) Integer offset) {
         if (offset == null) {
@@ -44,11 +53,24 @@ public class UserShiftController {
             );
         }
     }
-    
+
     @GetMapping("/userShift/assign")
-    public ResponseEntity<ResponseObject> assignUserShift(){
-                return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject(200, "Generate user shifts for next 7 days successfully", "")
+    public ResponseEntity<ResponseObject> assignUserShift(@RequestParam Long userId, @RequestParam Long userShiftId) {
+        if (userId == null || userShiftId == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject(500, "Parameter id or user shift id is not recieved", "")
+            );
+        }
+        UserShift userShift = userShiftService.findById(userShiftId);
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null || userShift == null) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(500, "There's no such user or user shift", "")
+            );
+        }
+        
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(200, "Assign succesfully ", "")
         );
     }
 
