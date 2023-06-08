@@ -180,6 +180,12 @@ public class OrderCreator {
                     new ResponseObject(200, "Successfull", "")
             );
         }
+        
+        if(productList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(404, "Could not find any product", "")
+            );
+        }
 
         voucher = voucherService.add(voucher);
         List<ProductVoucher> productVoucherList = new ArrayList<>();

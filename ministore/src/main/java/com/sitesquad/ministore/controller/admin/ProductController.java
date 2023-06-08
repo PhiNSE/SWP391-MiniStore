@@ -123,7 +123,7 @@ public class ProductController {
 
     @PostMapping("/product")
     public ResponseEntity<ResponseObject> addProduct(@RequestBody Product product) {
-        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
+//        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
             product.setIsDeleted(Boolean.FALSE);
             List<Product> products = new ArrayList<>();
             products.add(product);
@@ -138,17 +138,17 @@ public class ProductController {
                         new ResponseObject(500, "Cant add product", product)
                 );
             }
-        }else{
-            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
-                    new ResponseObject(406, "Access denied", "")
-            );
-        }
+//        }else{
+//            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
+//                    new ResponseObject(406, "Access denied", "")
+//            );
+//        }
 
     }
 
     @PutMapping("/product")
     public ResponseEntity<ResponseObject> editProduct(@RequestBody Product product) {
-        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
+//        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
             Product editedProduct = productService.edit(product);
             if (editedProduct != null) {
                 return ResponseEntity.status(HttpStatus.OK).body(
@@ -159,16 +159,16 @@ public class ProductController {
                         new ResponseObject(500, "Cant edit product", product)
                 );
             }
-        }else{
-            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
-                    new ResponseObject(406, "Access denied", "")
-            );
-        }
+//        }else{
+//            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
+//                    new ResponseObject(406, "Access denied", "")
+//            );
+//        }
     }
 
     @DeleteMapping("/product/{id}")
     public ResponseEntity<ResponseObject> deleteProduct(@PathVariable Long id) {
-        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
+//        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
             Boolean isDeleted = productService.delete(id);
             if (isDeleted) {
                 return ResponseEntity.status(HttpStatus.OK).body(
@@ -179,10 +179,10 @@ public class ProductController {
                         new ResponseObject(500, "Cant delete product", "")
                 );
             }
-        }else{
-            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
-                    new ResponseObject(406, "Access denied", "")
-            );
-        }
+//        }else{
+//            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
+//                    new ResponseObject(406, "Access denied", "")
+//            );
+//        }
     }
 }

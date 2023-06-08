@@ -14,12 +14,14 @@ import java.util.Date;
 import java.util.logging.Logger;
 import javax.crypto.spec.SecretKeySpec;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 /**
  *
  * @author ADMIN
  */
 @Component
+
 public class JwtUtils {
     private static String secretKey = "123456";
     private static long expriryDuration = 60*60;
@@ -47,7 +49,7 @@ public class JwtUtils {
                 .compact();
     }
     
-    
+    @CrossOrigin
         public Claims  verify(String token) throws Exception{
         try {
         Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
