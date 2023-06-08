@@ -1,12 +1,21 @@
 package com.sitesquad.ministore.service;
 
+import com.sitesquad.ministore.model.Order;
 import com.sitesquad.ministore.model.OrderDetails;
+import com.sitesquad.ministore.model.Product;
 import com.sitesquad.ministore.repository.OrderDetailsRepository;
 import com.sitesquad.ministore.repository.OrderRepository;
 import com.sitesquad.ministore.repository.ProductRepository;
 import com.sitesquad.ministore.repository.ProductVoucherRepository;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,5 +59,31 @@ public class OrderDetailsService {
 
     public OrderDetails edit(OrderDetails newOrerDetail) {
         return orderDetailRepository.save(newOrerDetail);
+    }
+
+
+
+    public List<OrderDetails> importOrderDetail(List<Product> productList, Order order) {
+        Set<Long> seenIds = new HashSet<>();
+        List<Product> filteredProductList = new ArrayList<>();
+
+        for (Product product : productList) {
+            Long id = product.getProductId();
+            if (!seenIds.contains(id)) {
+                seenIds.add(id);
+                filteredProductList.add(product);
+            }
+        }
+
+        List<OrderDetails> orderDetailList = new ArrayList<>();
+        for (Product product : filteredProductList) {
+            OrderDetails orderDetail = new OrderDetails();
+            orderDetail.setOrderId(order.getOrderId());
+            orderDetail.setProductId(product.getProductId());
+            orderDetail.setPrice(product.getPrice());
+            orderDetail.setQuantity(product.getQuantity());
+            orderDetailList.add(orderDetail);
+        }
+        return orderDetailList;
     }
 }

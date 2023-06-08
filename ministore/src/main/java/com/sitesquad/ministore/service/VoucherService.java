@@ -25,7 +25,7 @@ public class VoucherService {
         Optional<Voucher> foundVoucher = voucherRepository.findById(id);
         return foundVoucher.get();
     }
-    
+
     public List<Voucher> findByDescriptionOrName(String description, String name) {
         List<Voucher> foundVouchers = voucherRepository.searchByDescriptionContainingIgnoreCaseOrNameContainingIgnoreCase(description, name);
         return foundVouchers;
@@ -45,5 +45,11 @@ public class VoucherService {
             voucherRepository.save(voucher);
             return true;
         }
+    }
+
+    public boolean minusQuantityOfVoucher(Long voucherId) {
+        Voucher voucher = findById(voucherId);
+        voucher.setQuantity(voucher.getQuantity() - 1);
+        return true;
     }
 }

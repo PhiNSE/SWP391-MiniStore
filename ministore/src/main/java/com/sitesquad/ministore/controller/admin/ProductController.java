@@ -9,11 +9,16 @@ import com.sitesquad.ministore.model.RequestMeta;
 import com.sitesquad.ministore.model.ResponseObject;
 import com.sitesquad.ministore.repository.ProductRepository;
 import com.sitesquad.ministore.repository.ProductTypeRepository;
+import com.sitesquad.ministore.service.OrderDetailsService;
 import com.sitesquad.ministore.service.OrderService;
 import com.sitesquad.ministore.service.ProductService;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,9 +47,12 @@ public class ProductController {
 
     @Autowired
     RequestMeta requestMeta;
-    
+
     @Autowired
     OrderService orderService;
+
+    @Autowired
+    OrderDetailsService orderDetailsService;
 
     @GetMapping("/getAllProduct")
     public ResponseEntity<ResponseObject> getProducts() {
@@ -59,12 +67,12 @@ public class ProductController {
             );
         }
     }
-    
+
     @GetMapping("/product")
     public ResponseEntity<ResponseObject> getProducts(@RequestParam(required = false) Integer offset) {
-        System.out.println("User Id: "+requestMeta.getUserId());
-        System.out.println("User Name: "+requestMeta.getName());
-        System.out.println("User Role: "+requestMeta.getRole());
+        System.out.println("User Id: " + requestMeta.getUserId());
+        System.out.println("User Name: " + requestMeta.getName());
+        System.out.println("User Role: " + requestMeta.getRole());
         if (offset == null) {
             offset = 0;
         }
@@ -124,20 +132,19 @@ public class ProductController {
     @PostMapping("/product")
     public ResponseEntity<ResponseObject> addProduct(@RequestBody Product product) {
 //        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
-            product.setIsDeleted(Boolean.FALSE);
-            List<Product> products = new ArrayList<>();
-            products.add(product);
-            orderService.importOrder(products);
-            Product addProduct = productService.add(product);
-            if (addProduct != null) {
-                return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject(200, "Add sucessfully ", addProduct)
-                );
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                        new ResponseObject(500, "Cant add product", product)
-                );
-            }
+        product.setIsDeleted(Boolean.FALSE);
+        List<Product> products = new ArrayList<>();
+        products.add(product);
+        Product addProduct = productService.add(product);
+        if (addProduct != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "Add sucessfully ", addProduct)
+            );
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject(500, "Cant add product", product)
+            );
+        }
 //        }else{
 //            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
 //                    new ResponseObject(406, "Access denied", "")
@@ -146,19 +153,43 @@ public class ProductController {
 
     }
 
+    public Order createOrder() {
+        Order order = new Order();
+        order.setType(true);
+        order.setUserId(new Long(1));
+        Date date = new Date();
+        order.setDate(new Timestamp(date.getTime()));
+        return orderService.add(order);
+    }
+
+    @PostMapping("product/createOrder")
+    public ResponseEntity<ResponseObject> addProduct(@RequestBody List<Product> productList) {
+        Order order = createOrder();
+        List<OrderDetails> orderDetailList = orderDetailsService.importOrderDetail(productList, order); // bug here
+        
+        //calculate total of Order here
+        
+        
+        Map<Object, Object> invoice = new HashMap<>();
+        invoice.put(productList, order);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(200, "Add sucessfully ", invoice)
+        );
+    }
+
     @PutMapping("/product")
     public ResponseEntity<ResponseObject> editProduct(@RequestBody Product product) {
 //        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
-            Product editedProduct = productService.edit(product);
-            if (editedProduct != null) {
-                return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject(200, "Edit sucessfully ", editedProduct)
-                );
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                        new ResponseObject(500, "Cant edit product", product)
-                );
-            }
+        Product editedProduct = productService.edit(product);
+        if (editedProduct != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "Edit sucessfully ", editedProduct)
+            );
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject(500, "Cant edit product", product)
+            );
+        }
 //        }else{
 //            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
 //                    new ResponseObject(406, "Access denied", "")
@@ -169,16 +200,16 @@ public class ProductController {
     @DeleteMapping("/product/{id}")
     public ResponseEntity<ResponseObject> deleteProduct(@PathVariable Long id) {
 //        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
-            Boolean isDeleted = productService.delete(id);
-            if (isDeleted) {
-                return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject(200, "Delete sucessfully ", "")
-                );
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                        new ResponseObject(500, "Cant delete product", "")
-                );
-            }
+        Boolean isDeleted = productService.delete(id);
+        if (isDeleted) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "Delete sucessfully ", "")
+            );
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject(500, "Cant delete product", "")
+            );
+        }
 //        }else{
 //            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
 //                    new ResponseObject(406, "Access denied", "")
