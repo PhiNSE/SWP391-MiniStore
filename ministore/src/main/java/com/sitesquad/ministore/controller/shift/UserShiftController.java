@@ -5,6 +5,7 @@
  */
 package com.sitesquad.ministore.controller.shift;
 
+import com.sitesquad.ministore.constant.RoleConstant;
 import com.sitesquad.ministore.model.ResponseObject;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.model.UserShift;
@@ -68,9 +69,19 @@ public class UserShiftController {
                     new ResponseObject(500, "There's no such user or user shift", "")
             );
         }
-        
+        if (user.getRoles().getName().equalsIgnoreCase(RoleConstant.ADMIN_ROLE_NAME)) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(500, "CAN NOT ASSIGN ADMIN TO A SHIFT", "")
+            );
+        } else if (!user.getRoles().getName().equalsIgnoreCase(userShift.getUser().getRoles().getName())) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(500, "CAN NOT ASSIGN EMPLOYEE/GUARD TO A DIFFERENT ROLE SHIFT", "")
+            );
+        }
+        userShift.setUserId(user.getUserId());
+        UserShift userShiftassigned = userShiftService.edit(userShift);
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject(200, "Assign succesfully ", "")
+                new ResponseObject(200, "Assign succesfully ", userShiftassigned.getUser().getName())
         );
     }
 

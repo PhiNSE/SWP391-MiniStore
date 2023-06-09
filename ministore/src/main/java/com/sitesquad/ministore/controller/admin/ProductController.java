@@ -153,6 +153,27 @@ public class ProductController {
 
     }
 
+    @PostMapping("/productlist")
+    public ResponseEntity<ResponseObject> addProductList(@RequestBody List<Product> productlist) {
+        if (productlist == null || productlist.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject(200, "Product list parameter not found ", "")
+            );
+        }
+        for (Product product : productlist) {
+            productService.add(product);
+        }
+        if (productlist != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "Add sucessfully ", "")
+            );
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject(500, "Cant add product list", "")
+            );
+        }
+    }
+
     public Order createOrder() {
         Order order = new Order();
         order.setType(true);
@@ -166,10 +187,8 @@ public class ProductController {
     public ResponseEntity<ResponseObject> addProduct(@RequestBody List<Product> productList) {
         Order order = createOrder();
         List<OrderDetails> orderDetailList = orderDetailsService.importOrderDetail(productList, order); // bug here
-        
+
         //calculate total of Order here
-        
-        
         Map<Object, Object> invoice = new HashMap<>();
         invoice.put(productList, order);
         return ResponseEntity.status(HttpStatus.OK).body(
