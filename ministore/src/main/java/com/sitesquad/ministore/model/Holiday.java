@@ -1,6 +1,7 @@
 package com.sitesquad.ministore.model;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,7 +33,7 @@ public class Holiday implements Serializable{
     private Long holidayId;
     
     @Column(name = "holiday_date")
-    private Date date;
+    private LocalDate date;
     
     @Column(name = "holiday_name")
     private String name;

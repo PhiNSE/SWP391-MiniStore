@@ -10,6 +10,7 @@ import com.sitesquad.ministore.constant.SystemConstant;
 import com.sitesquad.ministore.model.ResponseObject;
 import com.sitesquad.ministore.model.Shift;
 import com.sitesquad.ministore.model.UserShift;
+import com.sitesquad.ministore.repository.HolidayRepository;
 import com.sitesquad.ministore.repository.ShiftRepository;
 import com.sitesquad.ministore.repository.UserRepository;
 import com.sitesquad.ministore.repository.UserShiftRepository;
@@ -41,10 +42,13 @@ public class UserShiftService {
     @Autowired
     ShiftRepository shiftRepository;
 
+    @Autowired
+    HolidayRepository holidayRepository;
+
     public List<UserShift> findAll() {
         return userShiftRepository.findAll();
     }
-    
+
     public List<UserShift> findAllByIsPaid(Long id) {
         return userShiftRepository.findByIsPaidFalseOrIsPaidNullAndUserId(id);
     }
@@ -56,7 +60,7 @@ public class UserShiftService {
         }
         ZonedDateTime period = SystemConstant.ZONE_DATE_TIME_NOW;
         if (offset == null) {
-            offset =0;
+            offset = 0;
         }
         List<UserShift> viewShifts = new ArrayList<>();
         for (UserShift userShift : userShifts) {
@@ -86,7 +90,7 @@ public class UserShiftService {
     }
 
     @Scheduled(cron = "0 0 0 */7 * *")
-    public void generateUserShifts () throws NullPointerException {
+    public void generateUserShifts() throws NullPointerException {
         System.out.print("Generating shifts...");
         UserShift lastShift = userShiftRepository.findTop1ByOrderByEndTimeDesc();
         ZonedDateTime startDate = SystemConstant.ZONE_DATE_TIME_NOW.withHour(0).withMinute(0).withSecond(0);
@@ -96,7 +100,7 @@ public class UserShiftService {
         Shift salerMorningShift = shiftRepository.findByName(ShiftConstant.SALER_MORNING_SHIFT).orElse(null);
         Shift salerAfternoonShift = shiftRepository.findByName(ShiftConstant.SALER_AFTERNOON_SHIFT).orElse(null);
         Shift salerEveningShift = shiftRepository.findByName(ShiftConstant.SALER_NIGHT_SHIFT).orElse(null);
-        
+
         Shift guardDayShift = shiftRepository.findByName(ShiftConstant.GUARD_DAY_SHIFT).orElse(null);
         Shift guardNightShift = shiftRepository.findByName(ShiftConstant.GUARD_NIGHT_SHIFT).orElse(null);
         ZonedDateTime shiftDate = startDate;
@@ -104,7 +108,7 @@ public class UserShiftService {
             add(getUserShift(salerMorningShift, shiftDate, false));
             add(getUserShift(salerAfternoonShift, shiftDate, false));
             add(getUserShift(salerEveningShift, shiftDate, true));
-            
+
             add(getUserShift(guardDayShift, shiftDate, false));
             add(getUserShift(guardNightShift, shiftDate, true));
             shiftDate = shiftDate.plusDays(1);
@@ -122,8 +126,12 @@ public class UserShiftService {
         }
         userShift.getStartTime();
         userShift.setIsWeekend(DateUtil.isWeekend(shiftDate));
-        userShift.setIsHoliday(false);
-        System.out.println(userShift);
+        if (holidayRepository.findByDate(userShift.getStartTime().toLocalDate()) != null) {
+            userShift.setIsHoliday(true);
+        }else{
+            userShift.setIsHoliday(false);
+        }
+
         return userShift;
     }
 // @Scheduled(cron = "* * * ? * *")
