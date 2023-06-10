@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -31,7 +32,13 @@ public class PayslipService {
         Optional<Payslip> foundPayslip = payslipRepository.findById(id);
         return foundPayslip.get();
     }
+    
+    public List<Payslip> findByUserId(Long id) {
+        List<Payslip> foundPayslip = payslipRepository.findByUserId(id);
+        return foundPayslip;
+    }
 
+    @Transactional
     public Payslip add(Payslip payslip) {
         payslip.setUser(userRepository.findById(payslip.getUserId()).get());
         return payslipRepository.save(payslip);

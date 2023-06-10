@@ -215,7 +215,9 @@ public class OrderCreator {
         for (Voucher v : voucherList) {
             if (v.getIsApplyAll() != null) {
                 if (v.getIsApplyAll() == true) {
-                    filteredVoucherList.add(v);
+                    if (v.getQuantity() > 0) {
+                        filteredVoucherList.add(v);
+                    }
                 }
             }
         }

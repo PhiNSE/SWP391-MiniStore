@@ -12,6 +12,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,19 +35,26 @@ public class SalaryCalculator {
     @Autowired
     UserService userService;
 
+    @Scheduled(cron = "*/10 * * * * *")
     @GetMapping("/salary")
-    public ResponseEntity<ResponseObject> calculateSalary(@RequestBody List<User> userList) {
+    public ResponseEntity<ResponseObject> calculateSalary() {
         List<Payslip> payslipList = new ArrayList<>();
+        List<User> userList = userService.findAllExceptAdmin();
+        System.out.println(userList);
+
         for (User user : userList) {
 
-            List<UserShift> userShiftList = userShiftService.findAllByIsPaid(new Long(1));
+            System.out.println(user.getUserId());
+            List<UserShift> userShiftList = userShiftService.findAllByIsPaidAndUserId(user.getUserId());
+            System.out.println(userShiftList);
             if (userShiftList.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObject(404, "Not Found UserShift", "")
                 );
             }
 
             Payslip payslip = new Payslip();
+            System.out.println(userShiftList.get(0).getUserId());
             payslip.setUserId(userShiftList.get(0).getUserId());
             Integer shiftCount = new Integer(0);
             Double salary = new Double(0.0);
