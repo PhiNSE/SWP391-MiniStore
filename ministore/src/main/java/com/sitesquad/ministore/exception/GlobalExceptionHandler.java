@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-
 public class GlobalExceptionHandler {
 
     @ExceptionHandler
@@ -43,6 +42,7 @@ public class GlobalExceptionHandler {
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(responseObject);
     }
+
 
     @ExceptionHandler(NoSuchFieldException.class)
     public ResponseEntity<ResponseObject> handleNoSuchFieldError(NoSuchFieldException e) {

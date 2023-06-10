@@ -131,6 +131,8 @@ public class ProductController {
         }
     }
 
+
+
     @PostMapping("/productlist")
     public ResponseEntity<ResponseObject> addProductList(@RequestBody(required = false) List<Product> productlist) throws NoSuchFieldException{
         if (productlist == null || productlist.isEmpty()) {
@@ -188,6 +190,7 @@ public class ProductController {
 
     @PutMapping("/product")
     public ResponseEntity<ResponseObject> editProduct(@RequestBody Product product) {
+
 //        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
         Product editedProduct = productService.edit(product);
         if (editedProduct != null) {
@@ -208,6 +211,7 @@ public class ProductController {
 
     @DeleteMapping("/product/{id}")
     public ResponseEntity<ResponseObject> deleteProduct(@PathVariable Long id) {
+
 //        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
         Boolean isDeleted = productService.delete(id);
         if (isDeleted) {
