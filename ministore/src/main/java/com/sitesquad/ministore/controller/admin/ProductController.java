@@ -17,9 +17,11 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -129,49 +131,47 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/product")
-    public ResponseEntity<ResponseObject> addProduct(@RequestBody Product product) {
-//        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
-        product.setIsDeleted(Boolean.FALSE);
-        List<Product> products = new ArrayList<>();
-        products.add(product);
-        //ADD TO IMPORT ORDER HERE
-        
-        
-        Product addProduct = productService.add(product);
-        if (addProduct != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "Add sucessfully ", addProduct)
-            );
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject(500, "Cant add product", product)
-            );
-        }
-//        }else{
-//            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
-//                    new ResponseObject(406, "Access denied", "")
-//            );
-//        }
-
-    }
-
     @PostMapping("/productlist")
-    public ResponseEntity<ResponseObject> addProductList(@RequestBody List<Product> productlist) {
+    public ResponseEntity<ResponseObject> addProductList(@RequestBody(required = false) List<Product> productlist) {
         if (productlist == null || productlist.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject(200, "Product list parameter not found ", "")
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(404, "Product list parameter not found ", "")
             );
         }
+
+        // check duplicate productList
+        Set<String> seenProductCodes = new HashSet<>();
+        List<Product> filteredProductList = new ArrayList<>();
         for (Product product : productlist) {
+            String productCode = product.getProductCode();
+            if (!seenProductCodes.contains(productCode)) {
+                seenProductCodes.add(productCode);
+                filteredProductList.add(product);
+            }
+        }
+
+        // add product into db
+        for (Product product : filteredProductList) {
             productService.add(product);
         }
+
+        // create order import product
+        Order order = createOrder();
+        List<OrderDetails> orderDetailList = orderDetailsService.importOrderDetail(filteredProductList, order);
+
+        Double totalOrder = 0.0;
+        for (OrderDetails orderDetail : orderDetailList) {
+            totalOrder += orderDetail.getTotal();
+        }
+        order.setTotal(totalOrder);
+        order = orderService.edit(order);
+
         if (productlist != null) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Add sucessfully ", "")
             );
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+            return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(500, "Cant add product list", "")
             );
         }
@@ -184,19 +184,6 @@ public class ProductController {
         Date date = new Date();
         order.setDate(new Timestamp(date.getTime()));
         return orderService.add(order);
-    }
-
-    @PostMapping("product/createOrder")
-    public ResponseEntity<ResponseObject> addProduct(@RequestBody List<Product> productList) {
-        Order order = createOrder();
-        List<OrderDetails> orderDetailList = orderDetailsService.importOrderDetail(productList, order); // bug here
-
-        //calculate total of Order here
-        Map<Object, Object> invoice = new HashMap<>();
-        invoice.put(productList, order);
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject(200, "Add sucessfully ", invoice)
-        );
     }
 
     @PutMapping("/product")
