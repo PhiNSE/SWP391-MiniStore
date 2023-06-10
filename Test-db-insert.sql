@@ -14,7 +14,7 @@ insert into [dbo].[shift]([name],[start_work_hour],[end_work_hour],[coefficient]
 ('saler-afternoon',12,18,1),
 ('saler-night',18,6,1.5),
 ('guard-day',6,18,1),
-('guard-morning',18,6,1.5)
+('guard-night',18,6,1.5)
 
 insert into [dbo].[product_type]([name]) values('nước ngọt')
 

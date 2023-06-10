@@ -120,7 +120,7 @@ public class UserShiftService {
         } else {
             userShift.setEndTime(shiftDate.withHour(shift.getEndWorkHour().intValue()));
         }
-
+        userShift.getStartTime();
         userShift.setIsWeekend(DateUtil.isWeekend(shiftDate));
         userShift.setIsHoliday(false);
         System.out.println(userShift);

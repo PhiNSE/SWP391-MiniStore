@@ -86,6 +86,11 @@ public class UserShiftController {
                     new ResponseObject(500, "CAN NOT ASSIGN EMPLOYEE/GUARD TO A DIFFERENT ROLE SHIFT", "")
             );
         }
+        if(userShift.getUserId()!=null){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(500, "THIS SHIFT IS ASSIGN ALREADY", userService.findById(userId))
+            );
+        }
         userShift.setUserId(user.getUserId());
         UserShift userShiftassigned = userShiftService.edit(userShift);
         return ResponseEntity.status(HttpStatus.OK).body(
