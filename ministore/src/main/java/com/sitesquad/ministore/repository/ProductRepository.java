@@ -47,4 +47,5 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 //    Page<Product> findByIsDeletedIsNull(Pageable pageable);
 //
 //
+  
 }

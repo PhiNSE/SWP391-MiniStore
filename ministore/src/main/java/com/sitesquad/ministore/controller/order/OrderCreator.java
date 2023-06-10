@@ -17,6 +17,7 @@ import com.sitesquad.ministore.service.VoucherService;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -127,6 +128,8 @@ public class OrderCreator {
 
                     orderDetail.setTotal(orderDetail.getPrice() * orderDetail.getQuantity() * (1 - orderDetail.getProductVoucher().getVoucher().getPercentDiscount()));
                     orderDetail = orderDetailsService.edit(orderDetail);
+
+                    voucherService.minusQuantityOfVoucher(voucherId);
                 } else {
                     orderDetail.setTotal(orderDetail.getPrice() * orderDetail.getQuantity());
                     orderDetail = orderDetailsService.add(orderDetail);
@@ -140,8 +143,11 @@ public class OrderCreator {
             order.setTotal(totalOrder);
         } else {
             order.setTotal(totalOrder * (1 - order.getVoucher().getPercentDiscount()));
+            voucherService.minusQuantityOfVoucher(order.getVoucherId());
         }
         order = orderService.edit(order);
+//        Map<Object, Object> invoice = new HashMap<>();
+//        invoice.put(order, orderDetails);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(200, "Successfull", "")
         );
@@ -154,7 +160,9 @@ public class OrderCreator {
         List<ProductVoucher> productVoucherList = productVoucherService.findByProductId(productId);
         for (int i = 0; i < results && i < productVoucherList.size(); i++) {
             Voucher voucher = voucherService.findById(productVoucherList.get(i).getVoucherId());
-            voucherList.add(voucher);
+            if (voucher.getQuantity() > 0) {
+                voucherList.add(voucher);
+            }
         }
         if (voucherList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
@@ -177,8 +185,8 @@ public class OrderCreator {
                     new ResponseObject(200, "Successfull", "")
             );
         }
-        
-        if(productList.isEmpty()) {
+
+        if (productList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(404, "Could not find any product", "")
             );

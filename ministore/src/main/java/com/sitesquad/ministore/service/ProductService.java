@@ -103,6 +103,7 @@ public class ProductService {
     }
 
     public Product add(Product product) {
+        product.setIsDeleted(Boolean.FALSE);
         product.setProductType(productTypeRepository.findById(product.getProductTypeId()).get());
         return productRepository.save(product);
     }
@@ -134,4 +135,8 @@ public class ProductService {
         product.setQuantity(product.getQuantity() - orderQuantity);
         return true;
     }
+  
+//Nhap hang
+    
+    
 }

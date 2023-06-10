@@ -86,7 +86,7 @@ public class UserShiftService {
     }
 
     @Scheduled(cron = "0 0 0 */7 * *")
-    public void generateUserShifts() {
+    public void generateUserShifts () throws NullPointerException {
         System.out.print("Generating shifts...");
         UserShift lastShift = userShiftRepository.findTop1ByOrderByEndTimeDesc();
         ZonedDateTime startDate = SystemConstant.ZONE_DATE_TIME_NOW.withHour(0).withMinute(0).withSecond(0);
@@ -95,12 +95,18 @@ public class UserShiftService {
         }
         Shift salerMorningShift = shiftRepository.findByName(ShiftConstant.SALER_MORNING_SHIFT).orElse(null);
         Shift salerAfternoonShift = shiftRepository.findByName(ShiftConstant.SALER_AFTERNOON_SHIFT).orElse(null);
-        Shift salerEveningShift = shiftRepository.findByName(ShiftConstant.SALER_EVENING_SHIFT).orElse(null);
+        Shift salerEveningShift = shiftRepository.findByName(ShiftConstant.SALER_NIGHT_SHIFT).orElse(null);
+        
+        Shift guardDayShift = shiftRepository.findByName(ShiftConstant.GUARD_DAY_SHIFT).orElse(null);
+        Shift guardNightShift = shiftRepository.findByName(ShiftConstant.GUARD_NIGHT_SHIFT).orElse(null);
         ZonedDateTime shiftDate = startDate;
         for (int i = 0; i < 7; i++) {
             add(getUserShift(salerMorningShift, shiftDate, false));
             add(getUserShift(salerAfternoonShift, shiftDate, false));
             add(getUserShift(salerEveningShift, shiftDate, true));
+            
+            add(getUserShift(guardDayShift, shiftDate, false));
+            add(getUserShift(guardNightShift, shiftDate, true));
             shiftDate = shiftDate.plusDays(1);
         }
     }

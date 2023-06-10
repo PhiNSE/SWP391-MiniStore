@@ -15,8 +15,8 @@ public class ShiftConstant{
     public static int NEW_DAY_START_HOUR = 6;
     public static String SALER_MORNING_SHIFT =  "saler-morning";
     public static String SALER_AFTERNOON_SHIFT = "saler-afternoon";
-    public static String SALER_EVENING_SHIFT = "saler-night";
+    public static String SALER_NIGHT_SHIFT = "saler-night";
     
-    public static String GUARD_MORNING_SHIFT = "guard-day";
-    public static String GUARD_EVENING_SHIFT = "guard-night";
+    public static String GUARD_DAY_SHIFT = "guard-day";
+    public static String GUARD_NIGHT_SHIFT = "guard-night";
 }
