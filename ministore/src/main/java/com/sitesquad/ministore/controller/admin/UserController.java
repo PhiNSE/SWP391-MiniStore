@@ -52,7 +52,7 @@ public class UserController {
     @GetMapping()
     public ResponseEntity<ResponseObject> getAllUser(@RequestParam(required = false)  Integer offset){
         System.out.println(requestMeta.getName());
-//        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")){
+        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")){
             if (offset == null) {
                 offset = 0;
             }
@@ -67,11 +67,11 @@ public class UserController {
                         new ResponseObject(404, "User List not found", "")
                 );
             }
-//        }else {
-//            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
-//                    new ResponseObject(405, "Access denied", "")
-//            );
-//        }
+        }else {
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
+                    new ResponseObject(405, "Access denied", "")
+            );
+        }
     }
     
     @GetMapping("/details")
@@ -111,7 +111,7 @@ public class UserController {
         System.out.println("Phone: " + phone);
         System.out.println("Address: " + address);
 
-//        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
+        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
             boolean checkUser = userService.checkUserExist(email, phone);
             if (checkUser == true) {
                 return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
@@ -130,16 +130,16 @@ public class UserController {
                     );
                 }
             }
-//        }else{
-//            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
-//                    new ResponseObject(406, "Access denied", "")
-//            );
-//        }
+        }else{
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
+                    new ResponseObject(406, "Access denied", "")
+            );
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseObject> deleteUser (@PathVariable Long id){
-//        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
+        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
             boolean userDelete = userService.delete(id);
             if (userDelete == true){
                 return ResponseEntity.status(HttpStatus.OK).body(
@@ -150,16 +150,16 @@ public class UserController {
                         new ResponseObject(500, "Delete failed", "")
                 );
 
-//        }else{
-//            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
-//                    new ResponseObject(406, "Access denied", "")
-//            );
-//        }
+        }else{
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
+                    new ResponseObject(406, "Access denied", "")
+            );
+        }
     }
 
     @PutMapping()
     public ResponseEntity<ResponseObject> User (@RequestBody User user) {
-//        if (requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
+        if (requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
             User editedUser = userService.edit(user);
             if (editedUser != null) {
                 return ResponseEntity.status(HttpStatus.OK).body(
@@ -170,11 +170,11 @@ public class UserController {
                         new ResponseObject(500, "Edit failed", "")
                 );
             }
-//        } else {
-//            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
-//                    new ResponseObject(406, "Access denied", "")
-//            );
-//        }
+        } else {
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
+                    new ResponseObject(406, "Access denied", "")
+            );
+        }
     }
 
 }

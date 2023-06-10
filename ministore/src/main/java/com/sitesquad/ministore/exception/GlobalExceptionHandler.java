@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-
 public class GlobalExceptionHandler {
-
 
     @ExceptionHandler
     public ResponseEntity handleAccessDeniedException(AccessDeniedException e){
@@ -39,5 +37,11 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(responseObject);
     }
-
+    @ExceptionHandler(NoSuchFieldError.class)
+    public ResponseEntity<ResponseObject> handleNoSuchFieldError(NoSuchFieldError e) {
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        responseObject.setMessage("An internal server error occurred: NoSuchFieldError");
+        return ResponseEntity.status(responseObject.getStatus()).body(responseObject);
+    }
 }
