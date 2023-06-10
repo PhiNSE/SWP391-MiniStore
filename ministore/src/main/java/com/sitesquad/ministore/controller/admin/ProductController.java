@@ -63,7 +63,7 @@ public class ProductController {
             );
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(404, "Empty product list", "")
+                    new ResponseObject(200, "Empty product list", "")
             );
         }
     }
@@ -82,8 +82,8 @@ public class ProductController {
                     new ResponseObject(200, "Found Product List", productList)
             );
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject(404, "Cant find product list", "")
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "Cant find product list", "")
             );
         }
 
@@ -97,8 +97,8 @@ public class ProductController {
                     new ResponseObject(200, "Found Product id = " + id, foundProduct)
             );
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject(500, "Cant find Product id = " + id, "")
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "Cant find Product id = " + id, "")
             );
         }
     }
@@ -123,43 +123,16 @@ public class ProductController {
                     new ResponseObject(200, "Found Products ", foundProducts)
             );
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject(404, "Cant find any Products matched", "")
-            );
-        }
-    }
-
-    @PostMapping("/product")
-    public ResponseEntity<ResponseObject> addProduct(@RequestBody Product product) {
-//        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
-        product.setIsDeleted(Boolean.FALSE);
-        List<Product> products = new ArrayList<>();
-        products.add(product);
-        //ADD TO IMPORT ORDER HERE
-        
-        
-        Product addProduct = productService.add(product);
-        if (addProduct != null) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "Add sucessfully ", addProduct)
-            );
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject(500, "Cant add product", product)
+                    new ResponseObject(200, "Cant find any Products matched", "")
             );
         }
-//        }else{
-//            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
-//                    new ResponseObject(406, "Access denied", "")
-//            );
-//        }
-
     }
 
     @PostMapping("/productlist")
-    public ResponseEntity<ResponseObject> addProductList(@RequestBody List<Product> productlist) {
+    public ResponseEntity<ResponseObject> addProductList(@RequestBody(required = false) List<Product> productlist) throws NoSuchFieldError {
         if (productlist == null || productlist.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+            return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Product list parameter not found ", "")
             );
         }
@@ -171,8 +144,8 @@ public class ProductController {
                     new ResponseObject(200, "Add sucessfully ", "")
             );
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject(500, "Cant add product list", "")
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "Cant add product list", "")
             );
         }
     }
@@ -208,8 +181,8 @@ public class ProductController {
                     new ResponseObject(200, "Edit sucessfully ", editedProduct)
             );
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject(500, "Cant edit product", product)
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "Cant edit product", product)
             );
         }
 //        }else{
@@ -228,8 +201,8 @@ public class ProductController {
                     new ResponseObject(200, "Delete sucessfully ", "")
             );
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject(500, "Cant delete product", "")
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "Cant delete product", "")
             );
         }
 //        }else{

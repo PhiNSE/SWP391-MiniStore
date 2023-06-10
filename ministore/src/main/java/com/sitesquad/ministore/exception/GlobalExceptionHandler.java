@@ -11,9 +11,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 public class GlobalExceptionHandler {
 
-
     @ExceptionHandler
-    public ResponseEntity handleAccessDeniedException(AccessDeniedException e){
+    public ResponseEntity handleAccessDeniedException(AccessDeniedException e) {
         ResponseObject responseObject = new ResponseObject();
         responseObject.setStatus(HttpStatus.UNAUTHORIZED.value());
         responseObject.setMessage("Access Denied");
@@ -22,7 +21,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity handleBadRequestException (BadRequestException e) {
+    public ResponseEntity handleBadRequestException(BadRequestException e) {
         ResponseObject responseObject = new ResponseObject();
         responseObject.setStatus(HttpStatus.BAD_REQUEST.value());
         responseObject.setMessage(e.getErrors().toString());
@@ -30,14 +29,26 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(400).body(responseObject);
     }
 
-    @ExceptionHandler
-    public ResponseEntity handleException(Exception e){
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity handleException(Exception e) {
         e.printStackTrace();
         ResponseObject responseObject = new ResponseObject();
-        responseObject.setMessage("Oops..Something went wrong!");
-        responseObject.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-
+        if (e.getMessage().contains("java.lang.NoSuchFieldError")) {
+            responseObject.setMessage("One of the fields has wrong format!");
+            responseObject.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        } else {
+            responseObject.setMessage("Oops..Something went wrong!");
+            responseObject.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(responseObject);
     }
 
+    @ExceptionHandler(NoSuchFieldException.class)
+    public ResponseEntity<ResponseObject> handleNoSuchFieldError(NoSuchFieldException e) {
+        e.printStackTrace();
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        responseObject.setMessage("One of the fields has wrong format!uiasusdyuiafuisd");
+        return ResponseEntity.status(responseObject.getStatus()).body(responseObject);
+    }
 }

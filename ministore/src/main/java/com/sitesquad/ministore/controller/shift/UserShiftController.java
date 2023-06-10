@@ -55,6 +55,14 @@ public class UserShiftController {
         }
     }
 
+    @GetMapping("/userShift/generate")
+    public ResponseEntity<ResponseObject> generateUserShifts() {
+        userShiftService.generateUserShifts();
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(200, "Generate user shifts for next 7 days successfully", "")
+        );
+    }
+
     @GetMapping("/userShift/assign")
     public ResponseEntity<ResponseObject> assignUserShift(@RequestParam Long userId, @RequestParam Long userShiftId) {
         if (userId == null || userShiftId == null) {
@@ -84,12 +92,10 @@ public class UserShiftController {
                 new ResponseObject(200, "Assign succesfully ", userShiftassigned.getUser().getName())
         );
     }
-
-    @GetMapping("/userShift/generate")
-    public ResponseEntity<ResponseObject> generateUserShifts() {
-        userShiftService.generateUserShifts();
+    @GetMapping("/userShift/check")    
+    public ResponseEntity<ResponseObject> checkAttendance(@RequestParam String type){
+        
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject(200, "Generate user shifts for next 7 days successfully", "")
-        );
+                new ResponseObject(200, "Check"+type+" succesfully ", ""));
     }
 }
