@@ -36,6 +36,7 @@ public class GlobalExceptionHandler {
         if (e.getMessage().contains("java.lang.NoSuchFieldError")) {
             responseObject.setMessage("One of the fields has wrong format!");
             responseObject.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return ResponseEntity.status(HttpStatus.OK.value()).body(responseObject);
         } else {
             responseObject.setMessage("Oops..Something went wrong!");
             responseObject.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());

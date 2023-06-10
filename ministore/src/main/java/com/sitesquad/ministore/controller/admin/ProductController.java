@@ -132,7 +132,7 @@ public class ProductController {
     }
 
     @PostMapping("/productlist")
-    public ResponseEntity<ResponseObject> addProductList(@RequestBody(required = false) List<Product> productlist) {
+    public ResponseEntity<ResponseObject> addProductList(@RequestBody(required = false) List<Product> productlist) throws NoSuchFieldException{
         if (productlist == null || productlist.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(404, "Product list parameter not found ", "")
