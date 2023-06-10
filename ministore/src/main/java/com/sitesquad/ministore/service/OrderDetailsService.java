@@ -64,25 +64,18 @@ public class OrderDetailsService {
 
 
     public List<OrderDetails> importOrderDetail(List<Product> productList, Order order) {
-        Set<Long> seenIds = new HashSet<>();
-        List<Product> filteredProductList = new ArrayList<>();
 
-        for (Product product : productList) {
-            Long id = product.getProductId();
-            if (!seenIds.contains(id)) {
-                seenIds.add(id);
-                filteredProductList.add(product);
-            }
-        }
 
         List<OrderDetails> orderDetailList = new ArrayList<>();
-        for (Product product : filteredProductList) {
+        for (Product product : productList) {
             OrderDetails orderDetail = new OrderDetails();
             orderDetail.setOrderId(order.getOrderId());
             orderDetail.setProductId(product.getProductId());
-            orderDetail.setPrice(product.getPrice());
+            orderDetail.setPrice(product.getCost());
             orderDetail.setQuantity(product.getQuantity());
+            orderDetail.setTotal(product.getCost() * product.getQuantity());
             orderDetailList.add(orderDetail);
+            orderDetail = add(orderDetail);
         }
         return orderDetailList;
     }
