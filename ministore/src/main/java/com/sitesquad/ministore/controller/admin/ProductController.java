@@ -188,6 +188,7 @@ public class ProductController {
 
     @PutMapping("/product")
     public ResponseEntity<ResponseObject> editProduct(@RequestBody Product product) {
+
 //        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
         Product editedProduct = productService.edit(product);
         if (editedProduct != null) {
@@ -208,6 +209,7 @@ public class ProductController {
 
     @DeleteMapping("/product/{id}")
     public ResponseEntity<ResponseObject> deleteProduct(@PathVariable Long id) {
+
 //        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
         Boolean isDeleted = productService.delete(id);
         if (isDeleted) {

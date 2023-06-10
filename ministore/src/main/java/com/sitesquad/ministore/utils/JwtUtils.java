@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
  * @author ADMIN
  */
 @Component
-
+@CrossOrigin
 public class JwtUtils {
     private static String secretKey = "123456";
     private static long expriryDuration = 60*60;
@@ -38,7 +38,7 @@ public class JwtUtils {
                 .setIssuer(user.getUserId().toString())
                 .setIssuedAt(issuedAt)
                 .setExpiration(expiryAt);
-        
+        claims.put("id",user.getUserId());
         claims.put("role", user.getRoles().getName());
         claims.put("name", user.getName());
         claims.put("email", user.getEmail());
@@ -48,20 +48,22 @@ public class JwtUtils {
                 .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
     }
-    
-    @CrossOrigin
+
+
+        @CrossOrigin
         public Claims  verify(String token) throws Exception{
         try {
         Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
         System.out.println(claims.get("name"));
         return claims;
 
-//         Jws<Claims> jwt = Jwts.parser()
+//         Jws<Claims> jwt = Jwts.parser()token
 //                .setSigningKey(secretKey)
 //                .parseClaimsJws(token);
 //                return jwt;
 
             } catch (Exception e) {
+                System.out.println("Error token" + token);
                 throw  new AccessDeniedException("Access Denied");
      }
     }
@@ -70,7 +72,7 @@ public class JwtUtils {
     public static void main(String[] args) {
         Jws<Claims> jwt = Jwts.parser()                  
                 .setSigningKey(secretKey)                    
-                .parseClaimsJws("eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiIxIiwiaWF0IjoxNjg1MzI4MzYxLCJleHAiOjE2ODUzMzE5NjEsInJvbGUiOiJhZG1pbiIsIm5hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIn0.K5a-FmBdK0CV1IPgeMHdKIuxbVCF3LK2c9n1ND7Iw2RCGk3kANBNlv5kdr9zRoaRbOL7Y6K_bkm1Qyxtoh1d-w");
+                .parseClaimsJws("eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiIyIiwiaWF0IjoxNjg2MzA1MDQzLCJleHAiOjE2ODYzMDg2NDMsInJvbGUiOiJhZG1pbiIsIm5hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIn0.z09_PVNXOWIUYRUndZ68UIJIVx5lh9ytJxC5vCoaToxSwHtE3d1oGNvlPMQll9rCcS25swkBud5bewDwsHRWRA");
         
         System.out.println(jwt);
     }
