@@ -60,9 +60,9 @@ public class JwtInterceptor implements HandlerInterceptor {
             System.out.println("Email: "+requestMeta.getUserId());
             System.out.println("PRE-HANDLE");
             return true;
-        }catch (Exception e){
+        }catch (AccessDeniedException e){
             e.printStackTrace();
-            throw new AccessDeniedException("Access denied");
+            return false;
         }
     }
 
