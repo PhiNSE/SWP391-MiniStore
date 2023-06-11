@@ -38,7 +38,7 @@ public class Role implements Serializable {
     String name;
 
 
-    @OneToMany(mappedBy = "roles")
+    @OneToMany(mappedBy = "role")
     @JsonIgnore
     @ToString.Exclude
     private Collection<User> users;

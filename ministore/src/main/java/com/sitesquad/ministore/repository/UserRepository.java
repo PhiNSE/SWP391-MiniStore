@@ -26,7 +26,7 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     Page<User> findAll(Pageable pageable);
     Page<User> findAllByIsDeletedFalse(Pageable pageable);
     User findByUserIdAndIsDeletedFalse(Long id);
-    List<User> findUserByRoles_NameIgnoreCaseAndIsDeletedFalse(String roleName);
+    List<User> findUserByRole_NameIgnoreCaseAndIsDeletedFalse(String roleName);
 
     User findOneByEmailIgnoreCaseOrPhone(String email,String phone);
     User findOneByEmailIgnoreCaseAndPasswordIgnoreCase(String email, String password);

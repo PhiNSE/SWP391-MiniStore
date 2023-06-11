@@ -39,7 +39,7 @@ public class JwtUtils {
                 .setIssuedAt(issuedAt)
                 .setExpiration(expiryAt);
         claims.put("id",user.getUserId());
-        claims.put("role", user.getRoles().getName());
+        claims.put("role", user.getRole().getName());
         claims.put("name", user.getName());
         claims.put("email", user.getEmail());
         // generate jwt

@@ -16,5 +16,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  * @author ACER
  */
 public interface ShiftRepository extends JpaRepository<Shift, Long>, JpaSpecificationExecutor<Shift>{
-    public Optional<Shift> findByName(String name);
+    public Optional<Shift> findByType(String type);
 }

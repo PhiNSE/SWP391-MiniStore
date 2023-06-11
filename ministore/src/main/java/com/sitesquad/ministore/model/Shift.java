@@ -39,7 +39,7 @@ public class Shift implements Serializable {
     private Long shiftId;
     
     @Column(name = "name")
-    private String name;
+    private String type;
     
     @Column(name = "start_work_hour")
     private Double startWorkHour;

@@ -52,7 +52,7 @@ public class SalaryCalculator {
             Double salary = new Double(0.0);
 
             for (UserShift userShift : userShiftList) {
-                Double salaryInADay = userShift.getUser().getRoles().getBaseSalary() * userShift.getShift().getCoefficient();
+                Double salaryInADay = userShift.getUser().getRole().getBaseSalary() * userShift.getShift().getCoefficient();
                 if (userShift.getIsWeekend() == true) { // weekend
                     salaryInADay *= 2; // using coeffience const
                 } else { // not weekend

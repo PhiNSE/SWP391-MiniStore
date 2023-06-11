@@ -5,24 +5,24 @@
  */
 package com.sitesquad.ministore.service.shift;
 
+import com.sitesquad.ministore.constant.RoleConstant;
 import com.sitesquad.ministore.constant.ShiftConstant;
 import com.sitesquad.ministore.constant.SystemConstant;
-import com.sitesquad.ministore.model.ResponseObject;
+import com.sitesquad.ministore.dto.UserShiftDTO;
 import com.sitesquad.ministore.model.Shift;
+import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.model.UserShift;
 import com.sitesquad.ministore.repository.HolidayRepository;
 import com.sitesquad.ministore.repository.ShiftRepository;
 import com.sitesquad.ministore.repository.UserRepository;
 import com.sitesquad.ministore.repository.UserShiftRepository;
+import com.sitesquad.ministore.service.UserService;
 import com.sitesquad.ministore.utils.DateUtil;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +44,9 @@ public class UserShiftService {
 
     @Autowired
     HolidayRepository holidayRepository;
+
+    @Autowired
+    UserService userService;
 
     public List<UserShift> findAll() {
         return userShiftRepository.findAll();
@@ -72,8 +75,8 @@ public class UserShiftService {
     }
 
     public UserShift findById(Long id) {
-        Optional<UserShift> foundOrder = userShiftRepository.findById(id);
-        return foundOrder.get();
+        UserShift foundUserShift = userShiftRepository.findByUserShiftId(id);
+        return foundUserShift;
     }
 
     public UserShift add(UserShift userShift) {
@@ -81,11 +84,13 @@ public class UserShiftService {
             userShift.setUser(userRepository.findById(userShift.getUserId()).get());
         }
         userShift.setShift(shiftRepository.findById(userShift.getShiftId()).get());
-        System.out.println(userShift);
         return userShiftRepository.save(userShift);
     }
 
     public UserShift edit(UserShift newUserShift) {
+        if (newUserShift.getUserId() != null) {
+            newUserShift.setUser(userRepository.findById(newUserShift.getUserId()).get());
+        }
         return userShiftRepository.save(newUserShift);
     }
 
@@ -97,12 +102,12 @@ public class UserShiftService {
         if (lastShift != null) {
             startDate = lastShift.getEndTime().withHour(0).withMinute(0).withSecond(0);
         }
-        Shift salerMorningShift = shiftRepository.findByName(ShiftConstant.SALER_MORNING_SHIFT).orElse(null);
-        Shift salerAfternoonShift = shiftRepository.findByName(ShiftConstant.SALER_AFTERNOON_SHIFT).orElse(null);
-        Shift salerEveningShift = shiftRepository.findByName(ShiftConstant.SALER_NIGHT_SHIFT).orElse(null);
+        Shift salerMorningShift = shiftRepository.findByType(ShiftConstant.SALER_MORNING_SHIFT).orElse(null);
+        Shift salerAfternoonShift = shiftRepository.findByType(ShiftConstant.SALER_AFTERNOON_SHIFT).orElse(null);
+        Shift salerEveningShift = shiftRepository.findByType(ShiftConstant.SALER_NIGHT_SHIFT).orElse(null);
 
-        Shift guardDayShift = shiftRepository.findByName(ShiftConstant.GUARD_DAY_SHIFT).orElse(null);
-        Shift guardNightShift = shiftRepository.findByName(ShiftConstant.GUARD_NIGHT_SHIFT).orElse(null);
+        Shift guardDayShift = shiftRepository.findByType(ShiftConstant.GUARD_DAY_SHIFT).orElse(null);
+        Shift guardNightShift = shiftRepository.findByType(ShiftConstant.GUARD_NIGHT_SHIFT).orElse(null);
         ZonedDateTime shiftDate = startDate;
         for (int i = 0; i < 7; i++) {
             add(getUserShift(salerMorningShift, shiftDate, false));
@@ -128,7 +133,7 @@ public class UserShiftService {
         userShift.setIsWeekend(DateUtil.isWeekend(shiftDate));
         if (holidayRepository.findByDate(userShift.getStartTime().toLocalDate()) != null) {
             userShift.setIsHoliday(true);
-        }else{
+        } else {
             userShift.setIsHoliday(false);
         }
 
@@ -138,4 +143,34 @@ public class UserShiftService {
 //    public void test(){
 //        System.out.println(SystemConstant.ZONE_DATE_TIME_NOW);
 //    }
+
+    public List<UserShiftDTO> mapDTO(List<UserShift> userShifts) {
+        return userShifts.stream()
+                .map(userShift -> {
+                    UserShiftDTO userShiftDTO = new UserShiftDTO();
+                    userShiftDTO.setUserShiftId(userShift.getUserShiftId());
+                    userShiftDTO.setUserId(userShift.getUserId());
+                    userShiftDTO.setUser(userShift.getUser());
+                    userShiftDTO.setShiftId(userShift.getShiftId());
+                    userShiftDTO.setShift(userShift.getShift());
+                    userShiftDTO.setStartTime(userShift.getStartTime());
+                    userShiftDTO.setEndTime(userShift.getEndTime());
+                    userShiftDTO.setIsHoliday(userShift.getIsHoliday());
+                    userShiftDTO.setIsWeekend(userShift.getIsWeekend());
+                    userShiftDTO.setIsCheckedIn(userShift.getIsCheckedIn());
+                    userShiftDTO.setIsCheckedOut(userShift.getIsCheckedOut());
+                    userShiftDTO.setIsPaid(userShift.getIsPaid());
+                    String role = "";
+                    if (userShift.getShift().getType().contains(RoleConstant.SALER_ROLE_NAME)) {
+                        role = RoleConstant.SALER_ROLE_NAME;
+                    } else if (userShift.getShift().getType().contains(RoleConstant.GUARD_ROLE_NAME)) {
+                        role = RoleConstant.GUARD_ROLE_NAME;
+                    }
+                    List<User> availableEmployees = userService.findUserByRoleName(role);
+                    userShiftDTO.setAvailableEmployees(availableEmployees);
+
+                    return userShiftDTO;
+                })
+                .collect(Collectors.toList());
+    }
 }

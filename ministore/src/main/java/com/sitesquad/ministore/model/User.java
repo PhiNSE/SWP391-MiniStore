@@ -74,7 +74,7 @@ public class User implements Serializable {
     @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     @ToString.Exclude
     @JsonIgnore
-    private Role roles;
+    private Role role;
 
     @OneToMany(mappedBy = "orderUser")
     @JsonIgnore
