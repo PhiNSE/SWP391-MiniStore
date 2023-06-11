@@ -131,9 +131,7 @@ public class ProductController {
         }
     }
 
-
-
-    @PostMapping("/productlist")
+    @PostMapping("/product")
     public ResponseEntity<ResponseObject> addProductList(@RequestBody(required = false) List<Product> productlist) throws NoSuchFieldException{
         if (productlist == null || productlist.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(

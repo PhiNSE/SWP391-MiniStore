@@ -16,4 +16,5 @@ import java.util.List;
  */
 public interface RoleRepository extends JpaRepository<Role, Long>, JpaSpecificationExecutor<Role>{
     Role findByNameIgnoreCaseAndIsDeletedIsFalse(String name);
+    Role findByRoleIdAndIsDeletedFalse(Long id);
 }

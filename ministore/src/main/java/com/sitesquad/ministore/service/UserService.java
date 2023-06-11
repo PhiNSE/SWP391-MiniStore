@@ -17,11 +17,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -53,25 +54,20 @@ public class UserService {
         return userDTOPage;
     }
 
-    public List<UserDTO> mapDTOList(List<User> userList) {
-        List<UserDTO> userDTOList = userList.stream().map(user -> {
-            UserDTO userDTO = new UserDTO();
-            userDTO.setUserId(user.getUserId());
-            userDTO.setName(user.getName());
-            userDTO.setEmail(user.getEmail());
-            userDTO.setRoles(user.getRole().getName());
-            userDTO.setAddress(user.getAddress());
-            userDTO.setPhone(user.getPhone());
-            userDTO.setDob(user.getDob());
-            userDTO.setGender(user.getGender());
-            userDTO.setUserImg(user.getUserImg());
-            return userDTO;
-        }).collect(Collectors.toList());
-        return userDTOList;
+
+    public User checkLogIn(String email, String password){
+        return userRepository.findOneByEmailIgnoreCaseAndPasswordIgnoreCaseAndIsDeletedFalse(email,password);
     }
 
-    public List<User> findAll() {
+    public List<User> findAll(){
         return userRepository.findAll();
+    }
+    
+    public List<User> findAllExceptAdmin(){
+        List<User> emp = userRepository.findByRoleId(new Long(2));
+        List<User> guard = userRepository.findByRoleId(new Long(3));
+        return Stream.concat(emp.stream(), guard.stream())
+                .collect(Collectors.toList());
     }
 
 //    public Page<User> findAll(Integer offset){
@@ -121,12 +117,10 @@ public class UserService {
         return userRepository.findUserByRole_NameIgnoreCaseAndIsDeletedFalse(name);
     }
 
-    public User add(String name, String email, String phone, String address, String dob, String gender, String roleName, String userImg) {
+
+    public User add (String name,String email,String phone,String address,String dob, String gender ,Long roleId, String userImg){
         User user = new User();
 
-        Role roleNameAdd = roleRepository.findByNameIgnoreCaseAndIsDeletedIsFalse(roleName.trim());
-        user.setRole(roleNameAdd);
-        user.setRoleId(roleNameAdd.getRoleId());
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
@@ -150,15 +144,25 @@ public class UserService {
         user.setPhone(phone);
         user.setAddress(address);
         user.setUserImg(userImg);
+        user.setRole(roleRepository.findByRoleIdAndIsDeletedFalse(roleId));
         user.setPassword("1");
         return userRepository.save(user);
     }
 
-    public User edit(User newUser) {
-        User oldUser = userRepository.findByUserIdAndIsDeletedFalse(newUser.getUserId());
+    public User addUser(User user){
+        user.setIsDeleted(Boolean.FALSE);
+        user.setRole(roleRepository.findByRoleIdAndIsDeletedFalse(user.getRoleId()));
+        user.setPassword("1");
+        return userRepository.save(user);
+    }
+
+    public User edit (User newUser){
+        User oldUser = userRepository.findOneByEmailIgnoreCaseAndIsDeletedFalse(newUser.getEmail());
+        if(oldUser == null)
+            return null;
         newUser.setUserId(null);
-        User userChanged = add(newUser.getName(), newUser.getEmail(), newUser.getPhone(), newUser.getAddress(), newUser.getDob().toString(), newUser.getGender().toString(), newUser.getRole().toString(), newUser.getUserImg());
-        if (userChanged != null) {
+        User userChanged = add(newUser.getName(),newUser.getEmail(),newUser.getPhone(),newUser.getAddress(),newUser.getDob().toString(),newUser.getGender().toString(),newUser.getRoleId(),newUser.getUserImg());
+        if(userChanged != null){
             oldUser.setIsDeleted(Boolean.TRUE);
             userRepository.save(oldUser);
         }

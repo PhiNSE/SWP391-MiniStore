@@ -54,7 +54,7 @@ public class JwtUtils {
         public Claims  verify(String token) throws Exception{
         try {
         Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
-        System.out.println(claims.get("name"));
+
         return claims;
 
 //         Jws<Claims> jwt = Jwts.parser()token
@@ -64,7 +64,7 @@ public class JwtUtils {
 
             } catch (Exception e) {
                 System.out.println("Error token" + token);
-                throw  new AccessDeniedException("Access Denied");
+                throw new AccessDeniedException("Access Denied");
      }
     }
     

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Repository;
 public interface UserShiftRepository extends JpaRepository<UserShift, Long>, JpaSpecificationExecutor<UserShift> {
     public UserShift findByUserShiftId(Long userShiftId);
     public UserShift findTop1ByOrderByEndTimeDesc();
-    public List<UserShift> findByIsPaidFalseOrIsPaidNullAndUserId(Long id);
+    public List<UserShift> findByIsPaidFalseOrIsPaidNull();
+    public List<UserShift> findByUserId(Long id);
    
 }

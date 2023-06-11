@@ -31,6 +31,7 @@ public class JwtInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
             System.out.println("URI: " + request.getRequestURI());
+
             response.setHeader("Access-Control-Allow-Origin", "*");
             response.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, PATCH, HEAD, OPTIONS");
             response.setHeader("Access-Control-Allow-Headers", "Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization, X-Forwarded-For");
@@ -53,11 +54,15 @@ public class JwtInterceptor implements HandlerInterceptor {
             requestMeta.setName(claims.get("name").toString());
             requestMeta.setRole(claims.get("role").toString());
             requestMeta.setEmail(claims.get("email").toString());
+
+            System.out.println("Name: "+ requestMeta.getName());
+            System.out.println("Role: "+ requestMeta.getRole());
+            System.out.println("Email: "+requestMeta.getUserId());
             System.out.println("PRE-HANDLE");
             return true;
-        }catch (AccessDeniedException e){
+        }catch (Exception e){
             e.printStackTrace();
-            return false;
+            throw new AccessDeniedException("Access denied");
         }
     }
 
