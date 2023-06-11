@@ -54,9 +54,7 @@ public class PayslipController {
 
     @GetMapping("/payslip/search")
     public ResponseEntity<ResponseObject> findByUserId(@RequestParam Long id) {
-//        List<Payslip> foundPayslips = payslipService.findByUserId(id);
-        List<Payslip> foundPayslips = payslipService.findAll();
-//        List<Order> foundOrders = orderRepository.findByUserIdAndName(id, name);
+        List<Payslip> foundPayslips = payslipService.findByUserId(id);
         if (!foundPayslips.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Found Payslips ", foundPayslips)

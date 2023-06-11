@@ -48,9 +48,16 @@ public class UserShiftService {
     public List<UserShift> findAll() {
         return userShiftRepository.findAll();
     }
-
-    public List<UserShift> findAllByIsPaid(Long id) {
-        return userShiftRepository.findByIsPaidFalseOrIsPaidNullAndUserId(id);
+    
+    public List<UserShift> findAllByIsPaidAndUserId(Long id) {
+        List<UserShift> userShiftList = new ArrayList<>();
+        List<UserShift> userShifts = userShiftRepository.findByIsPaidFalseOrIsPaidNull();
+        for(UserShift userShift: userShifts) {
+            if(userShift.getUserId() == id) {
+                userShiftList.add(userShift);
+            }
+        }
+        return userShiftList;
     }
 
     public List<UserShift> findOffset(Integer offset) {
