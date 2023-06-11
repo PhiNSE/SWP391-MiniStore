@@ -92,54 +92,79 @@ public class UserController {
 //    public ResponseEntity<ResponseObject> getUserByRoleName()
 
 
-    
     @PostMapping("/add")
-    public ResponseEntity<ResponseObject> addUser(@RequestBody Map<String, String> requestData){
-
-        String email = requestData.get("email");
-        String phone = requestData.get("phone");
-        String name = requestData.get("name");
-        String address = requestData.get("address");
-        String roleName = requestData.get("roleName");
-        String userImg = requestData.get("userImg");
-        String dob = requestData.get("dob");
-        String gender = requestData.get("gender");
-
-        System.out.println("Name: " + name);
-        System.out.println("Role Name: " + roleName);
-        System.out.println("Email: " + email);
-        System.out.println("Phone: " + phone);
-        System.out.println("Address: " + address);
-
-        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
-            boolean checkUser = userService.checkUserExist(email, phone);
-            if (checkUser == true) {
-                return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
-                        new ResponseObject(405, "User email or phone is already use", "")
+    public ResponseEntity<ResponseObject> addUser(@RequestBody  User user) {
+        if(user.getEmail() == null || user.getPhone()== null || user.getRoleId() == null){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(405, "Email or phone or roleId must not be empty", "")
+            );
+        }
+        boolean checkUser = userService.checkUserExist(user.getEmail(),user.getPhone());
+        if(checkUser != true){
+            User addUser = userService.addUser(user);
+            if(addUser != null){
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject(405, "add success", addUser)
                 );
-            } else {
-
-                User addUser = userService.add(name,email,phone,address,dob,gender,roleName,userImg);
-                if (addUser != null) {
-                    return ResponseEntity.status(HttpStatus.OK).body(
-                            new ResponseObject(200, "Add success", addUser)
-                    );
-                } else {
-                    return ResponseEntity.status(HttpStatus.METHOD_FAILURE).body(
-                            new ResponseObject(500, "Add failed", "")
-                    );
-                }
+            }else{
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject(405, "add failed", addUser)
+                );
             }
         }else{
-            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
-                    new ResponseObject(406, "Access denied", "")
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(405, "user already exist", "")
             );
         }
     }
 
+//    @PostMapping("/add")
+//    public ResponseEntity<ResponseObject> addUser(@RequestBody (required = false) Map<String, String> requestData){
+//
+//        String email = requestData.get("email");
+//        String phone = requestData.get("phone");
+//        String name = requestData.get("name");
+//        String address = requestData.get("address");
+//        String roleId = requestData.get("roleId");
+//        String userImg = requestData.get("userImg");
+//        String dob = requestData.get("dob");
+//        String gender = requestData.get("gender");
+//
+//        System.out.println("Name: " + name);
+//        System.out.println("Role Name: " + roleId);
+//        System.out.println("Email: " + email);
+//        System.out.println("Phone: " + phone);
+//        System.out.println("Address: " + address);
+//
+//        if(requestMeta != null && requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
+//            boolean checkUser = userService.checkUserExist(email, phone);
+//            if (checkUser == true) {
+//                return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
+//                        new ResponseObject(405, "User email or phone is already use", "")
+//                );
+//            } else {
+//
+//                User addUser = userService.add(name,email,phone,address,dob,gender,Long.parseLong(roleId),userImg);
+//                if (addUser != null) {
+//                    return ResponseEntity.status(HttpStatus.OK).body(
+//                            new ResponseObject(200, "Add success", addUser)
+//                    );
+//                } else {
+//                    return ResponseEntity.status(HttpStatus.METHOD_FAILURE).body(
+//                            new ResponseObject(500, "Add failed", "")
+//                    );
+//                }
+//            }
+//        }else{
+//            return ResponseEntity.status(HttpStatus.OK).body(
+//                    new ResponseObject(405, "Access denied", "")
+//            );
+//        }
+//    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseObject> deleteUser (@PathVariable Long id){
-        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
+        if(requestMeta != null && requestMeta.getRole().trim().equalsIgnoreCase("Admin")  ) {
             boolean userDelete = userService.delete(id);
             if (userDelete == true){
                 return ResponseEntity.status(HttpStatus.OK).body(
@@ -158,8 +183,13 @@ public class UserController {
     }
 
     @PutMapping()
-    public ResponseEntity<ResponseObject> User (@RequestBody User user) {
+    public ResponseEntity<ResponseObject> User (@RequestBody(required = false) User user) {
         if (requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
+            if(user.getEmail() == null || user.getPhone()== null || user.getRoleId() == null){
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject(405, "Email or phone or roleId must not be empty", "")
+                );
+            }
             User editedUser = userService.edit(user);
             if (editedUser != null) {
                 return ResponseEntity.status(HttpStatus.OK).body(

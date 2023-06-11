@@ -52,6 +52,10 @@ public class UserService {
         return userDTOPage;
     }
 
+    public User checkLogIn(String email, String password){
+        return userRepository.findOneByEmailIgnoreCaseAndPasswordIgnoreCaseAndIsDeletedFalse(email,password);
+    }
+
     public List<User> findAll(){
         return userRepository.findAll();
     }
@@ -104,13 +108,10 @@ public class UserService {
         return userRepository.findUserByRoles_NameIgnoreCaseAndIsDeletedFalse(name);
     }
 
-    public User add (String name,String email,String phone,String address,String dob, String gender ,String roleName, String userImg){
+    public User add (String name,String email,String phone,String address,String dob, String gender ,Long roleId, String userImg){
         User user = new User();
 
-        Role roleNameAdd = roleRepository.findByNameIgnoreCaseAndIsDeletedIsFalse(roleName.trim());
-        user.setRoles(roleNameAdd);
-        System.out.println(roleNameAdd);
-        user.setRoleId(roleNameAdd.getRoleId());
+
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
@@ -134,14 +135,23 @@ public class UserService {
         user.setPhone(phone);
         user.setAddress(address);
         user.setUserImg(userImg);
+        user.setRoles(roleRepository.findByRoleIdAndIsDeletedFalse(roleId));
         user.setPassword("1");
         return userRepository.save(user);
     }
-    
+
+    public User addUser(User user){
+        user.setIsDeleted(Boolean.FALSE);
+        user.setRoles(roleRepository.findByRoleIdAndIsDeletedFalse(user.getRoleId()));
+        user.setPassword("1");
+        return userRepository.save(user);
+    }
     public User edit (User newUser){
-        User oldUser = userRepository.findByUserIdAndIsDeletedFalse(newUser.getUserId());
+        User oldUser = userRepository.findOneByEmailIgnoreCaseAndIsDeletedFalse(newUser.getEmail());
+        if(oldUser == null)
+            return null;
         newUser.setUserId(null);
-        User userChanged = add(newUser.getName(),newUser.getEmail(),newUser.getPhone(),newUser.getAddress(),newUser.getDob().toString(),newUser.getGender().toString(),newUser.getRoles().toString(),newUser.getUserImg());
+        User userChanged = add(newUser.getName(),newUser.getEmail(),newUser.getPhone(),newUser.getAddress(),newUser.getDob().toString(),newUser.getGender().toString(),newUser.getRoleId(),newUser.getUserImg());
         if(userChanged != null){
             oldUser.setIsDeleted(Boolean.TRUE);
             userRepository.save(oldUser);

@@ -10,6 +10,7 @@ import com.sitesquad.ministore.model.RequestMeta;
 import com.sitesquad.ministore.model.ResponseObject;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.repository.UserRepository;
+import com.sitesquad.ministore.service.UserService;
 import com.sitesquad.ministore.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import java.util.HashMap;
@@ -31,6 +32,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin
 public class LogInController {
+
+    @Autowired
+    private UserService userService;
     @Autowired
     private UserRepository userRepository;
     
@@ -44,7 +48,7 @@ public class LogInController {
     public ResponseEntity<ResponseObject> login(@RequestBody RequestLogin login){
 
         ResponseObject responseObj = new ResponseObject();
-        User user = userRepository.findOneByEmailIgnoreCaseAndPasswordIgnoreCase(login.getEmail(), login.getPassword());
+        User user = userService.checkLogIn(login.getEmail(), login.getPassword());
 
         if(user == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
@@ -61,6 +65,13 @@ public class LogInController {
         responseObj.setMessage("Log In success");
         responseObj.setData(data); 
         return ResponseEntity.status(HttpStatus.OK).body(responseObj);
+    }
+
+    public Boolean authorization(String role){
+        if(!role.trim().equalsIgnoreCase("Admin"))
+            return true;
+        else
+            return false;
     }
     
     @GetMapping("/privateApi")
