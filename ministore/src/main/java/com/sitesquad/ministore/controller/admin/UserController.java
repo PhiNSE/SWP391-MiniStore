@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.sitesquad.ministore.service.RoleService;
 import com.sitesquad.ministore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -45,6 +46,9 @@ public class UserController {
     
     @Autowired
     RoleRepository roleRepository;
+
+    @Autowired
+    RoleService roleService;
 
     @Autowired
     RequestMeta requestMeta;
@@ -100,15 +104,17 @@ public class UserController {
             );
         }
         boolean checkUser = userService.checkUserExist(user.getEmail(),user.getPhone());
+
         if(checkUser != true){
+
             User addUser = userService.addUser(user);
             if(addUser != null){
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject(405, "add success", addUser)
+                        new ResponseObject(200, "add success", addUser)
                 );
             }else{
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject(405, "add failed", addUser)
+                        new ResponseObject(500, "add failed", addUser)
                 );
             }
         }else{
@@ -185,20 +191,30 @@ public class UserController {
     @PutMapping()
     public ResponseEntity<ResponseObject> User (@RequestBody(required = false) User user) {
         if (requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
+
             if(user.getEmail() == null || user.getPhone()== null || user.getRoleId() == null){
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject(405, "Email or phone or roleId must not be empty", "")
+                        new ResponseObject(405, "Email or phone or role Id must not be empty", "")
                 );
             }
-            User editedUser = userService.edit(user);
-            if (editedUser != null) {
+
+            if(roleService.findById(user.getRoleId()) == null){
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject(200, "Edit success", editedUser)
+                        new ResponseObject(404, "Role id not found", "")
                 );
-            } else {
-                return ResponseEntity.status(HttpStatus.METHOD_FAILURE).body(
-                        new ResponseObject(500, "Edit failed", "")
-                );
+            }else{
+
+                User editedUser = userService.edit(user);
+                if (editedUser != null) {
+                    return ResponseEntity.status(HttpStatus.OK).body(
+                            new ResponseObject(200, "Edit success", editedUser)
+                    );
+                } else {
+                    return ResponseEntity.status(HttpStatus.METHOD_FAILURE).body(
+                            new ResponseObject(500, "Edit failed", "")
+                    );
+                }
+
             }
         } else {
             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(

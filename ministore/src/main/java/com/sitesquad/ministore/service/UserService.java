@@ -161,7 +161,8 @@ public class UserService {
         if(oldUser == null)
             return null;
         newUser.setUserId(null);
-        User userChanged = add(newUser.getName(),newUser.getEmail(),newUser.getPhone(),newUser.getAddress(),newUser.getDob().toString(),newUser.getGender().toString(),newUser.getRoleId(),newUser.getUserImg());
+
+        User userChanged =addUser(newUser);
         if(userChanged != null){
             oldUser.setIsDeleted(Boolean.TRUE);
             userRepository.save(oldUser);

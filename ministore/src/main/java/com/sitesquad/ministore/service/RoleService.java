@@ -25,7 +25,7 @@ public class RoleService {
     }
     
     public Role findById(Long id){
-        return roleRepository.findById(id).get();
+        return roleRepository.findByRoleIdAndIsDeletedFalse(id);
     }
     
     public Role add(Role role){
