@@ -1,20 +1,17 @@
 package com.sitesquad.ministore.config;
 
-import com.sitesquad.ministore.exception.AccessDeniedException;
-import com.sitesquad.ministore.model.RequestMeta;
+import com.sitesquad.ministore.dto.RequestMeta;
 import com.sitesquad.ministore.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Component
-@CrossOrigin
 public class JwtInterceptor implements HandlerInterceptor {
     @Autowired
     private JwtUtils jwtUtils;
@@ -40,30 +37,27 @@ public class JwtInterceptor implements HandlerInterceptor {
             response.setHeader("Vary", "Origin, Access-Control-Request-Method, Access-Control-Request-Headers");
 
 
+
+
         if (isLoginApi(request)) {
-            return true;
-        }
-
-        try {
-
-
             String auth = request.getHeader("Authorization");
+            if (auth != null) {
+                Claims claims = jwtUtils.verify(auth);
+                requestMeta.setUserId(Long.valueOf(claims.getIssuer()));
+                requestMeta.setName(claims.get("name").toString());
+                requestMeta.setRole(claims.get("role").toString());
+                requestMeta.setEmail(claims.get("email").toString());
 
-            Claims claims = jwtUtils.verify(auth);
-            requestMeta.setUserId(Long.valueOf(claims.getIssuer()));
-            requestMeta.setName(claims.get("name").toString());
-            requestMeta.setRole(claims.get("role").toString());
-            requestMeta.setEmail(claims.get("email").toString());
+                System.out.println("Id: " + requestMeta.getUserId());
+                System.out.println("Name: " + requestMeta.getName());
+                System.out.println("Role: " + requestMeta.getRole());
+                System.out.println("Ema: " + requestMeta.getEmail());
 
-            System.out.println("Name: "+ requestMeta.getName());
-            System.out.println("Role: "+ requestMeta.getRole());
-            System.out.println("Email: "+requestMeta.getUserId());
-            System.out.println("PRE-HANDLE");
-            return true;
-        }catch (AccessDeniedException e){
-            e.printStackTrace();
-            return false;
+                System.out.println("PRE-HANDLE");
+            }
         }
+        return true;
+
     }
 
     private boolean isLoginApi(HttpServletRequest request) {

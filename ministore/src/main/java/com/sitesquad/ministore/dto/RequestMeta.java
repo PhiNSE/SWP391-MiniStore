@@ -1,4 +1,4 @@
-package com.sitesquad.ministore.model;
+package com.sitesquad.ministore.dto;
 
 public class RequestMeta {
     private Long userId;

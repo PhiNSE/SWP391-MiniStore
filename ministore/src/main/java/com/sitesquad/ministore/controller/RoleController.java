@@ -5,17 +5,15 @@
  */
 package com.sitesquad.ministore.controller;
 
-import com.sitesquad.ministore.model.ResponseObject;
+import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.model.Role;
 import com.sitesquad.ministore.repository.RoleRepository;
 import java.util.List;
-import java.util.Optional;
 
 import com.sitesquad.ministore.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @author ACER
  */
 @RestController
-@CrossOrigin
 @RequestMapping(path = "/role")
 public class RoleController {
     @Autowired

@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
  * @author ADMIN
  */
 @Component
-@CrossOrigin
 public class JwtUtils {
     private static String secretKey = "123456";
     private static long expriryDuration = 60*60;

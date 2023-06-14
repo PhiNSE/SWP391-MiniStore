@@ -5,9 +5,9 @@
  */
 package com.sitesquad.ministore.controller;
 
-import com.sitesquad.ministore.model.RequestLogin;
-import com.sitesquad.ministore.model.RequestMeta;
-import com.sitesquad.ministore.model.ResponseObject;
+import com.sitesquad.ministore.dto.RequestLogin;
+import com.sitesquad.ministore.dto.RequestMeta;
+import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.repository.UserRepository;
 import com.sitesquad.ministore.service.UserService;
@@ -18,7 +18,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author ACER
  */
 @RestController
-@CrossOrigin
+
 public class LogInController {
 
     @Autowired

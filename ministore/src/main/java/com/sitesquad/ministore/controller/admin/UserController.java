@@ -7,18 +7,11 @@ package com.sitesquad.ministore.controller.admin;
 
 
 import com.sitesquad.ministore.dto.UserDTO;
-import com.sitesquad.ministore.model.RequestMeta;
-import com.sitesquad.ministore.model.ResponseObject;
+import com.sitesquad.ministore.dto.RequestMeta;
+import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.repository.RoleRepository;
 import com.sitesquad.ministore.repository.UserRepository;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import com.sitesquad.ministore.service.RoleService;
 import com.sitesquad.ministore.service.UserService;
@@ -28,14 +21,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  *
  * @author ACER
  */
 @RestController
-@CrossOrigin
 @RequestMapping(path = "/user")
 public class UserController {
     @Autowired

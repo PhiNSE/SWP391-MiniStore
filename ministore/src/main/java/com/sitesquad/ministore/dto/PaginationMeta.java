@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.sitesquad.ministore.model;
+package com.sitesquad.ministore.dto;
 
 import org.springframework.data.domain.Page;
 

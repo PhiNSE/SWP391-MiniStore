@@ -5,7 +5,7 @@ import com.sitesquad.ministore.model.Order;
 import com.sitesquad.ministore.model.OrderDetails;
 import com.sitesquad.ministore.model.Product;
 import com.sitesquad.ministore.model.ProductVoucher;
-import com.sitesquad.ministore.model.ResponseObject;
+import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.model.Voucher;
 import com.sitesquad.ministore.repository.OrderDetailsRepository;
 import com.sitesquad.ministore.service.OrderDetailsService;
@@ -17,7 +17,6 @@ import com.sitesquad.ministore.service.VoucherService;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -30,13 +29,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 /**
  *
  * @author admin
  */
-@CrossOrigin
 @RestController
 public class OrderCreator {
 

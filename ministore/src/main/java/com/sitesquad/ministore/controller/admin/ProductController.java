@@ -1,26 +1,20 @@
 package com.sitesquad.ministore.controller.admin;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.sitesquad.ministore.dto.ProductDTO;
 import com.sitesquad.ministore.model.Order;
 import com.sitesquad.ministore.model.OrderDetails;
 import com.sitesquad.ministore.model.Product;
-import com.sitesquad.ministore.model.RequestMeta;
-import com.sitesquad.ministore.model.ResponseObject;
-import com.sitesquad.ministore.repository.ProductRepository;
-import com.sitesquad.ministore.repository.ProductTypeRepository;
+import com.sitesquad.ministore.dto.RequestMeta;
+import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.service.OrderDetailsService;
 import com.sitesquad.ministore.service.OrderService;
 import com.sitesquad.ministore.service.ProductService;
-import com.sun.javafx.scene.control.skin.VirtualFlow;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,14 +28,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 /**
  *
  * @author ADMIN
  */
 @RestController
-@CrossOrigin
 public class ProductController {
 
     @Autowired

@@ -1,7 +1,7 @@
 package com.sitesquad.ministore.controller;
 
 import com.sitesquad.ministore.model.Payslip;
-import com.sitesquad.ministore.model.ResponseObject;
+import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.model.UserShift;
 import com.sitesquad.ministore.service.PayslipService;
@@ -13,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @author admin
  */
 @RestController
-@CrossOrigin
 public class SalaryCalculator {
 
     @Autowired
