@@ -36,13 +36,13 @@ public class LogInController {
     private UserService userService;
     @Autowired
     private UserRepository userRepository;
-    
+
     @Autowired
     private JwtUtils jwtUtils;
 
     @Autowired
     private RequestMeta requestMeta;
-    
+
     @PostMapping("/login")
     public ResponseEntity<ResponseObject> login(@RequestBody RequestLogin login){
 
@@ -62,7 +62,7 @@ public class LogInController {
         data.put("access token", token);
         responseObj.setStatus(200);
         responseObj.setMessage("Log In success");
-        responseObj.setData(data); 
+        responseObj.setData(data);
         return ResponseEntity.status(HttpStatus.OK).body(responseObj);
     }
 
@@ -72,18 +72,18 @@ public class LogInController {
         else
             return false;
     }
-    
+
     @GetMapping("/privateApi")
     public ResponseEntity<ResponseObject> privateApi(@RequestHeader (value = "token",defaultValue = "") String authToken) throws Exception{
         ResponseObject responseObj = new ResponseObject();
         Claims data = jwtUtils.verify(authToken);
-        
-        
+
+
         responseObj.setStatus(200);
         responseObj.setMessage("This is private api");
         responseObj.setData(data);
-        
+
         return ResponseEntity.status(HttpStatus.OK).body(responseObj);
     }
-    
+
 }

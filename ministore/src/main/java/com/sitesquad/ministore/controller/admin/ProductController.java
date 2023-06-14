@@ -39,8 +39,8 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
-    @Autowired
-    RequestMeta requestMeta;
+//    @Autowired
+//    RequestMeta requestMeta;
 
     @Autowired
     OrderService orderService;
@@ -64,9 +64,9 @@ public class ProductController {
 
     @GetMapping("/product")
     public ResponseEntity<ResponseObject> getProducts(@RequestParam(required = false) Integer offset) {
-        System.out.println("User Id: " + requestMeta.getUserId());
-        System.out.println("User Name: " + requestMeta.getName());
-        System.out.println("User Role: " + requestMeta.getRole());
+//        System.out.println("User Id: " + requestMeta.getUserId());
+//        System.out.println("User Name: " + requestMeta.getName());
+//        System.out.println("User Role: " + requestMeta.getRole());
         if (offset == null) {
             offset = 0;
         }
