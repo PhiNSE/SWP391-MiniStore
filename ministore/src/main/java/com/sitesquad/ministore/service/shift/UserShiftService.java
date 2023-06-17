@@ -180,4 +180,9 @@ public class UserShiftService {
                 })
                 .collect(Collectors.toList());
     }
+
+
+    public List<UserShift> findByUserId(Long userId) {
+        return userShiftRepository.findByUserId(userId);
+    }
 }

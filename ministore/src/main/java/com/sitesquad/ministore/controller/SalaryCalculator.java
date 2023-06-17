@@ -55,7 +55,6 @@ public class SalaryCalculator {
             payslip.setUserId(userShiftList.get(0).getUserId());
             Integer shiftCount = new Integer(0);
             Double salary = new Double(0.0);
-
             for (UserShift userShift : userShiftList) {
                 Double salaryInADay = userShift.getUser().getRole().getBaseSalary() * userShift.getShift().getCoefficient();
                 if (userShift.getIsWeekend() == true) { // weekend
