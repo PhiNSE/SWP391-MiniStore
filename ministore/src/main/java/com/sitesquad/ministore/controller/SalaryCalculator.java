@@ -37,13 +37,13 @@ public class SalaryCalculator {
     public ResponseEntity<ResponseObject> calculateSalary() {
         List<Payslip> payslipList = new ArrayList<>();
         List<User> userList = userService.findAllExceptAdmin();
-        System.out.println(userList);
+//        System.out.println(userList);
 
         for (User user : userList) {
 
-            System.out.println(user.getUserId());
+//            System.out.println(user.getUserId());
             List<UserShift> userShiftList = userShiftService.findAllByIsPaidAndUserId(user.getUserId());
-            System.out.println(userShiftList);
+//            System.out.println(userShiftList);
             if (userShiftList.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObject(404, "Not Found UserShift", "")
@@ -51,7 +51,7 @@ public class SalaryCalculator {
             }
 
             Payslip payslip = new Payslip();
-            System.out.println(userShiftList.get(0).getUserId());
+//            System.out.println(userShiftList.get(0).getUserId());
             payslip.setUserId(userShiftList.get(0).getUserId());
             Integer shiftCount = new Integer(0);
             Double salary = new Double(0.0);
@@ -72,7 +72,7 @@ public class SalaryCalculator {
                 userShift = userShiftService.edit(userShift);
             }
             payslip.setShiftCount(shiftCount);
-            System.out.println(salary);
+//            System.out.println(salary);
             payslip.setSalary(salary);
             payslip = payslipService.add(payslip);
 

@@ -10,6 +10,7 @@ import com.sitesquad.ministore.dto.RequestMeta;
 import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.repository.UserRepository;
+import com.sitesquad.ministore.service.RoleService;
 import com.sitesquad.ministore.service.UserService;
 import com.sitesquad.ministore.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
@@ -18,6 +19,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,6 +39,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class LogInController {
 
     @Autowired
+    PasswordEncoder passwordEncoder;
+
+    @Autowired
     private UserService userService;
     @Autowired
     private UserRepository userRepository;
@@ -41,11 +50,20 @@ public class LogInController {
     private JwtUtils jwtUtils;
 
     @Autowired
-    private RequestMeta requestMeta;
+    private RoleService roleService;
 
-    @PostMapping("/login")
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+//    @Autowired
+//    private RequestMeta requestMeta;
+
+    @PostMapping("/api/login")
     public ResponseEntity<ResponseObject> login(@RequestBody RequestLogin login){
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(login.getEmail(),login.getPassword()));
 
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         ResponseObject responseObj = new ResponseObject();
         User user = userService.checkLogIn(login.getEmail(), login.getPassword());
 
@@ -54,7 +72,7 @@ public class LogInController {
                     new ResponseObject(404, "log in failed", null)
             );
         }
-        String token = jwtUtils.generateJWT(user);
+        String token = jwtUtils.genarateToken(authentication);
 
 
 
@@ -76,7 +94,7 @@ public class LogInController {
     @GetMapping("/privateApi")
     public ResponseEntity<ResponseObject> privateApi(@RequestHeader (value = "token",defaultValue = "") String authToken) throws Exception{
         ResponseObject responseObj = new ResponseObject();
-        Claims data = jwtUtils.verify(authToken);
+        Claims data = jwtUtils.getUsernameFromJWT(authToken);
 
 
         responseObj.setStatus(200);

@@ -86,7 +86,7 @@ public class UserController {
 //    public ResponseEntity<ResponseObject> getUserByRoleName()
 
 
-    @PostMapping("/add")
+    @PostMapping("/new")
     public ResponseEntity<ResponseObject> addUser(@RequestBody  User user) {
         if(user.getEmail() == null || user.getPhone()== null || user.getRoleId() == null){
             return ResponseEntity.status(HttpStatus.OK).body(

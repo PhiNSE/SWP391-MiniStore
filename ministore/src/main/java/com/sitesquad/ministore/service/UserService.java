@@ -13,14 +13,17 @@ import com.sitesquad.ministore.repository.UserRepository;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,13 +32,20 @@ import org.springframework.transaction.annotation.Transactional;
  * @author ACER
  */
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     @Autowired
     UserRepository userRepository;
 
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     @Autowired
     RoleRepository roleRepository;
+
+    @Autowired
+    RoleService roleService;
 
     public Page<UserDTO> mapDTO(Page<User> userPage) {
         Page<UserDTO> userDTOPage = userPage.map(user -> {
@@ -170,4 +180,28 @@ public class UserService {
         return userChanged;
     }
 
+    public User findUserByUsername(String email){
+        return userRepository.findOneByEmailIgnoreCaseAndIsDeletedFalse(email);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findOneByEmailIgnoreCaseAndIsDeletedFalse(email);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        Role role = roleService.findById(user.getRoleId());
+        if (role == null) {
+            throw new IllegalStateException("Role not found for the user");
+        }
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),user.getPassword(),mapRolesToAuthorities(user.getRole())
+        );
+    }
+
+    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Role roles){
+        return Collections.singletonList(new SimpleGrantedAuthority(roles.getName()));
+    }
 }
