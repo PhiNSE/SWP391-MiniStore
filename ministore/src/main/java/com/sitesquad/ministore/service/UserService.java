@@ -6,23 +6,21 @@
 package com.sitesquad.ministore.service;
 
 import com.sitesquad.ministore.dto.UserDTO;
-import com.sitesquad.ministore.model.Role;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.repository.RoleRepository;
 import com.sitesquad.ministore.repository.UserRepository;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -99,7 +97,7 @@ public class UserService {
     }
 
     public User find(Long id){
-        return userRepository.findByUserIdAndIsDeletedFalse(id);
+        return userRepository.findByUserIdAndIsDeletedFalseOrIsDeletedTrue(id);
     }
 
     public boolean delete(Long id) {
@@ -117,8 +115,30 @@ public class UserService {
         return userRepository.findOneByEmailIgnoreCaseOrPhone(email, phone) != null;
     }
 
-    public List<User> findUserByRoleName(String name) {
-        return userRepository.findUserByRole_NameIgnoreCaseAndIsDeletedFalse(name);
+
+    public UserDTO convertUserToUserDTO(User user){
+        if (user != null) {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setUserId(user.getUserId());
+            userDTO.setName(user.getName());
+            userDTO.setRoles(user.getRole().getName());
+            userDTO.setEmail(user.getEmail());
+            userDTO.setPhone(user.getPhone());
+            userDTO.setDob(user.getDob());
+            userDTO.setGender(user.getGender());
+            userDTO.setAddress(user.getAddress());
+            return userDTO;
+        } else {
+            return null;
+        }
+    }
+    public List<UserDTO> findUserByRoleName(String name) {
+        List<User> users = userRepository.findUserByRole_NameIgnoreCaseAndIsDeletedFalse(name);
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (User user: users) {
+            userDTOs.add(convertUserToUserDTO(user));
+        }
+        return userDTOs;
     }
 
 

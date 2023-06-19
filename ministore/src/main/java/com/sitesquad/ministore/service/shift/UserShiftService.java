@@ -8,6 +8,7 @@ package com.sitesquad.ministore.service.shift;
 import com.sitesquad.ministore.constant.RoleConstant;
 import com.sitesquad.ministore.constant.ShiftConstant;
 import com.sitesquad.ministore.constant.SystemConstant;
+import com.sitesquad.ministore.dto.UserDTO;
 import com.sitesquad.ministore.dto.UserShiftDTO;
 import com.sitesquad.ministore.model.Shift;
 import com.sitesquad.ministore.model.User;
@@ -173,7 +174,7 @@ public class UserShiftService {
                     } else if (userShift.getShift().getType().contains(RoleConstant.GUARD_ROLE_NAME)) {
                         role = RoleConstant.GUARD_ROLE_NAME;
                     }
-                    List<User> availableEmployees = userService.findUserByRoleName(role);
+                    List<UserDTO> availableEmployees = userService.findUserByRoleName(role);
                     userShiftDTO.setAvailableEmployees(availableEmployees);
 
                     return userShiftDTO;

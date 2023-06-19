@@ -133,6 +133,9 @@ public class UserShiftController {
 
     @GetMapping("/userShift/checkin")
     public ResponseEntity<ResponseObject> checkin(@RequestParam Long userShiftId) {
+//        System.out.println(" dòng 136 set user mặc định nhớ sửa");
+//        Long userId = new Long(6);
+//        System.out.println(requestMeta.getUserId());
         User user = userService.find(requestMeta.getUserId());
         UserShift userShift = userShiftRepository.findByUserShiftId(userShiftId);
         if(user == null){
@@ -150,6 +153,7 @@ public class UserShiftController {
         ZonedDateTime endCheckInTime = userShift.getStartTime();
         ZonedDateTime startCheckInTime = userShift.getStartTime().minusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE);
         ZonedDateTime checkInTime = SystemConstant.ZONE_DATE_TIME_NOW;
+        System.out.println(checkInTime);
         if(checkInTime.isBefore(startCheckInTime)){
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "You cant check in before "+startCheckInTime, ""));
@@ -166,6 +170,9 @@ public class UserShiftController {
 
     @GetMapping("/userShift/checkout")
     public ResponseEntity<ResponseObject> checkout(@RequestParam Long userShiftId) {
+//        System.out.println(" dòng 172 set user mặc định nhớ sửa");
+//        Long userId = new Long(6);
+//        System.out.println(requestMeta.getUserId());
         User user = userService.find(requestMeta.getUserId());
         UserShift userShift = userShiftRepository.findByUserShiftId(userShiftId);
         if(user == null){
@@ -180,14 +187,15 @@ public class UserShiftController {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "This shift is not assigned to you", ""));
         }
-        ZonedDateTime startCheckOutTime = userShift.getStartTime();
-        ZonedDateTime endCheckOutTime = userShift.getStartTime().plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE);
-        ZonedDateTime checkInTime = SystemConstant.ZONE_DATE_TIME_NOW;
-        if(checkInTime.isBefore(endCheckOutTime)){
+        ZonedDateTime startCheckOutTime = userShift.getEndTime();
+        ZonedDateTime endCheckOutTime = userShift.getEndTime().plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE);
+        ZonedDateTime checkOutTime = SystemConstant.ZONE_DATE_TIME_NOW;
+        System.out.println(checkOutTime);
+        if(checkOutTime.isBefore(startCheckOutTime)){
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "You cant check out before "+startCheckOutTime, ""));
         }
-        if(checkInTime.isAfter(endCheckOutTime)){
+        if(checkOutTime.isAfter(endCheckOutTime)){
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "You cant check out after "+endCheckOutTime, ""));
         }
@@ -199,7 +207,11 @@ public class UserShiftController {
 
     @GetMapping("/userShift/checkAttendance")
     public ResponseEntity<ResponseObject> getUserShiftByUserSession(){
-        User user = userService.find(requestMeta.getUserId());
+        System.out.println("CheckAttendance dòng 202 set user mặc định nhớ sửa");
+        Long userId = new Long(6);
+        System.out.println(requestMeta.getUserId());
+        User user = userService.find(userId);
+        System.out.println(user);
         if(user == null){
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(500,"User not found",""));

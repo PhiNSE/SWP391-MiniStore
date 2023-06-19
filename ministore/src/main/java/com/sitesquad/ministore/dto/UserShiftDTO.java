@@ -40,6 +40,6 @@ public class UserShiftDTO {
 
     private Boolean isPaid;
     
-    private List<User> availableEmployees;
+    private List<UserDTO> availableEmployees;
  
 }
