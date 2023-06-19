@@ -12,7 +12,7 @@ import java.time.ZonedDateTime;
 public class SystemConstant{
     private SystemConstant(){}
     public static final LocalDateTime LOCAL_DATE_TIME_NOW = LocalDateTime.now();
-    public static final ZonedDateTime ZONE_DATE_TIME_NOW = ZonedDateTime.of(LocalDateTime.now(),ZoneId.of("Asia/Ho_Chi_Minh"));
+    public static ZonedDateTime ZONE_DATE_TIME_NOW = ZonedDateTime.of(LocalDateTime.now(),ZoneId.of("Asia/Ho_Chi_Minh"));
     
     
 }

@@ -172,6 +172,7 @@ public class ProductController {
     public Order createOrder() {
         Order order = new Order();
         order.setType(true);
+//        order.setUserId(requestMeta.getUserId());
         order.setUserId(new Long(1));
         Date date = new Date();
         order.setDate(new Timestamp(date.getTime()));

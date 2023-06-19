@@ -21,5 +21,6 @@ public interface UserShiftRepository extends JpaRepository<UserShift, Long>, Jpa
     public UserShift findTop1ByOrderByEndTimeDesc();
     public List<UserShift> findByIsPaidFalseOrIsPaidNull();
     public List<UserShift> findByUserId(Long id);
-   
+
+
 }

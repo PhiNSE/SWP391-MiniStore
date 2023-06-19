@@ -1,5 +1,6 @@
 package com.sitesquad.ministore.controller.order;
 
+import com.sitesquad.ministore.dto.RequestMeta;
 import com.sitesquad.ministore.dto.VoucherRequest;
 import com.sitesquad.ministore.model.Order;
 import com.sitesquad.ministore.model.OrderDetails;
@@ -58,9 +59,13 @@ public class OrderCreator {
     @Autowired
     ProductVoucherService productVoucherService;
 
+    @Autowired
+    RequestMeta requestMeta;
+
     public Order createOrder(Voucher voucher) {
         Order order = new Order();
         order.setType(false);
+//        order.setUserId(requestMeta.getUserId());
         order.setUserId(new Long(1));
         Date date = new Date();
         order.setDate(new Timestamp(date.getTime()));

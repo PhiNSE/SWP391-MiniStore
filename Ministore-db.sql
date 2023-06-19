@@ -84,6 +84,7 @@ CREATE TABLE [dbo].[payslip](
 	[shift_count] int NULL,
 	[salary] [decimal](10, 2) NULL,
 	[total_hours] int NULL
+	[is_paid] [bit]  NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[payslip_id] ASC
