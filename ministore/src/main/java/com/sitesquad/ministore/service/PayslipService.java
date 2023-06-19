@@ -44,16 +44,9 @@ public class PayslipService {
         return payslipRepository.save(payslip);
     }
 
-//    public Product edit(Product newProduct) {
-//        Product oldProduct = payslipRepository.findById(newProduct.getId()).get();
-//        newProduct.setId(null);
-//        Product editedProduct = add(newProduct);
-//        if (editedProduct != null) {
-//            oldProduct.setIsDeleted(true);
-//            payslipRepository.save(oldProduct);
-//        }
-//        return editedProduct;
-//    }
+    public Payslip edit(Payslip newPayslip) {
+        return payslipRepository.save(newPayslip);
+    }
 
     public boolean delete(Long id) {
         payslipRepository.deleteById(id);

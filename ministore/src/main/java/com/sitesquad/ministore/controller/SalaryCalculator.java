@@ -1,5 +1,6 @@
 package com.sitesquad.ministore.controller;
 
+import com.sitesquad.ministore.constant.SystemConstant;
 import com.sitesquad.ministore.model.Payslip;
 import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.model.User;
@@ -7,17 +8,23 @@ import com.sitesquad.ministore.model.UserShift;
 import com.sitesquad.ministore.service.PayslipService;
 import com.sitesquad.ministore.service.UserService;
 import com.sitesquad.ministore.service.shift.UserShiftService;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- *
  * @author admin
  */
 @RestController
@@ -32,16 +39,13 @@ public class SalaryCalculator {
     @Autowired
     UserService userService;
 
-    @Scheduled(cron = "*/10 * * * * *")
+    //    @Scheduled(cron = "0 0 0 30 * *")
     @GetMapping("/salary")
     public ResponseEntity<ResponseObject> calculateSalary() {
-        List<Payslip> payslipList = new ArrayList<>();
         List<User> userList = userService.findAllExceptAdmin();
-        System.out.println(userList);
 
         for (User user : userList) {
 
-            System.out.println(user.getUserId());
             List<UserShift> userShiftList = userShiftService.findAllByIsPaidAndUserId(user.getUserId());
             System.out.println(userShiftList);
             if (userShiftList.isEmpty()) {
@@ -51,13 +55,14 @@ public class SalaryCalculator {
             }
 
             Payslip payslip = new Payslip();
-            System.out.println(userShiftList.get(0).getUserId());
             payslip.setUserId(userShiftList.get(0).getUserId());
             Integer shiftCount = new Integer(0);
             Double salary = new Double(0.0);
+            Integer totalHour = new Integer(0);
 
             for (UserShift userShift : userShiftList) {
-                Double salaryInADay = userShift.getUser().getRole().getBaseSalary() * userShift.getShift().getCoefficient();
+                Long workingPeriod = ChronoUnit.HOURS.between(userShift.getStartTime(), userShift.getEndTime());
+                Double salaryInADay = userShift.getUser().getRole().getBaseSalary() * workingPeriod * userShift.getShift().getCoefficient();
                 if (userShift.getIsWeekend() == true) { // weekend
                     salaryInADay *= 2; // using coeffience const
                 } else { // not weekend
@@ -68,18 +73,37 @@ public class SalaryCalculator {
                 }
                 salary += salaryInADay;
                 shiftCount++;
+                totalHour += workingPeriod.intValue();
                 userShift.setIsPaid(true);
-                userShift = userShiftService.edit(userShift);
+                userShiftService.edit(userShift);
             }
             payslip.setShiftCount(shiftCount);
-            System.out.println(salary);
+            payslip.setStartDate(Date.from(userShiftList.get(0).getStartTime().toInstant()));
+            payslip.setEndDate(Date.from(userShiftList.get(userShiftList.size() - 1).getEndTime().toInstant()));
             payslip.setSalary(salary);
-            payslip = payslipService.add(payslip);
-
-            payslipList.add(payslip);
+            payslip.setTotalHours(totalHour);
+            payslipService.add(payslip);
         }
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject(200, "Successfull", payslipList)
+                new ResponseObject(200, "Successfull", "")
+        );
+    }
+
+    @GetMapping("/salary/pay")
+    public ResponseEntity<ResponseObject> paySalary(@RequestBody Long payslipId) {
+        Payslip foundPayslip = payslipService.findById(payslipId);
+        if(foundPayslip != null) {
+            if(foundPayslip.getIsPaid() == null || foundPayslip.getIsPaid() == false) {
+                foundPayslip.setDate(Date.from(SystemConstant.LOCAL_DATE_TIME_NOW.atZone(ZoneId.systemDefault()).toInstant()));
+                foundPayslip.setIsPaid(true);
+                payslipService.edit(foundPayslip);
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject(200, "Successfull", foundPayslip)
+                );
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(404, "Not found payslip", "")
         );
     }
 }

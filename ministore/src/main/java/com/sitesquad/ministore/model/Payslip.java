@@ -55,6 +55,15 @@ public class Payslip {
     @Column(name = "salary")
     private Double salary;
 
+    @Column(name = "total_hours")
+    private Integer totalHours;
+
+    @Column(name = "date")
+    private Date date;
+
+    @Column(name = "is_paid")
+    private Boolean isPaid;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     @JsonIgnore
