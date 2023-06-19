@@ -39,7 +39,7 @@ public class SalaryCalculator {
     @Autowired
     UserService userService;
 
-    //    @Scheduled(cron = "0 0 0 30 * *")
+    @Scheduled(cron = "0 0 0 30 * *")
     @GetMapping("/salary")
     public ResponseEntity<ResponseObject> calculateSalary() {
         List<User> userList = userService.findAllExceptAdmin();

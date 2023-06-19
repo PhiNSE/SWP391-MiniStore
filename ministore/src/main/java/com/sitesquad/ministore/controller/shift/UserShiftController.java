@@ -6,24 +6,29 @@
 package com.sitesquad.ministore.controller.shift;
 
 import com.sitesquad.ministore.constant.RoleConstant;
+import com.sitesquad.ministore.constant.ShiftConstant;
+import com.sitesquad.ministore.constant.SystemConstant;
+import com.sitesquad.ministore.dto.RequestMeta;
 import com.sitesquad.ministore.dto.UserShiftDTO;
 import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.model.UserShift;
 import com.sitesquad.ministore.repository.UserRepository;
+import com.sitesquad.ministore.repository.UserShiftRepository;
 import com.sitesquad.ministore.service.UserService;
 import com.sitesquad.ministore.service.shift.UserShiftService;
+
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.sitesquad.ministore.utils.ZonedDateTimeConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
@@ -40,6 +45,12 @@ public class UserShiftController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    UserShiftRepository userShiftRepository;
+
+    @Autowired
+    RequestMeta requestMeta;
 
     @GetMapping("/userShift")
     public ResponseEntity<ResponseObject> getUserShifts(@RequestParam(required = false) Integer offset) {
@@ -67,7 +78,7 @@ public class UserShiftController {
         );
     }
 
-    @GetMapping("/userShift/assign")
+    @PostMapping("/userShift/assign")
     public ResponseEntity<ResponseObject> assignUserShift(@RequestBody(required = false) List<Map<String, Object>> request) {
         List<UserShift> assignedUserShifts = new ArrayList<>();
         if (request == null || request.isEmpty()) {
@@ -120,10 +131,81 @@ public class UserShiftController {
         );
     }
 
-    @GetMapping("/userShift/check")
-    public ResponseEntity<ResponseObject> checkAttendance(@RequestParam String type) {
-
+    @GetMapping("/userShift/checkin")
+    public ResponseEntity<ResponseObject> checkin(@RequestParam Long userShiftId) {
+        User user = userService.find(requestMeta.getUserId());
+        UserShift userShift = userShiftRepository.findByUserShiftId(userShiftId);
+        if(user == null){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(500, "User not found ", ""));
+        }
+        if(userShift == null){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(500, "User shift not found ", ""));
+        }
+        if(!userShift.getUserId().equals(user.getUserId())){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "This shift is not assigned to you", ""));
+        }
+        ZonedDateTime endCheckInTime = userShift.getStartTime();
+        ZonedDateTime startCheckInTime = userShift.getStartTime().minusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE);
+        ZonedDateTime checkInTime = SystemConstant.ZONE_DATE_TIME_NOW;
+        if(checkInTime.isBefore(startCheckInTime)){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "You cant check in before "+startCheckInTime, ""));
+        }
+        if(checkInTime.isAfter(endCheckInTime)){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "You cant check in after "+endCheckInTime, ""));
+        }
+        userShift.setIsCheckedIn(true);
+        userShift = userShiftService.edit(userShift);
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject(200, "Check" + type + " succesfully ", ""));
+                new ResponseObject(200, "Check in successfully!", userShift));
+    }
+
+    @GetMapping("/userShift/checkout")
+    public ResponseEntity<ResponseObject> checkout(@RequestParam Long userShiftId) {
+        User user = userService.find(requestMeta.getUserId());
+        UserShift userShift = userShiftRepository.findByUserShiftId(userShiftId);
+        if(user == null){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(500, "User not found ", ""));
+        }
+        if(userShift == null){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(500, "User shift not found ", ""));
+        }
+        if(!userShift.getUserId().equals(user.getUserId())){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "This shift is not assigned to you", ""));
+        }
+        ZonedDateTime startCheckOutTime = userShift.getStartTime();
+        ZonedDateTime endCheckOutTime = userShift.getStartTime().plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE);
+        ZonedDateTime checkInTime = SystemConstant.ZONE_DATE_TIME_NOW;
+        if(checkInTime.isBefore(endCheckOutTime)){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "You cant check out before "+startCheckOutTime, ""));
+        }
+        if(checkInTime.isAfter(endCheckOutTime)){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "You cant check out after "+endCheckOutTime, ""));
+        }
+        userShift.setIsCheckedOut(true);
+        userShift = userShiftService.edit(userShift);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(200, "Check out successfully!", userShift));
+    }
+
+    @GetMapping("/userShift/checkAttendance")
+    public ResponseEntity<ResponseObject> getUserShiftByUserSession(){
+        User user = userService.find(requestMeta.getUserId());
+        if(user == null){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(500,"User not found",""));
+        }
+        List<UserShift> userShifts = userShiftService.findByUserId(user.getUserId());
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(200,"User shifts found ",userShifts));
     }
 }

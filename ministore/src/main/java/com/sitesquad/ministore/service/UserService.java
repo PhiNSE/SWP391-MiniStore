@@ -98,6 +98,10 @@ public class UserService {
         }
     }
 
+    public User find(Long id){
+        return userRepository.findByUserIdAndIsDeletedFalse(id);
+    }
+
     public boolean delete(Long id) {
         User user = userRepository.findByUserIdAndIsDeletedFalse(id);
         if (user == null) {
