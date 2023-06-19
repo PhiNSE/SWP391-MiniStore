@@ -39,7 +39,7 @@ public class JwtInterceptor implements HandlerInterceptor {
 
 
 
-        if (isLoginApi(request)) {
+        if (!isLoginApi(request)) {
             String auth = request.getHeader("Authorization");
             if (auth != null) {
                 Claims claims = jwtUtils.verify(auth);
