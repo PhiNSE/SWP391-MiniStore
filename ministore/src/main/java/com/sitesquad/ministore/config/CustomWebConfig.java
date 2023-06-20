@@ -1,6 +1,7 @@
 package com.sitesquad.ministore.config;
 
 import com.sitesquad.ministore.dto.RequestMeta;
+import com.sitesquad.ministore.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +25,8 @@ public class CustomWebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(jwtInterceptor);
     }
+
+
 
     @Bean
     @RequestScope

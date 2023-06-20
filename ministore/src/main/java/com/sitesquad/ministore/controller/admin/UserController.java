@@ -25,14 +25,12 @@ import org.springframework.web.bind.annotation.*;
  *
  * @author ACER
  */
+
 @RestController
 @RequestMapping(path = "/user")
 public class UserController {
     @Autowired
     UserService userService;
-
-    @Autowired
-    UserRepository userRepository;
     
     @Autowired
     RoleRepository roleRepository;
@@ -43,10 +41,10 @@ public class UserController {
     @Autowired
     RequestMeta requestMeta;
 
-    @GetMapping()
+    @GetMapping("/user")
     public ResponseEntity<ResponseObject> getAllUser(@RequestParam(required = false)  Integer offset){
         System.out.println(requestMeta.getName());
-        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")){
+        if(requestMeta != null || requestMeta.getRole().trim().equalsIgnoreCase("Admin")){
             if (offset == null) {
                 offset = 0;
             }
@@ -62,7 +60,7 @@ public class UserController {
                 );
             }
         }else {
-            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                     new ResponseObject(405, "Access denied", "")
             );
         }
