@@ -41,10 +41,10 @@ public class UserController {
     @Autowired
     RequestMeta requestMeta;
 
-    @GetMapping("/user")
+    @GetMapping()
     public ResponseEntity<ResponseObject> getAllUser(@RequestParam(required = false)  Integer offset){
         System.out.println(requestMeta.getName());
-        if(requestMeta != null || requestMeta.getRole().trim().equalsIgnoreCase("Admin")){
+        if(requestMeta != null && requestMeta.getRole().trim().equalsIgnoreCase("Admin")){
             if (offset == null) {
                 offset = 0;
             }
