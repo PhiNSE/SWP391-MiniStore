@@ -67,7 +67,9 @@ public class UserService {
         return Stream.concat(emp.stream(), guard.stream())
                 .collect(Collectors.toList());
     }
-
+    public User findUserByEmail(String email){
+        return userRepository.findOneByEmailIgnoreCaseAndIsDeletedFalse(email);
+    }
 //    public Page<User> findAll(Integer offset){
 //        Page<User> user = userRepository.findAllByIsDeletedFalse(PageRequest.of(offset,9));
 //        return user;
