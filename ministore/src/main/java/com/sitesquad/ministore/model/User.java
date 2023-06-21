@@ -70,7 +70,7 @@ public class User implements Serializable {
     @ManyToOne(targetEntity = Role.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     @ToString.Exclude
-    @JsonIgnore
+//    @JsonIgnore
     private Role role;
 
     @OneToMany(mappedBy = "orderUser")
