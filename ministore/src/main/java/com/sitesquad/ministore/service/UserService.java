@@ -127,6 +127,7 @@ public class UserService {
             userDTO.setDob(user.getDob());
             userDTO.setGender(user.getGender());
             userDTO.setAddress(user.getAddress());
+            userDTO.setUserImg(user.getUserImg());
             return userDTO;
         } else {
             return null;

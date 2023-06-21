@@ -135,7 +135,7 @@ public class UserShiftController {
     public ResponseEntity<ResponseObject> checkin(@RequestParam Long userShiftId) {
 //        System.out.println(" dòng 136 set user mặc định nhớ sửa");
 //        Long userId = new Long(6);
-//        System.out.println(requestMeta.getUserId());
+        System.out.println("userid = "+requestMeta.getUserId());
         User user = userService.find(requestMeta.getUserId());
         UserShift userShift = userShiftRepository.findByUserShiftId(userShiftId);
         if(user == null){
@@ -172,7 +172,7 @@ public class UserShiftController {
     public ResponseEntity<ResponseObject> checkout(@RequestParam Long userShiftId) {
 //        System.out.println(" dòng 172 set user mặc định nhớ sửa");
 //        Long userId = new Long(6);
-//        System.out.println(requestMeta.getUserId());
+        System.out.println("userid = "+requestMeta.getUserId());
         User user = userService.find(requestMeta.getUserId());
         UserShift userShift = userShiftRepository.findByUserShiftId(userShiftId);
         if(user == null){

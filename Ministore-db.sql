@@ -331,3 +331,13 @@ USE [master]
 GO
 ALTER DATABASE [MinistoreManagement] SET  READ_WRITE 
 GO
+
+create table [dbo].[shift_request] (
+	[shift_request_id] [int] IDENTITY(1,1) NOT NULL,
+	[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [tbl_user](user_id),
+	[shift_id] [int] NOT NULL,
+	[type] [int] NOT NULL,
+);
+
+create table [dbo].[shift_request] (
+);
