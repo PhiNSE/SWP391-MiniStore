@@ -174,7 +174,7 @@ public class UserShiftService {
                     } else if (userShift.getShift().getType().contains(RoleConstant.GUARD_ROLE_NAME)) {
                         role = RoleConstant.GUARD_ROLE_NAME;
                     }
-                    List<UserDTO> availableEmployees = userService.findUserByRoleName(role);
+                    List<User> availableEmployees = userService.findUserByRoleName(role);
                     userShiftDTO.setAvailableEmployees(availableEmployees);
 
                     return userShiftDTO;

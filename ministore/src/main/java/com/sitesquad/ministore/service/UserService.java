@@ -135,13 +135,13 @@ public class UserService {
             return null;
         }
     }
-    public List<UserDTO> findUserByRoleName(String name) {
+    public List<User> findUserByRoleName(String name) {
         List<User> users = userRepository.findUserByRole_NameIgnoreCaseAndIsDeletedFalse(name);
-        List<UserDTO> userDTOs = new ArrayList<>();
-        for (User user: users) {
-            userDTOs.add(convertUserToUserDTO(user));
-        }
-        return userDTOs;
+//        List<UserDTO> userDTOs = new ArrayList<>();
+//        for (User user: users) {
+//            userDTOs.add(convertUserToUserDTO(user));
+//        }
+        return users;
     }
 
 
