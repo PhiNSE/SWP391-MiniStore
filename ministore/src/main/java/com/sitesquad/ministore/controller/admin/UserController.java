@@ -41,10 +41,10 @@ public class UserController {
     @Autowired
     RequestMeta requestMeta;
 
-    @GetMapping("/user")
+    @GetMapping()
     public ResponseEntity<ResponseObject> getAllUser(@RequestParam(required = false)  Integer offset){
         System.out.println(requestMeta.getName());
-        if(requestMeta != null || requestMeta.getRole().trim().equalsIgnoreCase("Admin")){
+        if(requestMeta != null && requestMeta.getRole().trim().equalsIgnoreCase("Admin")){
             if (offset == null) {
                 offset = 0;
             }
@@ -83,6 +83,20 @@ public class UserController {
 //    @GetMapping("/search")
 //    public ResponseEntity<ResponseObject> getUserByRoleName()
 
+    @GetMapping("/profile")
+    public ResponseEntity<ResponseObject> userDetails(){
+        User user = userService.findUserByEmail(requestMeta.getEmail());
+        if(user != null){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "User found", user)
+            );
+        }else {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(404, "User not found", "")
+            );
+        }
+
+    }
 
     @PostMapping("/add")
     public ResponseEntity<ResponseObject> addUser(@RequestBody  User user) {

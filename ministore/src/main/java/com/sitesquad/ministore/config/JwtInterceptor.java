@@ -1,6 +1,7 @@
 package com.sitesquad.ministore.config;
 
 import com.sitesquad.ministore.dto.RequestMeta;
+import com.sitesquad.ministore.exception.AccessDeniedException;
 import com.sitesquad.ministore.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,9 @@ public class JwtInterceptor implements HandlerInterceptor {
 
         if (!isLoginApi(request)) {
             String auth = request.getHeader("Authorization");
+            if(auth == null || auth.isEmpty()){
+                throw new AccessDeniedException("Missing authorize");
+            }
             if (auth != null) {
                 Claims claims = jwtUtils.verify(auth);
                 requestMeta.setUserId(Long.valueOf(claims.getIssuer()));

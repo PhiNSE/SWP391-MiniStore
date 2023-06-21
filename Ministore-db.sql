@@ -11,6 +11,7 @@ CREATE TABLE [dbo].[user_notification](
 	[user_notification_id] [int] IDENTITY(1,1) NOT NULL,
 	[user_id] [int] NOT NULL,
 	[notification_id] [int] NOT NULL,
+	
 PRIMARY KEY CLUSTERED 
 (
 	[user_notification_id] ASC
@@ -24,7 +25,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[notification](
 	[notification_id] [int] IDENTITY(1,1) NOT NULL,
-	[description] [bit] NOT NULL,
+	[title] [Nvarchar](255) null,
+	[description] [TEXT] NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[notification_id] ASC
