@@ -173,7 +173,7 @@ public class UserShiftService {
 
         return userShift;
     }
-    
+
 //    @Scheduled(cron = "*/5 * * * * *")
     @Scheduled(cron = "0 0 6,12,18 * * *")
     public List<UserShift> checkInLateChecker() {
@@ -219,6 +219,11 @@ public class UserShiftService {
                     userShiftDTO.setIsWeekend(userShift.getIsWeekend());
                     userShiftDTO.setIsCheckedIn(userShift.getIsCheckedIn());
                     userShiftDTO.setIsCheckedOut(userShift.getIsCheckedOut());
+                    userShiftDTO.setIsCheckedInLate(userShift.getIsCheckedInLate());
+                    userShiftDTO.setIsCheckedOutLate(userShift.getIsCheckedOutLate());
+                    userShiftDTO.setCheckInTime(userShift.getCheckInTime());
+                    userShiftDTO.setCheckOutTime(userShift.getCheckOutTime());
+                    userShiftDTO.setStatus(getStatus(userShift));
                     userShiftDTO.setIsPaid(userShift.getIsPaid());
                     String role = "";
                     if (userShift.getShift().getType().contains(RoleConstant.SALER_ROLE_NAME)) {
@@ -232,6 +237,33 @@ public class UserShiftService {
                     return userShiftDTO;
                 })
                 .collect(Collectors.toList());
+    }
+
+    private String getStatus(UserShift userShift) {
+        String status = "";
+        ZonedDateTime now = SystemConstant.ZONE_DATE_TIME_NOW;
+        if(userShift.getIsCheckedIn()==null){
+            if(userShift.getStartTime().isBefore(now)){
+                status = "Not checked in";
+                if (userShift.getEndTime().isBefore(now)&&userShift.getIsCheckedOut()==null){
+                    status += " and Not checked out";
+                } else if(userShift.getEndTime().isBefore(now)&&userShift.getIsCheckedOut()!=null){
+                    status += " but Checked out";
+                }
+            }
+            else {
+                status = "Not yet";
+            }
+        } else if(userShift.getIsCheckedIn()!=null){
+            if (userShift.getEndTime().isAfter(now)&&userShift.getIsCheckedOut()==null){
+                status = "Working";
+            } else if(userShift.getEndTime().isBefore(now)&&userShift.getIsCheckedOut()!=null){
+                status = "Checked in and Checked out";
+            } else if(userShift.getEndTime().isBefore(now)&&userShift.getIsCheckedOut()==null){
+                status = "Checked in but Not checked out";
+        }
+        }
+        return  status;
     }
 
     public List<UserShift> findByUserId(Long userId) {

@@ -38,6 +38,16 @@ public class UserShiftDTO {
 
     private Boolean isCheckedOut;
 
+    private ZonedDateTime checkInTime;
+
+    private ZonedDateTime checkOutTime;
+
+    private Boolean isCheckedInLate;
+
+    private Boolean isCheckedOutLate;
+
+    private String status;
+
     private Boolean isPaid;
     
     private List<User> availableEmployees;
