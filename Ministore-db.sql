@@ -219,6 +219,10 @@ CREATE TABLE [dbo].[user_shift](
 	[is_weekend] [bit]  NULL,
 	[is_checked_in] [bit]  NULL,
 	[is_checked_out] [bit]  NULL,
+	[check_in_time][datetime] NULL,
+	[check_out_time][datetime] NULL,
+	[is_checked_in_late] [bit]  NULL,
+	[is_checked_out_late] [bit]  NULL,
 	[is_paid] [bit]  NULL,
  CONSTRAINT [PK__schedule__3213E83F6C24A4B0] PRIMARY KEY CLUSTERED 
 (

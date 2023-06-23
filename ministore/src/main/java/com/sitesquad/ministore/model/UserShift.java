@@ -79,6 +79,20 @@ public class UserShift {
     @Column(name = "is_checked_out")
     private Boolean isCheckedOut;
 
+    @Column(name = "check_in_time")
+    @Convert(converter = ZonedDateTimeConverter.class)
+    private ZonedDateTime checkInTime;
+
+    @Column(name = "check_out_time")
+    @Convert(converter = ZonedDateTimeConverter.class)
+    private ZonedDateTime checkOutTime;
+
+    @Column(name = "is_checked_in_late")
+    private Boolean isCheckedInLate;
+
+    @Column(name = "is_checked_out_late")
+    private Boolean isCheckedOutLate;
+
     @Column(name = "is_paid")
     private Boolean isPaid;
 

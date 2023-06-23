@@ -19,16 +19,20 @@ import com.sitesquad.ministore.repository.UserRepository;
 import com.sitesquad.ministore.repository.UserShiftRepository;
 import com.sitesquad.ministore.service.UserService;
 import com.sitesquad.ministore.utils.DateUtil;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
- *
  * @author ACER
  */
 @Service
@@ -52,12 +56,12 @@ public class UserShiftService {
     public List<UserShift> findAll() {
         return userShiftRepository.findAll();
     }
-    
+
     public List<UserShift> findAllByIsPaidAndUserId(Long id) {
         List<UserShift> userShiftList = new ArrayList<>();
         List<UserShift> userShifts = userShiftRepository.findByIsPaidFalseOrIsPaidNull();
-        for(UserShift userShift: userShifts) {
-            if(userShift.getUserId() == id) {
+        for (UserShift userShift : userShifts) {
+            if (userShift.getUserId() == id) {
                 userShiftList.add(userShift);
             }
         }
@@ -69,16 +73,38 @@ public class UserShiftService {
         if (userShifts == null || userShifts.isEmpty()) {
             return null;
         }
-        ZonedDateTime period = SystemConstant.ZONE_DATE_TIME_NOW;
+//        ZonedDateTime period = SystemConstant.ZONE_DATE_TIME_NOW;
+        LocalDate period = LocalDate.now();
         if (offset == null) {
             offset = 0;
         }
         List<UserShift> viewShifts = new ArrayList<>();
         for (UserShift userShift : userShifts) {
-            if (userShift.getStartTime().getMonthValue() == period.getMonthValue() + offset) {
+            if (userShift.getStartTime().toLocalDate().with(DayOfWeek.MONDAY).getDayOfMonth() == period.plusWeeks(offset).with(DayOfWeek.MONDAY).getDayOfMonth()) {
                 viewShifts.add(userShift);
             }
         }
+        return viewShifts;
+    }
+
+    public List<UserShift> findOffset(Integer offset, Long userId) {
+        List<UserShift> userShifts = userShiftRepository.findByUserId(userId);
+        System.out.println("aaaaaa" + userShifts.size());
+        if (userShifts == null || userShifts.isEmpty()) {
+            return null;
+        }
+//        ZonedDateTime period = SystemConstant.ZONE_DATE_TIME_NOW;
+        LocalDate period = LocalDate.now();
+        if (offset == null) {
+            offset = 0;
+        }
+        List<UserShift> viewShifts = new ArrayList<>();
+        for (UserShift userShift : userShifts) {
+            if (userShift.getStartTime().toLocalDate().with(DayOfWeek.MONDAY).getDayOfMonth() == period.plusWeeks(offset).with(DayOfWeek.MONDAY).getDayOfMonth()) {
+                viewShifts.add(userShift);
+            }
+        }
+        System.out.println("aaaaaa" + viewShifts.size());
         return viewShifts;
     }
 
@@ -108,7 +134,7 @@ public class UserShiftService {
         UserShift lastShift = userShiftRepository.findTop1ByOrderByEndTimeDesc();
         ZonedDateTime startDate = SystemConstant.ZONE_DATE_TIME_NOW.withHour(0).withMinute(0).withSecond(0);
         if (lastShift != null) {
-            startDate = lastShift.getEndTime().withHour(0).withMinute(0).withSecond(0);
+            startDate = lastShift.getEndTime().withHour(0).withMinute(0).withSecond(0).withNano(0);
         }
         Shift salerMorningShift = shiftRepository.findByType(ShiftConstant.SALER_MORNING_SHIFT).orElse(null);
         Shift salerAfternoonShift = shiftRepository.findByType(ShiftConstant.SALER_AFTERNOON_SHIFT).orElse(null);
@@ -147,6 +173,32 @@ public class UserShiftService {
 
         return userShift;
     }
+
+//    @Scheduled(cron = "0 0 6,12,18 * * *")
+    @Scheduled(cron = "*/5 * * * * *")
+    public List<UserShift> checkInLateChecker() {
+        //test
+//        List<UserShift> test = userShiftRepository.findUserShiftsByStartTime(
+//                2023, 6, 10, 6, 0);
+//        System.out.println(test.size());
+//        for (UserShift userShift : test) { System.out.println(userShift); }
+        ZonedDateTime now = SystemConstant.ZONE_DATE_TIME_NOW;
+        List<UserShift> userShifts = userShiftRepository.findUserShiftsByStartTime(
+                now.getYear(), now.getMonthValue(), now.getDayOfMonth(), now.getHour(), now.getMinute());
+        if (userShifts == null || userShifts.isEmpty()) {
+            return null;
+        }
+        List<UserShift> lateList = new ArrayList<>();
+        for (UserShift userShift : userShifts) {
+            if (userShift.getIsCheckedIn() == null) {
+                //noti
+                System.out.println("userShift is late: " + userShift);
+                lateList.add(userShift);
+            }
+        }
+        return lateList;
+    }
+
 // @Scheduled(cron = "* * * ? * *")
 //    public void test(){
 //        System.out.println(SystemConstant.ZONE_DATE_TIME_NOW);
@@ -181,7 +233,6 @@ public class UserShiftService {
                 })
                 .collect(Collectors.toList());
     }
-
 
     public List<UserShift> findByUserId(Long userId) {
         return userShiftRepository.findByUserId(userId);

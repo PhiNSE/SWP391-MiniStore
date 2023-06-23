@@ -65,7 +65,6 @@ public class ProductController {
     @GetMapping("/product")
     public ResponseEntity<ResponseObject> getProducts(@RequestParam(required = false) Integer offset) {
 
-        if(requestMeta.getRole().trim().equalsIgnoreCase("Admin")){
         if (offset == null) {
             offset = 0;
         }
@@ -77,11 +76,6 @@ public class ProductController {
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(404, "Cant find product list", "")
-            );
-        }
-        }else {
-            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
-                    new ResponseObject(405, "Access denied", "")
             );
         }
     }
