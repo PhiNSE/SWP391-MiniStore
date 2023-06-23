@@ -244,11 +244,18 @@ public class UserShiftService {
         ZonedDateTime now = SystemConstant.ZONE_DATE_TIME_NOW;
         if(userShift.getIsCheckedIn()==null){
             if(userShift.getStartTime().isBefore(now)){
-                status = "Not checked in";
+                if(userShift.getIsCheckedInLate()==null){
+                    status = "Not checked in";
+                } else if(userShift.getIsCheckedInLate()!=null) {
+                    status = "Checked in late";
+                }
                 if (userShift.getEndTime().isBefore(now)&&userShift.getIsCheckedOut()==null){
-                    status += " and Not checked out";
+                    if(userShift.getIsCheckedOutLate()==null){
+                        status += " and Not checked out";
+                    }else if(userShift.getIsCheckedOutLate()!=null)
+                        status += " and Checked out late";
                 } else if(userShift.getEndTime().isBefore(now)&&userShift.getIsCheckedOut()!=null){
-                    status += " but Checked out";
+                    status += " and Checked out";
                 }
             }
             else {
@@ -260,7 +267,11 @@ public class UserShiftService {
             } else if(userShift.getEndTime().isBefore(now)&&userShift.getIsCheckedOut()!=null){
                 status = "Checked in and Checked out";
             } else if(userShift.getEndTime().isBefore(now)&&userShift.getIsCheckedOut()==null){
-                status = "Checked in but Not checked out";
+                if(userShift.getIsCheckedOutLate()==null){
+                    status = "Checked in and Not checked out";
+                } else if(userShift.getIsCheckedOutLate()!=null){
+                    status = "Checked in and Checked out late";
+                }
         }
         }
         return  status;

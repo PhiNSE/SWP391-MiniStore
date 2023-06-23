@@ -341,6 +341,6 @@ GO
 create table [dbo].[shift_request] (
 	[shift_request_id] [int] IDENTITY(1,1) NOT NULL,
 	[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [tbl_user](user_id),
-	[shift_id] [int] NOT NULL,
+	[shift_id] [int] NOT NULL FOREIGN KEY REFERENCES [user_shift](user_shift_id),
 	[type] [int] NOT NULL,
 );

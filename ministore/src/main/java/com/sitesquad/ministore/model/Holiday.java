@@ -3,11 +3,8 @@ package com.sitesquad.ministore.model;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,6 +23,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
+@Table(name = "holiday")
 public class Holiday implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

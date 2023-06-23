@@ -200,9 +200,12 @@ public class UserShiftController {
                     new ResponseObject(200, "You cant check out before "+startCheckOutTime, ""));
         }
         if(checkOutTime.isAfter(endCheckOutTime)){
+            userShift.setCheckOutTime(SystemConstant.ZONE_DATE_TIME_NOW);
+            userShift.setIsCheckedOutLate(true);
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "You cant check out after "+endCheckOutTime, ""));
+                    new ResponseObject(200, "You checked out late! Ended since "+endCheckOutTime, ""));
         }
+        userShift.setCheckOutTime(SystemConstant.ZONE_DATE_TIME_NOW);
         userShift.setIsCheckedOut(true);
         userShift = userShiftService.edit(userShift);
         return ResponseEntity.status(HttpStatus.OK).body(
