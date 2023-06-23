@@ -9,18 +9,17 @@ import com.sitesquad.ministore.dto.UserDTO;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.repository.RoleRepository;
 import com.sitesquad.ministore.repository.UserRepository;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *
@@ -183,13 +182,19 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public User addUserForEdit(User user){
+        user.setIsDeleted(Boolean.FALSE);
+        user.setRole(roleRepository.findByRoleIdAndIsDeletedFalse(user.getRoleId()));
+        return userRepository.save(user);
+    }
+
     public User edit (User newUser){
         User oldUser = userRepository.findOneByEmailIgnoreCaseAndIsDeletedFalse(newUser.getEmail());
         if(oldUser == null)
             return null;
         newUser.setUserId(null);
 
-        User userChanged =addUser(newUser);
+        User userChanged =addUserForEdit(newUser);
         if(userChanged != null){
             oldUser.setIsDeleted(Boolean.TRUE);
             userRepository.save(oldUser);

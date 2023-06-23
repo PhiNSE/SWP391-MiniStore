@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class MailerController {
-//
-//    private final MailerService mailerService;
-//
-//    @Autowired
-//    public MailerController(MailerService mailerService) {
-//        this.mailerService = mailerService;
-//    }
-//
-//    @PostMapping("/sendEmail")
-//    public String sendEmail(@RequestBody EmailRequest emailRequest) {
-//        mailerService.send(emailRequest.getTo(), emailRequest.getSubject(), emailRequest.getMessage());
-//        return "Email sent successfully";
-//    }
+
+    private final MailerService mailerService;
+
+    @Autowired
+    public MailerController(MailerService mailerService) {
+        this.mailerService = mailerService;
+    }
+
+    @PostMapping("/sendEmail")
+    public String sendEmail(@RequestBody EmailRequest emailRequest) {
+        mailerService.send(emailRequest.getTo(), emailRequest.getSubject(), emailRequest.getMessage());
+        return "Email sent successfully";
+    }
 }

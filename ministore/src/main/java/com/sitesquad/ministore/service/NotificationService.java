@@ -37,5 +37,8 @@ public class NotificationService {
         return notificationRepository.save(notification);
     }
 
+    public Notification findByTitle (String title){
+        return notificationRepository.findByTitle(title);
+    }
 
 }
