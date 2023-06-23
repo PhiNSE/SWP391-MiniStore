@@ -173,9 +173,9 @@ public class UserShiftService {
 
         return userShift;
     }
-
-//    @Scheduled(cron = "0 0 6,12,18 * * *")
-    @Scheduled(cron = "*/5 * * * * *")
+    
+//    @Scheduled(cron = "*/5 * * * * *")
+    @Scheduled(cron = "0 0 6,12,18 * * *")
     public List<UserShift> checkInLateChecker() {
         //test
 //        List<UserShift> test = userShiftRepository.findUserShiftsByStartTime(
