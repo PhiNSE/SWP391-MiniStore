@@ -1,8 +1,10 @@
 package com.sitesquad.ministore.model;
 
+import com.sitesquad.ministore.utils.ZonedDateTimeConverter;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.ZonedDateTime;
 
 @Entity
 @Getter
@@ -11,12 +13,12 @@ import javax.persistence.*;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-@Table(name = "shift_request")
-public class ShiftRequest {
+@Table(name = "ticket")
+public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="shift_request_id")
-    private Long shiftRequestId;
+    @Column(name="ticket_id")
+    private Long ticketId;
 
     @Column(name = "user_id", nullable = true, insertable = false, updatable = false)
     private Long userId;
@@ -26,12 +28,15 @@ public class ShiftRequest {
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User user;
 
-    @Column(name = "user_shift_id", nullable = true, insertable = false, updatable = false)
-    private Long userShiftId;
+    @Column(name = "start_time")
+    @Convert(converter = ZonedDateTimeConverter.class)
+    private ZonedDateTime startTime;
 
-    @ToString.Exclude
-    @ManyToOne(targetEntity = UserShift.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_shift_id", referencedColumnName = "user_shift_id")
-    private UserShift userShift;
+    @Column(name = "end_time")
+    @Convert(converter = ZonedDateTimeConverter.class)
+    private ZonedDateTime endTime;
+
+    @Column(name = "is_approved")
+    private Boolean is_approved;
 
 }

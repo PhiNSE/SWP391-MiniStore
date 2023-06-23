@@ -21,4 +21,5 @@ public class ShiftConstant{
     public static String GUARD_NIGHT_SHIFT = "guard-night";
 
     public static long LIMIT_CHECKIN_MINUTE = 144000/*30*/;
+    public static long LIMIT_CHECKIN_MINUTE_LATE = 15;
 }

@@ -263,6 +263,21 @@ PRIMARY KEY CLUSTERED (
 )
 ) ON [PRIMARY]
 GO 
+create table [dbo].[shift_request] (
+	[shift_request_id] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [tbl_user](user_id),
+	[user_shift_id] [int] NOT NULL FOREIGN KEY REFERENCES [user_shift](user_shift_id),
+	[type] [int] NOT NULL,
+);
+GO
+create table [dbo].[ticket](
+	[ticket_id] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [tbl_user](user_id),
+	startTime datetime NOT NULL,
+	endTime datetime NOT NULL,
+	is_approved bit NULL,
+);
+GO
 ALTER TABLE [dbo].[user_notification]  WITH CHECK ADD  CONSTRAINT [fk39] FOREIGN KEY([notification_id])
 REFERENCES [dbo].[notification] ([notification_id]) ON DELETE CASCADE
 GO
@@ -338,9 +353,4 @@ GO
 ALTER DATABASE [MinistoreManagement] SET  READ_WRITE 
 GO
 
-create table [dbo].[shift_request] (
-	[shift_request_id] [int] IDENTITY(1,1) NOT NULL,
-	[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [tbl_user](user_id),
-	[shift_id] [int] NOT NULL FOREIGN KEY REFERENCES [user_shift](user_shift_id),
-	[type] [int] NOT NULL,
-);
+
