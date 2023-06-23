@@ -18,7 +18,6 @@ public class ShiftRequest {
     @Column(name="shift_request_id")
     private Long shiftRequestId;
 
-    @Column(name="shift_request_id")
-    private Long 
+
 
 }
