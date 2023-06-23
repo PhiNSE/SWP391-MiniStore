@@ -85,7 +85,7 @@ CREATE TABLE [dbo].[payslip](
 	[end_date] [date] NULL,
 	[shift_count] int NULL,
 	[salary] [decimal](10, 2) NULL,
-	[total_hours] int NULL
+	[total_hours] int NULL,
 	[is_paid] [bit]  NULL,
 PRIMARY KEY CLUSTERED 
 (
@@ -339,7 +339,4 @@ create table [dbo].[shift_request] (
 	[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [tbl_user](user_id),
 	[shift_id] [int] NOT NULL,
 	[type] [int] NOT NULL,
-);
-
-create table [dbo].[shift_request] (
 );
