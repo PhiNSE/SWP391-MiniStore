@@ -159,9 +159,13 @@ public class UserShiftController {
                     new ResponseObject(200, "You cant check in before "+startCheckInTime, ""));
         }
         if(checkInTime.isAfter(endCheckInTime)){
+            userShift.setCheckInTime(SystemConstant.ZONE_DATE_TIME_NOW);
+            userShift.setIsCheckedInLate(true);
+            userShift = userShiftService.edit(userShift);
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "You cant check in after "+endCheckInTime, ""));
+                    new ResponseObject(200, "You check in late! Ended since "+endCheckInTime, ""));
         }
+        userShift.setCheckInTime(SystemConstant.ZONE_DATE_TIME_NOW);
         userShift.setIsCheckedIn(true);
         userShift = userShiftService.edit(userShift);
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -205,19 +209,46 @@ public class UserShiftController {
                 new ResponseObject(200, "Check out successfully!", userShift));
     }
 
-    @GetMapping("/userShift/checkAttendance")
-    public ResponseEntity<ResponseObject> getUserShiftByUserSession(){
-        System.out.println("CheckAttendance dòng 202 set user mặc định nhớ sửa");
-        Long userId = new Long(6);
-        System.out.println(requestMeta.getUserId());
-        User user = userService.find(userId);
-        System.out.println(user);
-        if(user == null){
+        @GetMapping("/userShift/schedule")
+    public ResponseEntity<ResponseObject> getUserShiftByUserSession(@RequestParam(required = false) Integer offset){
+            if (offset == null) {
+                offset = 0;
+            }
+            if(requestMeta.getUserId()==null){
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject(500, "User id session not found", "")
+                );
+            }
+            List<UserShift> userShifts = userShiftService.findOffset(offset, requestMeta.getUserId());
+            List<UserShiftDTO> userShiftDTOs = userShiftService.mapDTO(userShifts);
+            if (userShifts != null) {
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject(200, "Found User Shift list", userShiftDTOs)
+                );
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        new ResponseObject(500, "Not found User Shift  list", "")
+                );
+            }
+    }
+
+    @GetMapping("/userShift/all")
+    public ResponseEntity<ResponseObject> getAllUserShiftByUserSession(){
+        if(requestMeta.getUserId()==null){
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(500,"User not found",""));
+                    new ResponseObject(500, "User id session not found", "")
+            );
         }
-        List<UserShift> userShifts = userShiftService.findByUserId(user.getUserId());
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject(200,"User shifts found ",userShifts));
+        List<UserShift> userShifts = userShiftRepository.findByUserId(requestMeta.getUserId());
+        List<UserShiftDTO> userShiftDTOs = userShiftService.mapDTO(userShifts);
+        if (userShifts != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "Found User Shift list", userShiftDTOs)
+            );
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject(500, "Not found User Shift  list", "")
+            );
+        }
     }
 }
