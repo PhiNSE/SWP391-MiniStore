@@ -2,6 +2,8 @@ package com.sitesquad.ministore.repository;
 
 import com.sitesquad.ministore.model.OrderDetails;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -20,4 +22,10 @@ public interface OrderDetailsRepository extends JpaRepository<OrderDetails, Long
     List<OrderDetails> findByProductId(Long productId);
 
     List<OrderDetails> findByProductVoucherId(Long productVoucherId);
+
+    @Query(value = "select product_id, sum(quantity) as 'sum_quantity'" +
+            "from order_detail\n" +
+            "group by product_id\n" +
+            "order by sum_quantity desc", nativeQuery = true)
+    List<Map<String, Object>> findByCustom();
 }
