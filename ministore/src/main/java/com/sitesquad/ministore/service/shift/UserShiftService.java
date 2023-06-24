@@ -89,7 +89,7 @@ public class UserShiftService {
 
     public List<UserShift> findOffset(Integer offset, Long userId) {
         List<UserShift> userShifts = userShiftRepository.findByUserId(userId);
-        System.out.println("aaaaaa" + userShifts.size());
+        System.out.println("userShifts size: " + userShifts.size());
         if (userShifts == null || userShifts.isEmpty()) {
             return null;
         }
@@ -104,7 +104,7 @@ public class UserShiftService {
                 viewShifts.add(userShift);
             }
         }
-        System.out.println("aaaaaa" + viewShifts.size());
+        System.out.println("userShifts size: " + viewShifts.size());
         return viewShifts;
     }
 
@@ -225,18 +225,29 @@ public class UserShiftService {
                     userShiftDTO.setCheckOutTime(userShift.getCheckOutTime());
                     userShiftDTO.setStatus(getStatus(userShift));
                     userShiftDTO.setIsPaid(userShift.getIsPaid());
-                    String role = "";
-                    if (userShift.getShift().getType().contains(RoleConstant.SALER_ROLE_NAME)) {
-                        role = RoleConstant.SALER_ROLE_NAME;
-                    } else if (userShift.getShift().getType().contains(RoleConstant.GUARD_ROLE_NAME)) {
-                        role = RoleConstant.GUARD_ROLE_NAME;
-                    }
+                    String role = getRoleByUserShiftId(userShift.getUserShiftId());
+//                    if (userShift.getShift().getType().contains(RoleConstant.SALER_ROLE_NAME)) {
+//                        role = RoleConstant.SALER_ROLE_NAME;
+//                    } else if (userShift.getShift().getType().contains(RoleConstant.GUARD_ROLE_NAME)) {
+//                        role = RoleConstant.GUARD_ROLE_NAME;
+//                    }
                     List<User> availableEmployees = userService.findUserByRoleName(role);
                     userShiftDTO.setAvailableEmployees(availableEmployees);
 
                     return userShiftDTO;
                 })
                 .collect(Collectors.toList());
+    }
+
+    public String getRoleByUserShiftId(Long userShiftId){
+        String role = null;
+        UserShift userShift = userShiftRepository.findByUserShiftId(userShiftId);
+        if (userShift.getShift().getType().contains(RoleConstant.SALER_ROLE_NAME)) {
+            role = RoleConstant.SALER_ROLE_NAME;
+        } else if (userShift.getShift().getType().contains(RoleConstant.GUARD_ROLE_NAME)) {
+            role = RoleConstant.GUARD_ROLE_NAME;
+        }
+        return role;
     }
 
     private String getStatus(UserShift userShift) {

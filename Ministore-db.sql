@@ -265,14 +265,14 @@ PRIMARY KEY CLUSTERED (
 GO 
 create table [dbo].[shift_request] (
 	[shift_request_id] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [tbl_user](user_id),
+	[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [tbl_user](user_id) ON DELETE CASCADE,
 	[user_shift_id] [int] NOT NULL FOREIGN KEY REFERENCES [user_shift](user_shift_id),
-	[type] [int] NOT NULL,
+	[type] [bit] NOT NULL,
 );
 GO
 create table [dbo].[ticket](
 	[ticket_id] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [tbl_user](user_id),
+	[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [tbl_user](user_id) ON DELETE CASCADE,
 	startTime datetime NOT NULL,
 	endTime datetime NOT NULL,
 	is_approved bit NULL,
