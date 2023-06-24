@@ -79,4 +79,8 @@ public class OrderDetailsService {
         }
         return orderDetailList;
     }
+
+    public List<Map<String, Object>> findTotalQuantityOfProduct() {
+        return orderDetailRepository.findByCustom();
+    }
 }
