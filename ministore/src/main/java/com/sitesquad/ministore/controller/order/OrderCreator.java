@@ -65,8 +65,8 @@ public class OrderCreator {
     public Order createOrder(Voucher voucher) {
         Order order = new Order();
         order.setType(false);
-//        order.setUserId(requestMeta.getUserId());
-        order.setUserId(new Long(1));
+        order.setUserId(requestMeta.getUserId());
+//        order.setUserId(new Long(1));
         Date date = new Date();
         order.setDate(new Timestamp(date.getTime()));
         if (voucher != null) {
@@ -88,7 +88,6 @@ public class OrderCreator {
                 filteredOrderDetail.add(detail);
             }
         }
-        System.out.println(filteredOrderDetail);
 
         // Extract the voucher ID from the "voucherId" field
         Voucher voucher = new Voucher();
@@ -148,8 +147,6 @@ public class OrderCreator {
             voucherService.minusQuantityOfVoucher(order.getVoucherId());
         }
         order = orderService.edit(order);
-//        Map<Object, Object> invoice = new HashMap<>();
-//        invoice.put(order, orderDetails);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(200, "Successfull", "")
         );

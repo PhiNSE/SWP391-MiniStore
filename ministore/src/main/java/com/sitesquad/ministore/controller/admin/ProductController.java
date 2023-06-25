@@ -122,6 +122,11 @@ public class ProductController {
 
     @PostMapping("/product")
     public ResponseEntity<ResponseObject> addProductList(@RequestBody(required = false) List<Product> productlist) throws NoSuchFieldException{
+        if(!requestMeta.getRole().equals("admin")) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(404, "You don't have permission", "")
+            );
+        }
         if (productlist == null || productlist.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(404, "Product list parameter not found ", "")
@@ -169,8 +174,8 @@ public class ProductController {
     public Order createOrder() {
         Order order = new Order();
         order.setType(true);
-//        order.setUserId(requestMeta.getUserId());
-        order.setUserId(new Long(1));
+        order.setUserId(requestMeta.getUserId());
+//        order.setUserId(new Long(1));
         Date date = new Date();
         order.setDate(new Timestamp(date.getTime()));
         return orderService.add(order);
