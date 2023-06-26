@@ -147,11 +147,11 @@ public class UserShiftController {
         }
         if(userShift.getUserId() == null){
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "This shift have not been assigned", ""));
+                    new ResponseObject(500, "This shift have not been assigned", ""));
         }
         if (!userShift.getUserId().equals(user.getUserId())) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "This shift is not assigned to you", ""));
+                    new ResponseObject(500, "This shift is not assigned to you", ""));
         }
         ZonedDateTime endCheckInTime = userShift.getStartTime();
         ZonedDateTime startCheckInTime = userShift.getStartTime().minusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE);
@@ -159,7 +159,7 @@ public class UserShiftController {
         System.out.println(checkInTime);
         if (checkInTime.isBefore(startCheckInTime)) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "You cant check in before " + startCheckInTime, ""));
+                    new ResponseObject(500, "You cant check in before " + startCheckInTime.minusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE), ""));
         }
         if (checkInTime.isAfter(endCheckInTime)) {
             if (checkInTime.isBefore(endCheckInTime.plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE_LATE))) {
@@ -170,7 +170,7 @@ public class UserShiftController {
                         new ResponseObject(200, "You check in late! Ended since " + endCheckInTime, userShift));
             } else{
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject(200, "You cant check in after " + endCheckInTime.plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE_LATE), ""));
+                        new ResponseObject(500, "You cant check in after " + endCheckInTime.plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE_LATE), ""));
             }
         }
         userShift.setCheckInTime(SystemConstant.ZONE_DATE_TIME_NOW);
@@ -209,7 +209,7 @@ public class UserShiftController {
         System.out.println(checkOutTime);
         if (checkOutTime.isBefore(startCheckOutTime)) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "You cant check out before " + startCheckOutTime, ""));
+                    new ResponseObject(500, "You cant check out before " + startCheckOutTime, ""));
         }
         if (checkOutTime.isAfter(endCheckOutTime)) {
             if(checkOutTime.isBefore(endCheckOutTime.plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE_LATE))){
@@ -220,7 +220,7 @@ public class UserShiftController {
                         new ResponseObject(200, "You checked out late! Ended since " + endCheckOutTime, userShift));
             } else{
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject(200, "You cant check in after " + endCheckOutTime.plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE_LATE), ""));
+                        new ResponseObject(500, "You cant check in after " + endCheckOutTime.plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE).plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE_LATE), ""));
             }
         }
         userShift.setCheckOutTime(SystemConstant.ZONE_DATE_TIME_NOW);
