@@ -29,7 +29,7 @@ public interface UserShiftRepository extends JpaRepository<UserShift, Long>, Jpa
             "AND DAY(us.startTime) = :day " +
             "AND DATEPART(HOUR, us.startTime) = :hour " +
             "AND DATEPART(MINUTE, us.startTime) = :minute")
-    List<UserShift> findUserShiftsByStartTime(@Param("year") int year, @Param("month") int month, @Param("day") int day, @Param("hour") int hour, @Param("minute") int minute);
+    List<UserShift> findUserShiftsByStartTime(@Param("year") Integer year, @Param("month") Integer month, @Param("day") Integer day, @Param("hour") Integer hour, @Param("minute") Integer minute);
 
 
 }

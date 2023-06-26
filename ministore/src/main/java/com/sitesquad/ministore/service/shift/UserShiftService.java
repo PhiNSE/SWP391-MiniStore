@@ -291,4 +291,25 @@ public class UserShiftService {
     public List<UserShift> findByUserId(Long userId) {
         return userShiftRepository.findByUserId(userId);
     }
+
+//    public List<UserShiftDTO> getCurrentUserShifts(){
+//        ZonedDateTime now = SystemConstant.ZONE_DATE_TIME_NOW;
+//        List<UserShift> userShifts = new ArrayList<>();
+//        List<UserShift> workingUserShifts = new ArrayList<>();
+//        userShifts.addAll(userShiftRepository.findUserShiftsByStartTime(now.getYear(),now.getMonthValue(),now.getDayOfMonth(),null,null));
+//        userShifts.addAll(userShiftRepository.findUserShiftsByStartTime(now.getYear(),now.getMonthValue(),now.plusDays(1).getDayOfMonth(),null,null));
+//        userShifts.addAll(userShiftRepository.findUserShiftsByStartTime(now.getYear(),now.getMonthValue(),now.minusDays(1).getDayOfMonth(),null,null));
+//        for (UserShift userShift: userShifts){
+//            System.out.println("check: " + userShift);
+//            if(userShift.getStartTime().isBefore(now)&&userShift.getStartTime().isAfter(now)){
+//                workingUserShifts.add(userShift);
+//                System.out.println("found: " + userShift);
+//            }
+//        }
+//        return mapDTO(workingUserShifts);
+//    }
+
+
+
+
 }

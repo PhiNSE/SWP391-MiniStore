@@ -273,8 +273,8 @@ GO
 create table [dbo].[ticket](
 	[ticket_id] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [tbl_user](user_id) ON DELETE CASCADE,
-	startTime datetime NOT NULL,
-	endTime datetime NOT NULL,
+	start_time datetime NOT NULL,
+	end_time datetime NOT NULL,
 	is_approved bit NULL,
 );
 GO

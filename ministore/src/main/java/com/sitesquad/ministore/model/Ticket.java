@@ -37,6 +37,6 @@ public class Ticket {
     private ZonedDateTime endTime;
 
     @Column(name = "is_approved")
-    private Boolean is_approved;
+    private Boolean isApproved;
 
 }

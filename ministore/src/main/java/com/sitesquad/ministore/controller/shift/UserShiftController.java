@@ -145,6 +145,10 @@ public class UserShiftController {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(500, "User shift not found ", ""));
         }
+        if(userShift.getUserId() == null){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "This shift have not been assigned", ""));
+        }
         if (!userShift.getUserId().equals(user.getUserId())) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "This shift is not assigned to you", ""));
@@ -191,9 +195,13 @@ public class UserShiftController {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(500, "User shift not found ", ""));
         }
+        if(userShift.getUserId() == null){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "This shift have not been assigned", ""));
+        }
         if (!userShift.getUserId().equals(user.getUserId())) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "This shift is not assigned to you", ""));
+                    new ResponseObject(200, "This shift was not assigned to you", ""));
         }
         ZonedDateTime startCheckOutTime = userShift.getEndTime();
         ZonedDateTime endCheckOutTime = userShift.getEndTime().plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE);
@@ -235,8 +243,17 @@ public class UserShiftController {
         List<UserShift> userShifts = userShiftService.findOffset(offset, requestMeta.getUserId());
         List<UserShiftDTO> userShiftDTOs = userShiftService.mapDTO(userShifts);
         if (userShifts != null) {
+            List<UserShiftDTO> workingUserShiftDTOS = new ArrayList<>();
+            for (UserShiftDTO userShiftDTO: userShiftDTOs){
+                if(userShiftDTO.getStartTime().isBefore(SystemConstant.ZONE_DATE_TIME_NOW)&&userShiftDTO.getStartTime().isAfter(SystemConstant.ZONE_DATE_TIME_NOW)){
+                    workingUserShiftDTOS.add(userShiftDTO);
+                }
+            }
+            Map<String, Object> userShiftMap = new HashMap<>();
+            userShiftMap.put("userShifts",userShiftDTOs);
+            userShiftMap.put("workingUserShifts",workingUserShiftDTOS);
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "Found User Shift list", userShiftDTOs)
+                    new ResponseObject(200, "Found User Shift list", userShiftMap)
             );
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
