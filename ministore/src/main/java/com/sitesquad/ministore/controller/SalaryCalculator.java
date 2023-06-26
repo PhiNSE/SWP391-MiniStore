@@ -63,7 +63,7 @@ public class SalaryCalculator {
             salary += salaryInADay;
             shiftCount++;
             totalHour += workingPeriod.intValue();
-//            userShift.setIsPaid(true);
+            userShift.setIsPaid(true);
             userShiftService.edit(userShift);
         }
         payslip.setShiftCount(shiftCount);
@@ -80,6 +80,12 @@ public class SalaryCalculator {
     @Scheduled(cron = "0 0 0 30 * *")
     @PostMapping("/salary")
     public ResponseEntity<ResponseObject> calculateSalary() {
+        if(!requestMeta.getRole().equals("admin")) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(404, "You don't have permission", "")
+            );
+        }
+
         List<User> userList = userService.findAllExceptAdmin();
 
         for (User user : userList) {
@@ -99,6 +105,11 @@ public class SalaryCalculator {
 
     @PostMapping("/salary/user")
     public ResponseEntity<ResponseObject> calculateSalaryForAUser(@RequestParam Long userId) {
+        if(!requestMeta.getRole().equals("admin")) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(404, "You don't have permission", "")
+            );
+        }
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(404, "Not found user", "")
@@ -120,6 +131,11 @@ public class SalaryCalculator {
 
     @GetMapping("/salary/pay")
     public ResponseEntity<ResponseObject> paySalary(@RequestParam(required = false) Long payslipId) {
+        if(!requestMeta.getRole().equals("admin")) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(404, "You don't have permission", "")
+            );
+        }
         Payslip foundPayslip = new Payslip();
         foundPayslip = payslipService.findById(payslipId);
         if (foundPayslip == null) {

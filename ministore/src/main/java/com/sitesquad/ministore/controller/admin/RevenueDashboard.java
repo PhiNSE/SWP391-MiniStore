@@ -1,6 +1,7 @@
 package com.sitesquad.ministore.controller.admin;
 
 import com.sitesquad.ministore.dto.ProductDTO;
+import com.sitesquad.ministore.dto.RequestMeta;
 import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.dto.RevenueDTO;
 import com.sitesquad.ministore.model.Order;
@@ -33,9 +34,16 @@ public class RevenueDashboard {
     ProductService productService;
     @Autowired
     PayslipService payslipService;
+    @Autowired
+    RequestMeta requestMeta;
 
     @GetMapping("/dashboard")
     public ResponseEntity<ResponseObject> dashboard() {
+        if(!requestMeta.getRole().equals("admin")) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(404, "You don't have permission", "")
+            );
+        }
         RevenueDTO revenueDTO = new RevenueDTO();
         revenueDTO.setAllTimeRevenue(allTimeRevenue());
         revenueDTO.setMonthRevenues(monthRevenue());
