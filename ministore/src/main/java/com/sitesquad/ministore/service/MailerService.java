@@ -1,40 +1,74 @@
 package com.sitesquad.ministore.service;
 
-import com.sitesquad.ministore.config.MailConfig;
+import com.sitesquad.ministore.repository.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 @Service
-public class MailerService {
+public class MailerService implements EmailService {
 
     @Value("${spring.mail.username}")
     private String fromEmail;
 
-    private final JavaMailSender javaMailSender;
-
-    @Autowired
-    public MailerService(JavaMailSender javaMailSender, MailConfig mailConfig) {
-        this.javaMailSender = javaMailSender;
-    }
-
-    public void send(String to, String subject, String message) {
+    @Override
+    public String sendMailWithOutFile(String to, String[] cc, String subject, String body) {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-            helper.setTo(to);
-            helper.setSubject(subject);
-            helper.setText(message);
+
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+
+            mimeMessageHelper.setFrom(fromEmail);
+            mimeMessageHelper.setTo(to);
+            mimeMessageHelper.setCc(cc);
+            mimeMessageHelper.setSubject(subject);
+            mimeMessageHelper.setText(body);
 
             javaMailSender.send(mimeMessage);
-            System.out.println("Message sent successfully");
-        } catch (MessagingException e) {
+
+            return "mail send";
+
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Autowired
+    private JavaMailSender javaMailSender;
+
+    @Override
+    public String sendMail(MultipartFile[] file, String to, String[] cc, String subject, String body) {
+        try {
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+
+            mimeMessageHelper.setFrom(fromEmail);
+            mimeMessageHelper.setTo(to);
+            mimeMessageHelper.setCc(cc);
+            mimeMessageHelper.setSubject(subject);
+            mimeMessageHelper.setText(body);
+
+            for (int i = 0; i < file.length; i++) {
+                mimeMessageHelper.addAttachment(
+                        file[i].getOriginalFilename(),
+                        new ByteArrayResource(file[i].getBytes()));
+            }
+
+            javaMailSender.send(mimeMessage);
+
+            return "mail send";
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 }

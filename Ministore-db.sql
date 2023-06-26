@@ -10,29 +10,15 @@ USE [MinistoreManagement]
 CREATE TABLE [dbo].[user_notification](
 	[user_notification_id] [int] IDENTITY(1,1) NOT NULL,
 	[user_id] [int] NOT NULL,
-	[notification_id] [int] NOT NULL,
+
+	[title] [Nvarchar](255) null,
+	[description] [TEXT] NULL,
 	
 PRIMARY KEY CLUSTERED 
 (
 	[user_notification_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[order_detail]    Script Date: 15/05/2023 07:02:12 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[notification](
-	[notification_id] [int] IDENTITY(1,1) NOT NULL,
-	[title] [Nvarchar](255) null,
-	[description] [TEXT] NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[notification_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
 /****** Object:  Table [dbo].[order_detail]    Script Date: 15/05/2023 07:02:12 ******/
 SET ANSI_NULLS ON
 GO
@@ -277,11 +263,6 @@ create table [dbo].[ticket](
 	endTime datetime NOT NULL,
 	is_approved bit NULL,
 );
-GO
-ALTER TABLE [dbo].[user_notification]  WITH CHECK ADD  CONSTRAINT [fk39] FOREIGN KEY([notification_id])
-REFERENCES [dbo].[notification] ([notification_id]) ON DELETE CASCADE
-GO
-ALTER TABLE [dbo].[user_notification] CHECK CONSTRAINT [fk39]
 GO
 ALTER TABLE [dbo].[user_notification]  WITH CHECK ADD  CONSTRAINT [fk19] FOREIGN KEY([user_id])
 REFERENCES [dbo].[tbl_user] ([user_id]) ON DELETE CASCADE

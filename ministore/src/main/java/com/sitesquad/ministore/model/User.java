@@ -1,19 +1,12 @@
 package com.sitesquad.ministore.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Objects;
-import javax.persistence.*;
-
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 
 /**
@@ -82,6 +75,11 @@ public class User implements Serializable {
     @JsonIgnore
     @ToString.Exclude
     private Collection<Payslip> payslips;
+
+    @OneToMany(mappedBy = "userNotifications")
+    @JsonIgnore
+    @ToString.Exclude
+    private Collection<UserNotification> userNotifications;
 
 
 }

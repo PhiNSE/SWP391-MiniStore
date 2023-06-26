@@ -20,21 +20,19 @@ public class UserNotification {
     @Column(name = "user_notification_id")
     private Long userNotificationId;
 
-    @Column(name = "user_id", nullable = true, insertable = false, updatable = false)
+    @Column(name = "user_id", insertable=false, updatable=false)
     private Long userId;
 
-    @ManyToOne(targetEntity = User.class, cascade = CascadeType.ALL, optional = true)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = true)
     @ToString.Exclude
     @JsonIgnore
-    private User user;
+    private User userNotifications;
 
-    @Column(name = "notification_id", nullable = true, insertable = false, updatable = false)
-    private Long notificationId;
+    @Column(name = "title")
+    private String title;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "notification_id", referencedColumnName = "notification_id", nullable = true)
-    @ToString.Exclude
-    @JsonIgnore
-    private Notification userNotification;
+    @Column(name = "description")
+    private String description;
+
 }
