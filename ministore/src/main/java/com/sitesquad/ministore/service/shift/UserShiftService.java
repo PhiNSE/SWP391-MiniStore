@@ -270,7 +270,11 @@ public class UserShiftService {
                 }
             }
             else {
-                status = "Not yet";
+                if(now.isAfter(userShift.getEndTime().plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE).plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE_LATE))){
+                    status = "Expired";
+                } else {
+                    status = "Not yet";
+                }
             }
         } else if(userShift.getIsCheckedIn()!=null){
             if (userShift.getEndTime().isAfter(now)&&userShift.getIsCheckedOut()==null){

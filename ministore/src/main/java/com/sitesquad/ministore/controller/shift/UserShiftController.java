@@ -162,7 +162,7 @@ public class UserShiftController {
                     new ResponseObject(200, "You cant check in before " + startCheckInTime, ""));
         }
         if (checkInTime.isAfter(endCheckInTime)) {
-            if (checkInTime.isAfter(endCheckInTime.plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE_LATE))) {
+            if (checkInTime.isBefore(endCheckInTime.plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE_LATE))) {
                 userShift.setCheckInTime(SystemConstant.ZONE_DATE_TIME_NOW);
                 userShift.setIsCheckedInLate(true);
                 userShift = userShiftService.edit(userShift);
@@ -212,7 +212,7 @@ public class UserShiftController {
                     new ResponseObject(200, "You cant check out before " + startCheckOutTime, ""));
         }
         if (checkOutTime.isAfter(endCheckOutTime)) {
-            if(checkOutTime.isAfter(endCheckOutTime.plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE_LATE))){
+            if(checkOutTime.isBefore(endCheckOutTime.plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE_LATE))){
                 userShift.setCheckOutTime(SystemConstant.ZONE_DATE_TIME_NOW);
                 userShift.setIsCheckedOutLate(true);
                 userShift = userShiftService.edit(userShift);
@@ -243,15 +243,15 @@ public class UserShiftController {
         List<UserShift> userShifts = userShiftService.findOffset(offset, requestMeta.getUserId());
         List<UserShiftDTO> userShiftDTOs = userShiftService.mapDTO(userShifts);
         if (userShifts != null) {
-            List<UserShiftDTO> workingUserShiftDTOS = new ArrayList<>();
+            UserShiftDTO workingUserShiftDTO = null;
             for (UserShiftDTO userShiftDTO: userShiftDTOs){
-                if(userShiftDTO.getStartTime().isBefore(SystemConstant.ZONE_DATE_TIME_NOW)&&userShiftDTO.getStartTime().isAfter(SystemConstant.ZONE_DATE_TIME_NOW)){
-                    workingUserShiftDTOS.add(userShiftDTO);
+                if(userShiftDTO.getStartTime().isBefore(SystemConstant.ZONE_DATE_TIME_NOW)&&userShiftDTO.getEndTime().isAfter(SystemConstant.ZONE_DATE_TIME_NOW)){
+                    workingUserShiftDTO = userShiftDTO;
                 }
             }
             Map<String, Object> userShiftMap = new HashMap<>();
             userShiftMap.put("userShifts",userShiftDTOs);
-            userShiftMap.put("workingUserShifts",workingUserShiftDTOS);
+            userShiftMap.put("workingUserShift",workingUserShiftDTO);
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Found User Shift list", userShiftMap)
             );
