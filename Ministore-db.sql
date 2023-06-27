@@ -67,11 +67,12 @@ GO
 CREATE TABLE [dbo].[payslip](
 	[payslip_id] [int] IDENTITY(1,1) NOT NULL,
 	[user_id] [int] NOT NULL,
-	[start_date] [date] NULL,
-	[end_date] [date] NULL,
+	[start_date] [datetime] NULL,
+	[end_date] [datetime] NULL,
 	[shift_count] int NULL,
 	[salary] [decimal](10, 2) NULL,
 	[total_hours] int NULL,
+	[date] [datetime] NULL,
 	[is_paid] [bit]  NULL,
 PRIMARY KEY CLUSTERED 
 (

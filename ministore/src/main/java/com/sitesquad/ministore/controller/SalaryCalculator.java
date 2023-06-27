@@ -1,6 +1,7 @@
 package com.sitesquad.ministore.controller;
 
 import com.sitesquad.ministore.constant.SystemConstant;
+import com.sitesquad.ministore.dto.PayslipDTO;
 import com.sitesquad.ministore.dto.RequestMeta;
 import com.sitesquad.ministore.model.Payslip;
 import com.sitesquad.ministore.dto.ResponseObject;
@@ -10,8 +11,9 @@ import com.sitesquad.ministore.service.PayslipService;
 import com.sitesquad.ministore.service.UserService;
 import com.sitesquad.ministore.service.shift.UserShiftService;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
@@ -63,14 +65,14 @@ public class SalaryCalculator {
             salary += salaryInADay;
             shiftCount++;
             totalHour += workingPeriod.intValue();
-            userShift.setIsPaid(true);
+//            userShift.setIsPaid(true);
             userShiftService.edit(userShift);
         }
         payslip.setShiftCount(shiftCount);
 
-        payslip.setStartDate(Date.from(userShiftList.get(0).getStartTime().toInstant()));
-        payslip.setEndDate(Date.from(userShiftList.get(userShiftList.size() - 1).getEndTime().toInstant()));
-
+        payslip.setStartDate(Timestamp.from(userShiftList.get(0).getStartTime().toInstant()));
+        payslip.setEndDate(Timestamp.from(userShiftList.get(userShiftList.size() - 1).getEndTime().toInstant()));
+        payslip.setDate(Timestamp.from(SystemConstant.LOCAL_DATE_TIME_NOW.atZone(ZoneId.systemDefault()).toInstant()));
         payslip.setSalary(salary);
         payslip.setTotalHours(totalHour);
         payslipService.add(payslip);
@@ -80,7 +82,7 @@ public class SalaryCalculator {
     @Scheduled(cron = "0 0 0 30 * *")
     @PostMapping("/salary")
     public ResponseEntity<ResponseObject> calculateSalary() {
-        if(!requestMeta.getRole().equals("admin")) {
+        if (!requestMeta.getRole().equals("admin")) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(404, "You don't have permission", "")
             );
@@ -105,7 +107,7 @@ public class SalaryCalculator {
 
     @PostMapping("/salary/user")
     public ResponseEntity<ResponseObject> calculateSalaryForAUser(@RequestParam Long userId) {
-        if(!requestMeta.getRole().equals("admin")) {
+        if (!requestMeta.getRole().equals("admin")) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(404, "You don't have permission", "")
             );
@@ -131,7 +133,7 @@ public class SalaryCalculator {
 
     @GetMapping("/salary/pay")
     public ResponseEntity<ResponseObject> paySalary(@RequestParam(required = false) Long payslipId) {
-        if(!requestMeta.getRole().equals("admin")) {
+        if (!requestMeta.getRole().equals("admin")) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(404, "You don't have permission", "")
             );
@@ -144,7 +146,6 @@ public class SalaryCalculator {
             );
         }
         if (foundPayslip.getIsPaid() == null || foundPayslip.getIsPaid() == false) {
-            foundPayslip.setDate(Date.from(SystemConstant.LOCAL_DATE_TIME_NOW.atZone(ZoneId.systemDefault()).toInstant()));
             foundPayslip.setIsPaid(true);
             payslipService.edit(foundPayslip);
             return ResponseEntity.status(HttpStatus.OK).body(
@@ -158,14 +159,27 @@ public class SalaryCalculator {
 
     @GetMapping("/salary/viewByUser")
     public ResponseEntity<ResponseObject> viewSalaryByUser() {
-        List<Payslip> foundPayslip = payslipService.findByUserId(requestMeta.getUserId());
-        if(foundPayslip.isEmpty()) {
+        List<Payslip> payslipList = payslipService.findByUserId(requestMeta.getUserId());
+        PayslipDTO payslipDTO = new PayslipDTO();
+        for (Payslip payslip : payslipList) {
+            if (payslip.getIsPaid() == null) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                payslipDTO.setUserId(payslip.getUserId());
+                payslipDTO.setStartDate(dateFormat.format(payslip.getStartDate()));
+                payslipDTO.setEndDate(dateFormat.format(payslip.getEndDate()));
+                payslipDTO.setShiftCount(payslip.getShiftCount());
+                payslipDTO.setSalary(payslip.getSalary());
+                payslipDTO.setTotalHour(payslip.getTotalHours());
+                payslipDTO.setDate(dateFormat.format(payslip.getDate()));
+            }
+        }
+        if (payslipDTO.getUserId() == null) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(404, "Not found payslip!", "")
             );
         }
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject(200, "Found", foundPayslip)
+                new ResponseObject(200, "Found", payslipDTO)
         );
     }
 }
