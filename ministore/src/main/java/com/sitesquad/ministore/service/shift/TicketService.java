@@ -1,5 +1,6 @@
 package com.sitesquad.ministore.service.shift;
 
+import com.sitesquad.ministore.model.ShiftRequest;
 import com.sitesquad.ministore.model.Ticket;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.repository.TicketRepository;
@@ -7,6 +8,8 @@ import com.sitesquad.ministore.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -47,6 +50,17 @@ public class TicketService {
         }
     }
 
+    public boolean generateShiftRequestByTicket(Ticket ticket) {
+        if(ticket==null||ticket.getStartTime()==null||ticket.getEndTime()==null||ticket.getUserId()==null){
+            return false;
+        }
+        List<ShiftRequest> shiftRequest = new ArrayList<>();
+        ZonedDateTime start = ticket.getStartTime();
+        ZonedDateTime end = ticket.getEndTime();
+        //doing
 
+        return true;
+
+    }
 
 }

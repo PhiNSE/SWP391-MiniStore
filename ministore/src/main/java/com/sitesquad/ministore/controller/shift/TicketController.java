@@ -99,15 +99,12 @@ public class TicketController {
         ticket.setIsApproved(isApproved);
         ticket = ticketService.edit(ticket);
         if(isApproved==true){
-            generateShiftRequestByTicket(ticket);
+            ticketService.generateShiftRequestByTicket(ticket);
         }
         String status = isApproved?"Approved":"Rejected";
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(200,"Ticket "+status+" successfully",ticket));
     }
 
-    private boolean generateShiftRequestByTicket(Ticket ticket) {
-        return false;
-    }
 
 }

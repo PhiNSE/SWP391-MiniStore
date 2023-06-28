@@ -256,36 +256,36 @@ public class UserShiftService {
         if(userShift.getIsCheckedIn()==null){
             if(userShift.getStartTime().isBefore(now)){
                 if(userShift.getIsCheckedInLate()==null){
-                    status = "Not checked in";
+                    status = "not checked in";
                 } else if(userShift.getIsCheckedInLate()!=null) {
-                    status = "Checked in late";
+                    status = "checked in late";
                 }
                 if (userShift.getEndTime().isBefore(now)&&userShift.getIsCheckedOut()==null){
                     if(userShift.getIsCheckedOutLate()==null){
-                        status += " and Not checked out";
+                        status += " and not checked out";
                     }else if(userShift.getIsCheckedOutLate()!=null)
-                        status += " and Checked out late";
+                        status += " and checked out late";
                 } else if(userShift.getEndTime().isBefore(now)&&userShift.getIsCheckedOut()!=null){
-                    status += " and Checked out";
+                    status += " and checked out";
                 }
             }
             else {
                 if(now.isAfter(userShift.getEndTime().plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE).plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE_LATE))){
-                    status = "Expired";
+                    status = "not checked in and not checked out";
                 } else {
-                    status = "Not yet";
+                    status = "not yet";
                 }
             }
         } else if(userShift.getIsCheckedIn()!=null){
             if (userShift.getEndTime().isAfter(now)&&userShift.getIsCheckedOut()==null){
-                status = "Working";
+                status = "working";
             } else if(userShift.getEndTime().isBefore(now)&&userShift.getIsCheckedOut()!=null){
-                status = "Checked in and Checked out";
+                status = "checked in and checked out";
             } else if(userShift.getEndTime().isBefore(now)&&userShift.getIsCheckedOut()==null){
                 if(userShift.getIsCheckedOutLate()==null){
-                    status = "Checked in and Not checked out";
+                    status = "checked in and not checked out";
                 } else if(userShift.getIsCheckedOutLate()!=null){
-                    status = "Checked in and Checked out late";
+                    status = "checked in and checked out late";
                 }
         }
         }
