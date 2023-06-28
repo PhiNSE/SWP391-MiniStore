@@ -4,6 +4,7 @@ import com.sitesquad.ministore.model.ShiftRequest;
 import com.sitesquad.ministore.model.Ticket;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.repository.TicketRepository;
+import com.sitesquad.ministore.repository.TicketTypeRepository;
 import com.sitesquad.ministore.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,9 @@ public class TicketService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private TicketTypeRepository ticketTypeRepository;
+
     public List<Ticket> getAll(){
         return ticketRepository.findAll();
     }
@@ -31,6 +35,7 @@ public class TicketService {
 
     public Ticket add(Ticket ticket){
         ticket.setUser(userRepository.findByUserIdAndIsDeletedFalse(ticket.getUserId()));
+        ticket.setTicketType(ticketTypeRepository.findById(ticket.getTicketTypeId()).get());
         return ticketRepository.save(ticket);
     }
 

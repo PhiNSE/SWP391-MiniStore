@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface TicketRepository extends JpaRepository<Ticket, Long>, JpaSpecificationExecutor<Ticket> {
     public List<Ticket> findByUserId(Long userId);
+    public List<Ticket> findByIsApprovedNull();
+    public List<Ticket> findByIsApprovedNotNull();
 }

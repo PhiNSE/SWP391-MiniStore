@@ -11,7 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class TicketController {
@@ -26,14 +28,19 @@ public class TicketController {
 
     @GetMapping("/ticket")
     public ResponseEntity<ResponseObject> getAll(){
+        System.out.println(requestMeta);
         if(requestMeta.getRole() == null){
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseObject(200,"User role not found",""));
         }
-        if(requestMeta.getRole() == RoleConstant.ADMIN_ROLE_NAME){
-            List<Ticket> tickets = ticketService.getAll();
+        if(requestMeta.getRole().equals(RoleConstant.ADMIN_ROLE_NAME)){
+            List<Ticket> unprocessedTickets = ticketRepository.findByIsApprovedNull();
+            List<Ticket> processedTickets = ticketRepository.findByIsApprovedNotNull();
+            Map<String,List<Ticket> > data = new HashMap<>();
+            data.put("unprocessedTickets",unprocessedTickets);
+            data.put("processedTickets",processedTickets);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseObject(200,"Ticket list found for "+requestMeta.getRole(),tickets));
+                    .body(new ResponseObject(200,"Ticket list found for "+requestMeta.getRole(),data));
         } else{
             List<Ticket> tickets = ticketRepository.findByUserId(requestMeta.getUserId());
             return ResponseEntity.status(HttpStatus.OK)
@@ -87,9 +94,9 @@ public class TicketController {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseObject(200,"User role not found",""));
         }
-        if(requestMeta.getRole() != RoleConstant.ADMIN_ROLE_NAME) {
+        if(!requestMeta.getRole().equals(RoleConstant.ADMIN_ROLE_NAME)) {
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseObject(200, "Only admin can approve/reject ticket" + requestMeta.getRole(), ""));
+                    .body(new ResponseObject(200, "Only admin can approve/reject ticket " + requestMeta.getRole(), ""));
         }
         Ticket ticket = ticketRepository.findById(ticketId).orElse(null);
         if(ticket == null){
