@@ -205,6 +205,9 @@ public class UserShiftService {
 //    }
 
     public List<UserShiftDTO> mapDTO(List<UserShift> userShifts) {
+        if(userShifts == null || userShifts.isEmpty()){
+            return null;
+        }
         return userShifts.stream()
                 .map(userShift -> {
                     UserShiftDTO userShiftDTO = new UserShiftDTO();

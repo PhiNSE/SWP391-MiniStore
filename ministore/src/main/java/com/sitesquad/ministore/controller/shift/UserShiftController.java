@@ -11,11 +11,13 @@ import com.sitesquad.ministore.constant.SystemConstant;
 import com.sitesquad.ministore.dto.RequestMeta;
 import com.sitesquad.ministore.dto.UserShiftDTO;
 import com.sitesquad.ministore.dto.ResponseObject;
+import com.sitesquad.ministore.model.ShiftRequest;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.model.UserShift;
 import com.sitesquad.ministore.repository.UserRepository;
 import com.sitesquad.ministore.repository.UserShiftRepository;
 import com.sitesquad.ministore.service.UserService;
+import com.sitesquad.ministore.service.shift.ShiftRequestService;
 import com.sitesquad.ministore.service.shift.UserShiftService;
 
 import java.time.ZonedDateTime;
@@ -51,6 +53,9 @@ public class UserShiftController {
     @Autowired
     RequestMeta requestMeta;
 
+    @Autowired
+    ShiftRequestService shiftRequestService;
+
     @GetMapping("/userShift")
     public ResponseEntity<ResponseObject> getUserShifts(@RequestParam(required = false) Integer offset) {
         if (offset == null) {
@@ -71,6 +76,10 @@ public class UserShiftController {
 
     @GetMapping("/userShift/generate")
     public ResponseEntity<ResponseObject> generateUserShifts() {
+        if(!requestMeta.getRole().equals(RoleConstant.ADMIN_ROLE_NAME)){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "Only admin can manually generate user shifts for next 7 days", ""));
+        }
         userShiftService.generateUserShifts();
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(200, "Generate user shifts for next 7 days successfully", "")
@@ -252,6 +261,10 @@ public class UserShiftController {
             Map<String, Object> userShiftMap = new HashMap<>();
             userShiftMap.put("userShifts",userShiftDTOs);
             userShiftMap.put("workingUserShift",workingUserShiftDTO);
+            List<ShiftRequest> shiftRequests =shiftRequestService.findByUserId(requestMeta.getUserId());
+            if(shiftRequests!=null){
+                userShiftMap.put("shiftRequests",shiftRequests);
+            }
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Found User Shift list", userShiftMap)
             );

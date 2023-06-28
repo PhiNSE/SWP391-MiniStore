@@ -65,4 +65,8 @@ public class ShiftRequestService {
         System.out.println(shiftRequestId);
         shiftRequestRepository.deleteById(shiftRequestId);
     }
+
+    public List<ShiftRequest> findByUserId(Long userId){
+        return shiftRequestRepository.findByUserId(userId);
+    }
 }

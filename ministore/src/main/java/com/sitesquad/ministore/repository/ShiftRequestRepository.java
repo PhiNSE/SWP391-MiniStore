@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface ShiftRequestRepository extends JpaRepository<ShiftRequest, Long>, JpaSpecificationExecutor<ShiftRequest> {
     public List<ShiftRequest> findByUserShiftId(Long userShiftId);
+    public List<ShiftRequest> findByUserId(Long userId);
 }
