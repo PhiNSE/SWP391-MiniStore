@@ -1,5 +1,6 @@
 package com.sitesquad.ministore.controller;
 
+import com.sitesquad.ministore.dto.PayslipDTO;
 import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.model.Payslip;
 import com.sitesquad.ministore.service.PayslipService;
@@ -8,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,8 +25,26 @@ public class PayslipController {
 
     @GetMapping("/payslip")
     public ResponseEntity<ResponseObject> getAllPayslips() {
+        List<Payslip> payslipList = payslipService.findAll();
+        List<PayslipDTO> payslipDTOList = new ArrayList<>();
+
+        for(Payslip payslip: payslipList) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            PayslipDTO payslipDTO = new PayslipDTO();
+            payslipDTO.setPayslipId(payslip.getPayslipId());
+            payslipDTO.setUserId(payslip.getUserId());
+            payslipDTO.setStartDate(dateFormat.format(payslip.getStartDate()));
+            payslipDTO.setEndDate(dateFormat.format(payslip.getEndDate()));
+            payslipDTO.setShiftCount(payslip.getShiftCount());
+            payslipDTO.setSalary(payslip.getSalary());
+            payslipDTO.setTotalHour(payslip.getTotalHours());
+            payslipDTO.setDate(dateFormat.format(payslip.getDate()));
+            payslipDTO.setIsPaid(payslip.getIsPaid());
+            payslipDTOList.add(payslipDTO);
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject(200, "Found Payslips", payslipService.findAll())
+                new ResponseObject(200, "Found Payslips", payslipDTOList)
         );
     }
 
