@@ -10,6 +10,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PayslipDTO implements Serializable {
+    private Long payslipId;
     private Long userId;
     private String startDate;
     private String endDate;

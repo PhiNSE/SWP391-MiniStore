@@ -31,6 +31,7 @@ public class PayslipController {
         for(Payslip payslip: payslipList) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             PayslipDTO payslipDTO = new PayslipDTO();
+            payslipDTO.setPayslipId(payslip.getPayslipId());
             payslipDTO.setUserId(payslip.getUserId());
             payslipDTO.setStartDate(dateFormat.format(payslip.getStartDate()));
             payslipDTO.setEndDate(dateFormat.format(payslip.getEndDate()));
@@ -38,6 +39,7 @@ public class PayslipController {
             payslipDTO.setSalary(payslip.getSalary());
             payslipDTO.setTotalHour(payslip.getTotalHours());
             payslipDTO.setDate(dateFormat.format(payslip.getDate()));
+            payslipDTO.setIsPaid(payslip.getIsPaid());
             payslipDTOList.add(payslipDTO);
         }
 

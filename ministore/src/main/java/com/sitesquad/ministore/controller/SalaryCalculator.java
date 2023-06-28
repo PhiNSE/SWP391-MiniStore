@@ -164,6 +164,7 @@ public class SalaryCalculator {
         for (Payslip payslip : payslipList) {
             if (payslip.getIsPaid() == null) {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                payslipDTO.setPayslipId(payslip.getPayslipId());
                 payslipDTO.setUserId(payslip.getUserId());
                 payslipDTO.setStartDate(dateFormat.format(payslip.getStartDate()));
                 payslipDTO.setEndDate(dateFormat.format(payslip.getEndDate()));
@@ -171,9 +172,10 @@ public class SalaryCalculator {
                 payslipDTO.setSalary(payslip.getSalary());
                 payslipDTO.setTotalHour(payslip.getTotalHours());
                 payslipDTO.setDate(dateFormat.format(payslip.getDate()));
+                payslipDTO.setIsPaid(payslip.getIsPaid());
             }
         }
-        if (payslipDTO.getUserId() == null) {
+        if (payslipDTO.getPayslipId() == null) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(404, "Not found payslip!", "")
             );
