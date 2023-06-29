@@ -6,13 +6,11 @@
 package com.sitesquad.ministore.controller.admin;
 
 
-import com.sitesquad.ministore.dto.UserDTO;
 import com.sitesquad.ministore.dto.RequestMeta;
 import com.sitesquad.ministore.dto.ResponseObject;
+import com.sitesquad.ministore.dto.UserDTO;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.repository.RoleRepository;
-import com.sitesquad.ministore.repository.UserRepository;
-
 import com.sitesquad.ministore.service.RoleService;
 import com.sitesquad.ministore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -191,7 +189,7 @@ public class UserController {
     }
 
     @PutMapping()
-    public ResponseEntity<ResponseObject> User (@RequestBody(required = false) User user) {
+    public ResponseEntity<ResponseObject> editUser (@RequestBody(required = false) User user) {
         if (requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
 
             if(user.getEmail() == null || user.getPhone()== null || user.getRoleId() == null){
