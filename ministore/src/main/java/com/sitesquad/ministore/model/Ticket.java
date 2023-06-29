@@ -37,6 +37,20 @@ public class Ticket {
     private ZonedDateTime endTime;
 
     @Column(name = "is_approved")
-    private Boolean is_approved;
+    private Boolean isApproved;
+
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "ticket_type_id", insertable = false, updatable = false)
+    private Long ticketTypeId;
+
+    @ToString.Exclude
+    @ManyToOne(targetEntity = TicketType.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "ticket_type_id", referencedColumnName = "ticket_type_id")
+    private TicketType TicketType;
 
 }

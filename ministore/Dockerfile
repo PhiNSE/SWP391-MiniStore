@@ -1,14 +1,21 @@
-#
+
 # Build
 #
 FROM maven:3.8.1-openjdk-17 AS build
 WORKDIR /app
 COPY . /app/
 RUN mvn clean package
+# Build stage
+#
+FROM maven:3.8.2-jdk-11 AS build
+COPY . .
+RUN mvn clean package -Pprod -DskipTests
+>>>>>>> 48188658e60e262292c46a03b74affdb537cb3db
 
 #
 # Package stage
 #
+<<<<<<< HEAD
 FROM openjdk:17-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar /app/app.jar
@@ -27,3 +34,4 @@ ENV DB_NAME=MinistoreManagement
 ENV DB_USERNAME=sa
 ENV DB_PASSWORD=12345
 ENTRYPOINT ["java", "-cp", "/app/app.jar:/opt/jdbc/sqljdbc.jar", "com..sitesquad.ministore.MinistoreApplication"]
+

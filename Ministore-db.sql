@@ -67,11 +67,12 @@ GO
 CREATE TABLE [dbo].[payslip](
 	[payslip_id] [int] IDENTITY(1,1) NOT NULL,
 	[user_id] [int] NOT NULL,
-	[start_date] [date] NULL,
-	[end_date] [date] NULL,
+	[start_date] [datetime] NULL,
+	[end_date] [datetime] NULL,
 	[shift_count] int NULL,
 	[salary] [decimal](10, 2) NULL,
 	[total_hours] int NULL,
+	[date] [datetime] NULL,
 	[is_paid] [bit]  NULL,
 PRIMARY KEY CLUSTERED 
 (
@@ -256,12 +257,20 @@ create table [dbo].[shift_request] (
 	[type] [bit] NOT NULL,
 );
 GO
+create table [dbo].[ticket_type](
+	[ticket_type_id] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	name [Nvarchar](255) NULL,
+);
+GO
 create table [dbo].[ticket](
 	[ticket_id] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [tbl_user](user_id) ON DELETE CASCADE,
-	startTime datetime NOT NULL,
-	endTime datetime NOT NULL,
+	start_time datetime NOT NULL,
+	end_time datetime NOT NULL,
 	is_approved bit NULL,
+	title [Nvarchar](255) NULL,
+	description text null,
+	[ticket_type_id] [int] NOT NULL FOREIGN KEY REFERENCES [ticket_type]([ticket_type_id]) ON DELETE CASCADE,
 );
 GO
 ALTER TABLE [dbo].[user_notification]  WITH CHECK ADD  CONSTRAINT [fk19] FOREIGN KEY([user_id])

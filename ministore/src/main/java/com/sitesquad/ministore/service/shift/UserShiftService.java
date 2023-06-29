@@ -205,6 +205,9 @@ public class UserShiftService {
 //    }
 
     public List<UserShiftDTO> mapDTO(List<UserShift> userShifts) {
+        if(userShifts == null || userShifts.isEmpty()){
+            return null;
+        }
         return userShifts.stream()
                 .map(userShift -> {
                     UserShiftDTO userShiftDTO = new UserShiftDTO();
@@ -256,32 +259,36 @@ public class UserShiftService {
         if(userShift.getIsCheckedIn()==null){
             if(userShift.getStartTime().isBefore(now)){
                 if(userShift.getIsCheckedInLate()==null){
-                    status = "Not checked in";
+                    status = "not checked in";
                 } else if(userShift.getIsCheckedInLate()!=null) {
-                    status = "Checked in late";
+                    status = "checked in late";
                 }
                 if (userShift.getEndTime().isBefore(now)&&userShift.getIsCheckedOut()==null){
                     if(userShift.getIsCheckedOutLate()==null){
-                        status += " and Not checked out";
+                        status += " and not checked out";
                     }else if(userShift.getIsCheckedOutLate()!=null)
-                        status += " and Checked out late";
+                        status += " and checked out late";
                 } else if(userShift.getEndTime().isBefore(now)&&userShift.getIsCheckedOut()!=null){
-                    status += " and Checked out";
+                    status += " and checked out";
                 }
             }
             else {
-                status = "Not yet";
+                if(now.isAfter(userShift.getEndTime().plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE).plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE_LATE))){
+                    status = "not checked in and not checked out";
+                } else {
+                    status = "not yet";
+                }
             }
         } else if(userShift.getIsCheckedIn()!=null){
             if (userShift.getEndTime().isAfter(now)&&userShift.getIsCheckedOut()==null){
-                status = "Working";
+                status = "working";
             } else if(userShift.getEndTime().isBefore(now)&&userShift.getIsCheckedOut()!=null){
-                status = "Checked in and Checked out";
+                status = "checked in and checked out";
             } else if(userShift.getEndTime().isBefore(now)&&userShift.getIsCheckedOut()==null){
                 if(userShift.getIsCheckedOutLate()==null){
-                    status = "Checked in and Not checked out";
+                    status = "checked in and not checked out";
                 } else if(userShift.getIsCheckedOutLate()!=null){
-                    status = "Checked in and Checked out late";
+                    status = "checked in and checked out late";
                 }
         }
         }
@@ -291,4 +298,25 @@ public class UserShiftService {
     public List<UserShift> findByUserId(Long userId) {
         return userShiftRepository.findByUserId(userId);
     }
+
+//    public List<UserShiftDTO> getCurrentUserShifts(){
+//        ZonedDateTime now = SystemConstant.ZONE_DATE_TIME_NOW;
+//        List<UserShift> userShifts = new ArrayList<>();
+//        List<UserShift> workingUserShifts = new ArrayList<>();
+//        userShifts.addAll(userShiftRepository.findUserShiftsByStartTime(now.getYear(),now.getMonthValue(),now.getDayOfMonth(),null,null));
+//        userShifts.addAll(userShiftRepository.findUserShiftsByStartTime(now.getYear(),now.getMonthValue(),now.plusDays(1).getDayOfMonth(),null,null));
+//        userShifts.addAll(userShiftRepository.findUserShiftsByStartTime(now.getYear(),now.getMonthValue(),now.minusDays(1).getDayOfMonth(),null,null));
+//        for (UserShift userShift: userShifts){
+//            System.out.println("check: " + userShift);
+//            if(userShift.getStartTime().isBefore(now)&&userShift.getStartTime().isAfter(now)){
+//                workingUserShifts.add(userShift);
+//                System.out.println("found: " + userShift);
+//            }
+//        }
+//        return mapDTO(workingUserShifts);
+//    }
+
+
+
+
 }

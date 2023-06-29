@@ -2,6 +2,8 @@ package com.sitesquad.ministore.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -44,10 +46,10 @@ public class Payslip {
     private Long userId;
 
     @Column(name = "start_date")
-    private Date startDate;
+    private Timestamp startDate;
 
     @Column(name = "end_date")
-    private Date endDate;
+    private Timestamp endDate;
 
     @Column(name = "shift_count")
     private Integer shiftCount;
@@ -59,7 +61,7 @@ public class Payslip {
     private Integer totalHours;
 
     @Column(name = "date")
-    private Date date;
+    private Timestamp date;
 
     @Column(name = "is_paid")
     private Boolean isPaid;

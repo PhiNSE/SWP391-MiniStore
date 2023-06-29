@@ -54,11 +54,19 @@ public class ShiftRequestService {
     }
 
     public ShiftRequest edit(ShiftRequest shiftRequest){
-        return shiftRequestRepository.save(shiftRequest);
+        if(shiftRequestRepository.findById(shiftRequest.getShiftRequestId())==null){
+            return null;
+        } else{
+            return add(shiftRequest);
+        }
     }
 
     public void delete(Long shiftRequestId){
         System.out.println(shiftRequestId);
         shiftRequestRepository.deleteById(shiftRequestId);
+    }
+
+    public List<ShiftRequest> findByUserId(Long userId){
+        return shiftRequestRepository.findByUserId(userId);
     }
 }
