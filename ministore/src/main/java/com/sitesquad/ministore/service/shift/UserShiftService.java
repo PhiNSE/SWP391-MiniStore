@@ -235,8 +235,16 @@ public class UserShiftService {
 //                        role = RoleConstant.GUARD_ROLE_NAME;
 //                    }
                     List<User> availableEmployees = userService.findUserByRoleName(role);
-                    userShiftDTO.setAvailableEmployees(availableEmployees);
+                    List<User> requestShifts = userRepository.findByShiftRequests_UserShiftIdAndShiftRequests_TypeFalseAndIsDeletedFalse(userShift.getUserShiftId());
+                    List<User> leaveEmployees = userRepository.findByShiftRequests_UserShiftIdAndShiftRequests_TypeTrueAndIsDeletedFalse(userShift.getUserShiftId());
 
+                    userShiftDTO.setLeaveEmployees(leaveEmployees);
+                    //bad
+                    requestShifts.removeAll(leaveEmployees);
+                    userShiftDTO.setRequestEmployees(requestShifts);
+                    availableEmployees.removeAll(requestShifts);
+                    availableEmployees.removeAll(leaveEmployees);
+                    userShiftDTO.setAvailableEmployees(availableEmployees);
                     return userShiftDTO;
                 })
                 .collect(Collectors.toList());

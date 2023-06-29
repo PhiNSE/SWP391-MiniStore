@@ -81,5 +81,9 @@ public class User implements Serializable {
     @ToString.Exclude
     private Collection<UserNotification> userNotifications;
 
+    @OneToMany(targetEntity = ShiftRequest.class, cascade = CascadeType.ALL,mappedBy = "user")
+    @JsonIgnore
+    @ToString.Exclude
+    private Collection<ShiftRequest> shiftRequests;
 
 }

@@ -32,4 +32,7 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     User findOneByEmailIgnoreCaseOrPhone(String email,String phone);
     User findOneByEmailIgnoreCaseAndIsDeletedFalse(String email);
     User findOneByEmailIgnoreCaseAndPasswordIgnoreCaseAndIsDeletedFalse(String email, String password);
+
+    List<User> findByShiftRequests_UserShiftIdAndShiftRequests_TypeTrueAndIsDeletedFalse(Long userShiftId);
+    List<User> findByShiftRequests_UserShiftIdAndShiftRequests_TypeFalseAndIsDeletedFalse(Long userShiftId);
 }
