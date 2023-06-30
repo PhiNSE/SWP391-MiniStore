@@ -64,19 +64,18 @@ public class UserShiftController {
         List<UserShift> userShifts = userShiftService.findOffset(offset);
         List<UserShiftDTO> userShiftDTOs = userShiftService.mapDTO(userShifts);
         if (userShifts != null) {
-            UserShiftDTO inProgressUserShiftDTO = null;
+            List<UserShiftDTO> inProgressUserShiftDTOs = new ArrayList<>();
             for (UserShiftDTO userShiftDTO : userShiftDTOs) {
                 if (userShiftDTO.getStartTime().isBefore(SystemConstant.ZONE_DATE_TIME_NOW) && userShiftDTO.getEndTime().isAfter(SystemConstant.ZONE_DATE_TIME_NOW)) {
-                    inProgressUserShiftDTO = userShiftDTO;
+                    inProgressUserShiftDTOs.add(userShiftDTO);
                 }
             }
             Map<String, Object> userShiftMap = new HashMap<>();
             userShiftMap.put("userShifts", userShiftDTOs);
-            userShiftMap.put("inProgressUserShift", inProgressUserShiftDTO);
-            List<ShiftRequest> shiftRequests = shiftRequestService.findByUserId(requestMeta.getUserId());
-            if (shiftRequests != null) {
-                userShiftMap.put("shiftRequests", shiftRequests);
-            }
+            userShiftMap.put("inProgressUserShifts", inProgressUserShiftDTOs);
+            List<ShiftRequest> shiftRequests = new ArrayList<>();
+            shiftRequests.addAll(shiftRequestService.findByUserId(requestMeta.getUserId()));
+            userShiftMap.put("shiftRequests", shiftRequests);
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Found User Shift list", userShiftMap)
             );
