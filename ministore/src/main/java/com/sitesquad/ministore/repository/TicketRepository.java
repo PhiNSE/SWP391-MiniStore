@@ -10,4 +10,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long>, JpaSpecif
     public List<Ticket> findByUserId(Long userId);
     public List<Ticket> findByIsApprovedNull();
     public List<Ticket> findByIsApprovedNotNull();
+    public List<Ticket> findByUserIdAndIsApprovedNull(Long userId);
+    public List<Ticket> findByUserIdAndIsApprovedNotNull(Long userId);
 }

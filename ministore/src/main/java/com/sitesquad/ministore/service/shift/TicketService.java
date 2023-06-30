@@ -34,6 +34,7 @@ public class TicketService {
     }
 
     public Ticket add(Ticket ticket){
+        ticket.setIsApproved(null);
         ticket.setUser(userRepository.findByUserIdAndIsDeletedFalse(ticket.getUserId()));
         ticket.setTicketType(ticketTypeRepository.findById(ticket.getTicketTypeId()).get());
         return ticketRepository.save(ticket);
