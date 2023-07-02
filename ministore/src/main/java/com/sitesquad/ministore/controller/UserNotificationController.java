@@ -56,10 +56,10 @@ public class UserNotificationController {
         }
     }
 
-    @GetMapping("/AllNotify")
+    @GetMapping()
     public ResponseEntity<ResponseObject> getUserNotify(){
         List<UserNotification> userNotificationList = userNotificationService.findByUserId(requestMeta.getUserId());
-        if (userNotificationList != null){
+        if (!userNotificationList.isEmpty()){
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Notification List found", userNotificationList)
             );
