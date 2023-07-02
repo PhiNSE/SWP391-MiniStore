@@ -185,6 +185,7 @@ CREATE TABLE [dbo].[tbl_user](
 	[user_img] [text] NULL,
 	[role_id] [int] NOT NULL,
 	[is_deleted] [bit] NULL ,
+	[rf_id] [Nvarchar](255) NULL
 PRIMARY KEY CLUSTERED 
 (
 	[user_id] ASC
@@ -269,7 +270,7 @@ create table [dbo].[ticket](
 	end_time datetime NOT NULL,
 	is_approved bit NULL,
 	title [Nvarchar](255) NULL,
-	description text null,
+	description [Nvarchar](255) null,
 	[ticket_type_id] [int] NOT NULL FOREIGN KEY REFERENCES [ticket_type]([ticket_type_id]) ON DELETE CASCADE,
 );
 GO

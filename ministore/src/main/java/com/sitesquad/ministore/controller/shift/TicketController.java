@@ -177,7 +177,8 @@ public class TicketController {
         }
         ticket.setIsApproved(isApproved);
         ticket = ticketService.edit(ticket);
-        if(ticket.getIsApproved()==true){
+        if(ticket.getIsApproved() == true){
+            System.out.println(ticket);
             ticketService.generateShiftRequestByTicket(ticket);
         }
         String status = isApproved?"Approved":"Rejected";

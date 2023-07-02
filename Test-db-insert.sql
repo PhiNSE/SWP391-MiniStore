@@ -88,5 +88,5 @@ INSERT INTO [dbo].[holiday] ([holiday_date],[holiday_name]) VALUES
 GO
 insert into  [dbo].[ticket_type]([name]) values(N'Nghỉ phép')
 insert into  [dbo].[ticket_type]([name]) values(N'Chuyển ca')
-insert into [dbo].[ticket] values(3,'2023-06-27','2023-06-28',null,'nghi phep','bi om',1)
-insert into [dbo].[shift_request] values(3,1,0)
+--insert into [dbo].[ticket] values(3,'2023-06-27','2023-06-28',null,'nghi phep','bi om',1)
+--insert into [dbo].[shift_request] values(3,1,0)
