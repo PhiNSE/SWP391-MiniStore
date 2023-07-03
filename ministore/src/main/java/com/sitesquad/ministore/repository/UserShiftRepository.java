@@ -25,7 +25,7 @@ public interface UserShiftRepository extends JpaRepository<UserShift, Long>, Jpa
     public UserShift findTop1ByOrderByEndTimeDesc();
     public List<UserShift> findByIsPaidFalseOrIsPaidNull();
     public List<UserShift> findByUserId(Long id);
-    public List<UserShift> findByStartTimeGreaterThanEqualAndEndTimeLessThanEqual(ZonedDateTime startTime, ZonedDateTime endTime);
+    public List<UserShift> findByAndStartTimeGreaterThanEqualAndEndTimeLessThanEqual(ZonedDateTime startTime, ZonedDateTime endTime);
 
     @Query("SELECT us FROM UserShift us WHERE YEAR(us.startTime) = :year " +
             "AND MONTH(us.startTime) = :month " +
