@@ -1,7 +1,6 @@
 package com.sitesquad.ministore.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,6 +20,7 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
+
 @Table(name = "tbl_user")
 public class User implements Serializable {
 
@@ -35,7 +35,7 @@ public class User implements Serializable {
     @Column(name = "email")
     private String email;
 
-    @JsonIgnore
+
     @Column(name = "password")
     private String password;
 
@@ -79,7 +79,7 @@ public class User implements Serializable {
     @ToString.Exclude
     private Collection<Payslip> payslips;
 
-    @OneToMany(mappedBy = "userNotifications")
+    @OneToMany(mappedBy = "user")
     @JsonIgnore
     @ToString.Exclude
     private Collection<UserNotification> userNotifications;

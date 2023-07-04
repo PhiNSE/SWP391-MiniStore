@@ -35,6 +35,18 @@ public class UserService {
     RoleRepository roleRepository;
 
 
+    public UserDTO mapUserDTO(User user){
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUserId(user.getUserId());
+        userDTO.setName(user.getName());
+        userDTO.setRoles(user.getRole().getName());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setPhone(user.getPhone());
+        userDTO.setDob(user.getDob());
+        userDTO.setGender(user.getGender());
+        userDTO.setAddress(user.getAddress());
+        return userDTO;
+    }
 
     public Page<UserDTO> mapDTO(Page<User> userPage) {
         Page<UserDTO> userDTOPage = userPage.map(user -> {
@@ -67,6 +79,12 @@ public class UserService {
         List<User> guard = userRepository.findByRoleId(new Long(3));
         return Stream.concat(emp.stream(), guard.stream())
                 .collect(Collectors.toList());
+    }
+
+    public UserDTO findUserByEmailNoPassword(String email){
+        User user = userRepository.findOneByEmailIgnoreCaseAndIsDeletedFalse(email);
+        UserDTO userNoPass = mapUserDTO(user);
+        return userNoPass;
     }
     public User findUserByEmail(String email){
         return userRepository.findOneByEmailIgnoreCaseAndIsDeletedFalse(email);
@@ -184,9 +202,10 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User addUserForEdit(User user){
+    public User addUserForEdit(User user, String password){
         user.setIsDeleted(Boolean.FALSE);
         user.setRole(roleRepository.findByRoleIdAndIsDeletedFalse(user.getRoleId()));
+        user.setPassword(password);
         return userRepository.save(user);
     }
 
@@ -196,7 +215,35 @@ public class UserService {
             return null;
         newUser.setUserId(null);
 
-        User userChanged =addUserForEdit(newUser);
+        User userChanged =addUserForEdit(newUser, oldUser.getPassword());
+        if(userChanged != null){
+            oldUser.setIsDeleted(Boolean.TRUE);
+            userRepository.save(oldUser);
+        }
+        return userChanged;
+    }
+
+    public User changePassword(User oldUser,String oldPassword,String newPassword){
+
+
+
+        if(oldUser == null)
+            return null;
+
+
+        User userChanged = new User();
+        userChanged.setEmail(oldUser.getEmail());
+        userChanged.setName(oldUser.getName());
+        userChanged.setGender(oldUser.getGender());
+        userChanged.setPhone(oldUser.getPhone());
+        userChanged.setDob(oldUser.getDob());
+        userChanged.setUserImg(oldUser.getUserImg());
+        userChanged.setAddress(oldUser.getAddress());
+        userChanged.setRoleId(oldUser.getRoleId());
+        userChanged.setRole(oldUser.getRole());
+        addUserForEdit(userChanged,newPassword);
+
+
         if(userChanged != null){
             oldUser.setIsDeleted(Boolean.TRUE);
             userRepository.save(oldUser);

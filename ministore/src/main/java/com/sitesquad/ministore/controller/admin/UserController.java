@@ -6,11 +6,13 @@
 package com.sitesquad.ministore.controller.admin;
 
 
+import com.sitesquad.ministore.dto.PasswordChangeDTO;
 import com.sitesquad.ministore.dto.RequestMeta;
 import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.dto.UserDTO;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.repository.RoleRepository;
+import com.sitesquad.ministore.repository.UserRepository;
 import com.sitesquad.ministore.service.RoleService;
 import com.sitesquad.ministore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,10 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     @Autowired
     UserService userService;
-    
+
+    @Autowired
+    UserRepository userRepository;
+
     @Autowired
     RoleRepository roleRepository;
 
@@ -83,7 +88,7 @@ public class UserController {
 
     @GetMapping("/profile")
     public ResponseEntity<ResponseObject> userDetails(){
-        User user = userService.findUserByEmail(requestMeta.getEmail());
+        UserDTO user = userService.findUserByEmailNoPassword(requestMeta.getEmail());
         if(user != null){
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "User found", user)
@@ -190,8 +195,11 @@ public class UserController {
 
     @PutMapping()
     public ResponseEntity<ResponseObject> editUser (@RequestBody(required = false) User user) {
-        if (requestMeta.getRole().trim().equalsIgnoreCase("Admin")) {
-
+            if(!requestMeta.getEmail().equals(user.getEmail()) && !requestMeta.getEmail().equals("admin@gmail.com") ){
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject(404, "You dont have right to edit this user", "")
+                );
+            }
             if(user.getEmail() == null || user.getPhone()== null || user.getRoleId() == null){
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObject(405, "Email or phone or role Id must not be empty", "")
@@ -216,12 +224,35 @@ public class UserController {
                 }
 
             }
-        } else {
-            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
-                    new ResponseObject(406, "Access denied", "")
-            );
-        }
     }
 
+    @PutMapping("/changePassword")
+    public ResponseEntity<ResponseObject> changePassword (@RequestBody(required = false)PasswordChangeDTO passwordChangeDTO){
+        String oldPassword = passwordChangeDTO.getOldPassword();
+        String newPassword = passwordChangeDTO.getNewPassword();
+        User currentUser = userRepository.findOneByEmailIgnoreCaseAndIsDeletedFalse(requestMeta.getEmail().trim());
+        if(!passwordChangeDTO.getOldPassword().equals(currentUser.getPassword())){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(400, "Wrong password", "")
+            );
+        }
+        if(oldPassword.equals(newPassword)){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(400, "New password must be different from the old one", "")
+            );
+        }else{
+
+            User userChange = userService.changePassword(currentUser,oldPassword,newPassword);
+            if(userChange != null) {
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject(200, "Edit success", userChange)
+                );
+            }else {
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject(200, "Edit failed", userChange)
+                );
+            }
+        }
+    }
 }
 

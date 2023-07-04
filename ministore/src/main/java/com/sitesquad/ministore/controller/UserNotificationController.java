@@ -32,13 +32,7 @@ public class UserNotificationController {
     @PostMapping("/send")
     public ResponseEntity<ResponseObject> sendNotify(@RequestBody (required = false) List<UserNotification> userNotificationList){
         if(requestMeta != null && requestMeta.getRole().trim().equalsIgnoreCase("Admin")){
-
-
-
-
                 List<UserNotification> userNotificationLists =userNotificationService.createUserNotification(userNotificationList);
-
-
             if(userNotificationLists != null){
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObject(200, "Add notify success", userNotificationLists)
@@ -58,10 +52,24 @@ public class UserNotificationController {
 
     @GetMapping()
     public ResponseEntity<ResponseObject> getUserNotify(){
-        List<UserNotification> userNotificationList = userNotificationService.findByUserId(requestMeta.getUserId());
+        List<UserNotification> userNotificationList = userNotificationService.findByUserEmail(requestMeta.getEmail());
         if (!userNotificationList.isEmpty()){
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Notification List found", userNotificationList)
+            );
+        }else{
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(500, "Not found", "")
+            );
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseObject> getUserNotifyById(@PathVariable Long id){
+        UserNotification userNotification = userNotificationService.findById(id);
+        if (userNotification != null){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "Notification List found", userNotification)
             );
         }else{
             return ResponseEntity.status(HttpStatus.OK).body(
