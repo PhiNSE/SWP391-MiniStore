@@ -10,7 +10,7 @@ USE [MinistoreManagement]
 CREATE TABLE [dbo].[user_notification](
 	[user_notification_id] [int] IDENTITY(1,1) NOT NULL,
 	[user_id] [int] NOT NULL,
-
+	[date][datetime]NOT NULL,
 	[title] [Nvarchar](255) null,
 	[description] [TEXT] NULL,
 	
