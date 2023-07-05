@@ -41,14 +41,9 @@ public class OrderCreator {
     @Autowired
     OrderDetailsService orderDetailsService;
 
-    @Autowired
-    OrderDetailsRepository orderDetailsRepository;
 
     @Autowired
     OrderService orderService;
-
-    @Autowired
-    UserService userService;
 
     @Autowired
     ProductService productService;
