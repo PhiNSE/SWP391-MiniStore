@@ -14,6 +14,7 @@ import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.repository.RoleRepository;
 import com.sitesquad.ministore.repository.UserRepository;
 import com.sitesquad.ministore.service.RoleService;
+import com.sitesquad.ministore.service.UserNotificationService;
 import com.sitesquad.ministore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -43,6 +44,9 @@ public class UserController {
 
     @Autowired
     RequestMeta requestMeta;
+
+    @Autowired
+    UserNotificationService userNotificationService;
 
     @GetMapping()
     public ResponseEntity<ResponseObject> getAllUser(@RequestParam(required = false)  Integer offset){
@@ -243,7 +247,11 @@ public class UserController {
         }else{
 
             User userChange = userService.changePassword(currentUser,oldPassword,newPassword);
+
             if(userChange != null) {
+//                List<Long> userId = new ArrayList<>();
+//                userId.add(userChange.getUserId());
+//                userNotificationService.customCreateUserNotification("thong bao doi mk","mk bi doi",userId);
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObject(200, "Edit success", userChange)
                 );

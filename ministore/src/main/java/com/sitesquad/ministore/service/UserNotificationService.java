@@ -78,22 +78,23 @@ public class UserNotificationService {
     public void customCreateUserNotification(String title, String description, List<Long> receiverIdList){
         List<User> userList = new ArrayList<>();
         for (Long userId : receiverIdList) {
-            User user = userRepository.findByUserIdAndIsDeletedFalse(userId);
-            if(user != null){
-                userList.add(user);
-            }
-            mailerService.sendMailWithOutFile(user.getEmail(),new String[0],title,description);
-
-            UserNotification userNotification = new UserNotification();
-            Date date = new Date();
-            userNotification.setDate(new Timestamp(date.getTime()));
-            userNotification.setUserId(user.getUserId());
-            userNotification.setTitle(title);
-            userNotification.setDescription(description);
-            userNotification.setUser(user);
-            userNotificationRepository.save(userNotification);
+        User user = userRepository.findByUserIdAndIsDeletedFalse(userId);
+        if(user != null){
+            userList.add(user);
         }
+
+
+        UserNotification userNotification = new UserNotification();
+        Date date = new Date();
+        userNotification.setDate(new Timestamp(date.getTime()));
+        userNotification.setUserId(user.getUserId());
+        userNotification.setTitle(title);
+        userNotification.setDescription(description);
+        userNotification.setUser(user);
+        userNotificationRepository.save(userNotification);
+        mailerService.sendMailWithOutFile(user.getEmail(),new String[0],title,description);
     }
+}
     }
 
 
