@@ -90,6 +90,7 @@ public class UserNotificationService {
             userNotification.setUserId(user.getUserId());
             userNotification.setTitle(title);
             userNotification.setDescription(description);
+            userNotification.setUser(user);
             userNotificationRepository.save(userNotification);
         }
     }
