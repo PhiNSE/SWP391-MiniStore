@@ -9,6 +9,7 @@ import com.sitesquad.ministore.repository.TicketRepository;
 import com.sitesquad.ministore.repository.TicketTypeRepository;
 import com.sitesquad.ministore.repository.UserRepository;
 import com.sitesquad.ministore.repository.UserShiftRepository;
+import com.sitesquad.ministore.utils.UserShiftUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -71,18 +72,23 @@ public class TicketService {
         if(ticket==null||ticket.getStartTime()==null||ticket.getEndTime()==null||ticket.getUserId()==null){
             return false;
         }
-        ZonedDateTime start = ticket.getStartTime();
-        ZonedDateTime end = ticket.getEndTime();
+        User user = userRepository.findById(ticket.getUserId()).orElse(null);
+        ZonedDateTime start = ticket.getStartTime().withHour(0).plusMinutes(0).withSecond(0).withNano(0);
+        ZonedDateTime end = ticket.getEndTime().withHour(23).plusMinutes(0).withSecond(0).withNano(0);
         //doing
-        List<UserShift> userShifts = userShiftRepository.findByStartTimeGreaterThanEqualAndEndTimeLessThanEqual(start,end);
+        List<UserShift> userShifts = userShiftRepository.findByAndStartTimeGreaterThanEqualAndEndTimeLessThanEqual(start.minusDays(1),end.plusDays(2));
+        System.out.println(userShifts);
+        System.out.println("Generating leave requests for user "+ticket.getUserId());
         for (UserShift userShift: userShifts) {
-            if((userShift.getStartTime().isAfter(start)||userShift.getStartTime().equals(start))&&(userShift.getEndTime().isBefore(end)||userShift.getEndTime().equals(end))){
+            if((userShift.getStartTime().isAfter(start))&&(userShift.getStartTime().isBefore(end))){
+                if(UserShiftUtil.compareUserShiftRole(userShift,ticket.getUser().getRole().getName())){
                 ShiftRequest shiftRequest = new ShiftRequest();
                 shiftRequest.setUserShiftId(userShift.getUserShiftId());
                 shiftRequest.setUserId(ticket.getUserId());
                 shiftRequest.setType(ShiftConstant.SHIFT_LEAVE_TYPE);
                 System.out.println(shiftRequest);
                 shiftRequestService.add(shiftRequest);
+                }
             }
         }
 

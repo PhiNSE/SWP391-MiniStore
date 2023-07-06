@@ -1,5 +1,8 @@
 package com.sitesquad.ministore.service;
 
+import com.sitesquad.ministore.constant.RoleConstant;
+import com.sitesquad.ministore.constant.SystemConstant;
+import com.sitesquad.ministore.model.Role;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.model.UserNotification;
 import com.sitesquad.ministore.repository.UserNotificationRepository;
@@ -7,6 +10,8 @@ import com.sitesquad.ministore.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.time.ZonedDateTime;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -75,26 +80,43 @@ public class UserNotificationService {
     }
 
 
-    public void customCreateUserNotification(String title, String description, List<Long> receiverIdList){
+    public void customCreateUserNotification(String title, String description, List<Long> receiverIdList) {
         List<User> userList = new ArrayList<>();
         for (Long userId : receiverIdList) {
-        User user = userRepository.findByUserIdAndIsDeletedFalse(userId);
-        if(user != null){
-            userList.add(user);
+            User user = userRepository.findByUserIdAndIsDeletedFalse(userId);
+            if (user != null) {
+                userList.add(user);
+            }
+
+
+            UserNotification userNotification = new UserNotification();
+            Date date = new Date();
+            userNotification.setDate(new Timestamp(date.getTime()));
+            userNotification.setUserId(user.getUserId());
+            userNotification.setTitle(title);
+            userNotification.setDescription(description);
+            userNotification.setUser(user);
+            userNotificationRepository.save(userNotification);
+            mailerService.sendMailWithOutFile(user.getEmail(), new String[0], title, description);
         }
 
+    }
+    public void sendNotiAndMailToAllByRole(String title, String description, String role){
+        List<User> users = userRepository.findUserByRole_NameIgnoreCaseAndIsDeletedFalse(role);
+        if(users==null) return;
+        List<Long> userIds = new ArrayList<>();
+        for (User user:users
+             ) {
+            userIds.add(user.getUserId());
+        }
+        customCreateUserNotification(title,description,userIds);
 
-        UserNotification userNotification = new UserNotification();
-        Date date = new Date();
-        userNotification.setDate(new Timestamp(date.getTime()));
-        userNotification.setUserId(user.getUserId());
-        userNotification.setTitle(title);
-        userNotification.setDescription(description);
-        userNotification.setUser(user);
-        userNotificationRepository.save(userNotification);
-        mailerService.sendMailWithOutFile(user.getEmail(),new String[0],title,description);
     }
+
+    public void sendNotiAndMailToAllAdmins(String title,String description){
+        sendNotiAndMailToAllByRole(title, description, RoleConstant.ADMIN_ROLE_NAME);
+    }
+
 }
-    }
 
 
