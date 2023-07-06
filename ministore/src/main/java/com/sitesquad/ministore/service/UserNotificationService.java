@@ -1,5 +1,8 @@
 package com.sitesquad.ministore.service;
 
+import com.sitesquad.ministore.constant.RoleConstant;
+import com.sitesquad.ministore.constant.SystemConstant;
+import com.sitesquad.ministore.model.Role;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.model.UserNotification;
 import com.sitesquad.ministore.repository.UserNotificationRepository;
@@ -7,6 +10,8 @@ import com.sitesquad.ministore.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +74,22 @@ public class UserNotificationService {
             userNotificationRepository.save(userNotification);
         }
     }
+
+    public void sendNotiAndMailToAllByRole(String title, String description, String role){
+        List<User> users = userRepository.findUserByRole_NameIgnoreCaseAndIsDeletedFalse(role);
+        if(users==null) return;
+        List<Long> userIds = new ArrayList<>();
+        for (User user:users
+             ) {
+            userIds.add(user.getUserId());
+        }
+        customCreateUserNotification(title,description,userIds);
     }
+
+    public void sendNotiAndMailToAllAdmins(String title,String description){
+        sendNotiAndMailToAllByRole(title, description, RoleConstant.ADMIN_ROLE_NAME);
+    }
+
+}
 
 

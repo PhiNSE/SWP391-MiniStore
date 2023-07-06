@@ -192,6 +192,7 @@ public class UserShiftService {
         for (UserShift userShift : userShifts) {
             if (userShift.getIsCheckedIn() == null) {
                 //noti
+//                Notification
                 System.out.println("userShift is late: " + userShift);
                 lateList.add(userShift);
             }
