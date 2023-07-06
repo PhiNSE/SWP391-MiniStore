@@ -8,6 +8,7 @@ import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.model.UserShift;
 import com.sitesquad.ministore.service.PayslipService;
+import com.sitesquad.ministore.service.UserNotificationService;
 import com.sitesquad.ministore.service.UserService;
 import com.sitesquad.ministore.service.shift.UserShiftService;
 
@@ -42,6 +43,9 @@ public class SalaryCalculator {
 
     @Autowired
     RequestMeta requestMeta;
+
+    @Autowired
+    UserNotificationService userNotificationService;
 
     private Payslip addPayslip(List<UserShift> userShiftList) {
         Payslip payslip = new Payslip();
@@ -89,6 +93,7 @@ public class SalaryCalculator {
         }
 
         List<User> userList = userService.findAllExceptAdmin();
+        System.out.println(userList);
 
         for (User user : userList) {
             List<UserShift> userShiftList = userShiftService.findAllByIsPaidAndUserId(user.getUserId());
@@ -100,6 +105,15 @@ public class SalaryCalculator {
             }
             addPayslip(userShiftList);
         }
+
+        List<Long> userIds = new ArrayList<>();
+        for (User user : userList) {
+            userIds.add(user.getUserId());
+        }
+
+        System.out.println(userIds);
+
+        userNotificationService.customCreateUserNotification("Tra luong", "Tra luong cho nhan vien", userIds);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(200, "Successfull", "")
         );

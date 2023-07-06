@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Entity
 @Getter
@@ -23,14 +24,17 @@ public class UserNotification {
     @Column(name = "user_id", insertable=false, updatable=false)
     private Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = User.class,cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = true)
     @ToString.Exclude
     @JsonIgnore
-    private User userNotifications;
+    private User user;
 
     @Column(name = "title")
     private String title;
+
+    @Column(name = "date")
+    private Timestamp date;
 
     @Column(name = "description")
     private String description;

@@ -6,14 +6,13 @@
 package com.sitesquad.ministore.repository;
 
 import com.sitesquad.ministore.model.User;
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  *
@@ -23,6 +22,8 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User>{
     List<User> findByRoleId(Long roleId);
     List<User> findAll();
+
+    List<User> findAllByEmail(String email);
     Page<User> findAll(Pageable pageable);
     Page<User> findAllByIsDeletedFalse(Pageable pageable);
     User findByUserIdAndIsDeletedFalse(Long id);
