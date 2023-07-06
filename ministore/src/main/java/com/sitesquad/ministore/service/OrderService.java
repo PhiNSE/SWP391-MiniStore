@@ -56,7 +56,11 @@ public class OrderService {
     }
 
     public List<Map<String, Object>> findMostSoldHour() {
-        return orderRepository.findByCustom();
+        return orderRepository.findMostSoldHour();
+    }
+
+    public List<Map<String, Object>> findByUserRank() {
+        return orderRepository.findByUserRank();
     }
 
     public Order add(Order order) {

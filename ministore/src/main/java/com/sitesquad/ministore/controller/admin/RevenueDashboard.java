@@ -7,16 +7,15 @@ import com.sitesquad.ministore.dto.RevenueDTO;
 import com.sitesquad.ministore.model.Order;
 import com.sitesquad.ministore.model.OrderDetails;
 import com.sitesquad.ministore.model.Product;
-import com.sitesquad.ministore.service.OrderDetailsService;
-import com.sitesquad.ministore.service.OrderService;
-import com.sitesquad.ministore.service.PayslipService;
-import com.sitesquad.ministore.service.ProductService;
+import com.sitesquad.ministore.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
+import java.net.Inet4Address;
 import java.time.Period;
 import java.time.YearMonth;
 import java.util.ArrayList;
@@ -35,11 +34,13 @@ public class RevenueDashboard {
     @Autowired
     PayslipService payslipService;
     @Autowired
+    UserService userService;
+    @Autowired
     RequestMeta requestMeta;
 
     @GetMapping("/dashboard")
     public ResponseEntity<ResponseObject> dashboard() {
-        if(!requestMeta.getRole().equals("admin")) {
+        if (!requestMeta.getRole().equals("admin")) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(404, "You don't have permission", "")
             );
@@ -51,6 +52,7 @@ public class RevenueDashboard {
         revenueDTO.setProductRanks(productRanks());
         revenueDTO.setDayTimeAnalytics(dayTimeAnalytics());
         revenueDTO.setRemainProductQuantity(remainProductQuantity());
+        revenueDTO.setUserRank(userRank());
         System.out.println(revenueDTO);
 
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -58,11 +60,13 @@ public class RevenueDashboard {
         );
     }
 
-    private Map<Double, Double> allTimeRevenue() {
-        Map<Double, Double> allTimeRevenue = new HashMap<>();
+    private List<Map<String, Double>> allTimeRevenue() {
+        List<Map<String, Double>> allTimeRevenue = new ArrayList<>();
 
         Double revenue = new Double(0);
         Double expense = new Double(0);
+        Map<String, Double> revenueMap = new HashMap<>();
+        Map<String, Double> profitMap = new HashMap<>();
 
         List<Order> orderList = orderService.findAll();
         for (Order order : orderList) {
@@ -73,16 +77,21 @@ public class RevenueDashboard {
                 expense += order.getTotal();
             }
         }
-        allTimeRevenue.put(revenue, revenue - expense);
+        revenueMap.put("revenue", revenue);
+        profitMap.put("profit", revenue - expense);
+        allTimeRevenue.add(revenueMap);
+        allTimeRevenue.add(profitMap);
         return allTimeRevenue;
     }
 
-    private List<Map<YearMonth, Double>> monthRevenue() {
-        List<Map<YearMonth, Double>> monthRevenuesList = new ArrayList<>();
+    private List<List<Map<String, Object>>> monthRevenue() {
+        List<List<Map<String, Object>>> monthRevenuesList = new ArrayList<>();
 
         YearMonth month = YearMonth.of(2023, 6); //fix cung
         for (int i = 0; i <= 11; i++) {
-            Map<YearMonth, Double> yearMonthDoubleMap = new HashMap<>();
+            List<Map<String, Object>> monthRevenueMap = new ArrayList<>();
+            Map<String, Object> monthMap = new HashMap<>();
+            Map<String, Object> revenueMap = new HashMap<>();
             Double revenue = new Double(0);
             List<Order> orderList = orderService.findByDate(month);
             if (orderList.isEmpty()) {
@@ -96,8 +105,11 @@ public class RevenueDashboard {
                     revenue -= order.getTotal();
                 }
             }
-            yearMonthDoubleMap.put(month, revenue);
-            monthRevenuesList.add(yearMonthDoubleMap);
+            monthMap.put("month", month.toString());
+            revenueMap.put("revenue", revenue);
+            monthRevenueMap.add(monthMap);
+            monthRevenueMap.add(revenueMap);
+            monthRevenuesList.add(monthRevenueMap);
             month = month.plus(Period.ofMonths(1));
         }
         return monthRevenuesList;
@@ -107,41 +119,49 @@ public class RevenueDashboard {
         Long totalProduct = new Long(0);
         List<OrderDetails> orderDetailsList = orderDetailsService.findAll();
 
-        for(OrderDetails orderDetail: orderDetailsList) {
+        for (OrderDetails orderDetail : orderDetailsList) {
             totalProduct += orderDetail.getQuantity();
         }
 
         return totalProduct;
     }
 
-    private List<Map<Integer, Integer>> productRanks() {
-        List<Map<Integer, Integer>> productRankList = new ArrayList<>();
+    private List<List<Map<String, Object>>> productRanks() {
+        List<List<Map<String, Object>>> productRankList = new ArrayList<>();
 
         List<Map<String, Object>> orderDetailsList = orderDetailsService.findTotalQuantityOfProduct();
-        System.out.println(orderDetailsList);
 
-        for(Map<String, Object> orderDetails: orderDetailsList) {
-            Map<Integer, Integer> productRank = new HashMap<>();
+        for (Map<String, Object> orderDetails : orderDetailsList) {
+            List<Map<String, Object>> productRankMap = new ArrayList<>();
+            Map<String, Object> productIdMap = new HashMap<>();
+            Map<String, Object> sumQuantityMap = new HashMap<>();
             Integer productId = (Integer) orderDetails.get("product_id");
             Integer sumQuantity = (Integer) orderDetails.get("sum_quantity");
-            productRank.put(productId, sumQuantity);
-            productRankList.add(productRank);
+
+            productIdMap.put("product", productService.findById(productId.longValue()));
+            sumQuantityMap.put("sumQuantity", sumQuantity);
+            productRankMap.add(productIdMap);
+            productRankMap.add(sumQuantityMap);
+            productRankList.add(productRankMap);
         }
 
         return productRankList;
     }
 
-    private List<Map<Integer,Integer>> dayTimeAnalytics() {
-        List<Map<Integer, Integer>> mostSoldHourList = new ArrayList<>();
-
+    private List<Integer> dayTimeAnalytics() {
+        List<Integer> mostSoldHourList = new ArrayList<>();
         List<Map<String, Object>> orderList = orderService.findMostSoldHour();
 
-        for(Map<String, Object> order: orderList) {
-            Map<Integer, Integer> mostSoldHour = new HashMap<>();
-            Integer hour = (Integer) order.get("hour_in_day");
-            Integer count = (Integer) order.get("number_of_order");
-            mostSoldHour.put(hour, count);
-            mostSoldHourList.add(mostSoldHour);
+        for (Integer i = 1; i <= 24; i++) {
+            for (Map<String, Object> order : orderList) {
+                Integer hour = (Integer) order.get("hour_in_day");
+                Integer count = (Integer) order.get("number_of_order");
+                if (i.equals(hour)) {
+                    mostSoldHourList.add(count);
+                    i++;
+                }
+            }
+            mostSoldHourList.add(0);
         }
 
         return mostSoldHourList;
@@ -150,9 +170,30 @@ public class RevenueDashboard {
     private Long remainProductQuantity() {
         Long remainProductQuantity = new Long(0);
         List<ProductDTO> productList = productService.findAll();
-        for(ProductDTO productDTO: productList) {
+        for (ProductDTO productDTO : productList) {
             remainProductQuantity += productDTO.getQuantity();
         }
         return remainProductQuantity;
+    }
+
+    private List<List<Map<String, Object>>> userRank() {
+        List<List<Map<String, Object>>> userRankList = new ArrayList<>();
+        List<Map<String, Object>> orderList = orderService.findByUserRank();
+
+        for(Map<String, Object> order: orderList) {
+            List<Map<String, Object>> userRankMap = new ArrayList<>();
+            Map<String, Object> userMap = new HashMap<>();
+            Map<String, Object> totalMoneyMap = new HashMap<>();
+            Integer user = (Integer) order.get("user_id");
+            BigDecimal totalMoney = (BigDecimal) order.get("total_money");
+
+            userMap.put("user", userService.findById(user.longValue()));
+            totalMoneyMap.put("totalRevenue", Double.valueOf(totalMoney.doubleValue()));
+            userRankMap.add(userMap);
+            userRankMap.add(totalMoneyMap);
+            userRankList.add(userRankMap);
+        }
+
+        return userRankList;
     }
 }
