@@ -27,4 +27,7 @@ public class UserDTO {
     private boolean gender;
 
     private String userImg;
+
+    private String rfid;
+
 }
