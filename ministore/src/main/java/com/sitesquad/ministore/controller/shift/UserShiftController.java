@@ -16,6 +16,7 @@ import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.model.UserShift;
 import com.sitesquad.ministore.repository.UserRepository;
 import com.sitesquad.ministore.repository.UserShiftRepository;
+import com.sitesquad.ministore.service.UserNotificationService;
 import com.sitesquad.ministore.service.UserService;
 import com.sitesquad.ministore.service.shift.ShiftRequestService;
 import com.sitesquad.ministore.service.shift.UserShiftService;
@@ -34,6 +35,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.management.Notification;
 
 /**
  * @author ACER
@@ -59,6 +62,9 @@ public class UserShiftController {
     @Autowired
     ShiftRequestService shiftRequestService;
 
+    @Autowired
+    UserNotificationService userNotificationService;
+
     @GetMapping("/userShift")
     public ResponseEntity<ResponseObject> getUserShifts(@RequestParam(required = false) Integer offset) {
         if (offset == null) {
@@ -83,7 +89,7 @@ public class UserShiftController {
                     new ResponseObject(200, "Found User Shift list", userShiftMap)
             );
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+            return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(500, "Not found User Shift  list", "")
             );
         }
@@ -119,7 +125,7 @@ public class UserShiftController {
                     new ResponseObject(200, "Found User Shift list", userShiftMap)
             );
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+            return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(500, "Not found User Shift  list", "")
             );
         }
@@ -132,28 +138,32 @@ public class UserShiftController {
                     new ResponseObject(200, "Only admin can manually generate user shifts for next 7 days", ""));
         }
         userShiftService.generateUserShifts();
+        userNotificationService.sendNotiAndMailToAllAdmins("New shift week is wait to assign!"," Go to schedule to assign new shifts");
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(200, "Generate user shifts for next 7 days successfully", "")
         );
     }
 
     @PostMapping("/userShift/assign")
-    public ResponseEntity<ResponseObject> assignUserShift(@RequestBody(required = false) List<Map<String, Object>> request) {
+    public ResponseEntity<ResponseObject> assignUserShift(@RequestBody(required = false) List<Map<String, Long>> request) {
         List<UserShift> assignedUserShifts = new ArrayList<>();
         if (request == null || request.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(404, "List of User shift id & user id parameter not found ", "")
             );
         }
-        for (Map<String, Object> item : request) {
+        for (Map<String, Long> item : request) {
 
-            Long userShiftId = Long.parseLong(item.get("userShiftId").toString());
-            Long userId = Long.parseLong(item.get("userId").toString());
+            Long userShiftId = item.get("userShiftId");
+            Long userId = item.get("userId");
 
-            if (userId == null || userShiftId == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                        new ResponseObject(500, "Parameter id or user shift id is not recieved", "")
+            if (userShiftId == null) {
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject(500, "Parameter user shift id is not received", "")
                 );
+            }
+            if(userId == null){
+                continue;
             }
             UserShift userShift = userShiftService.findById(userShiftId);
             User user = userRepository.findById(userId).orElse(null);
@@ -186,7 +196,7 @@ public class UserShiftController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject(200, "Assign succesfully ", assignedUserShifts)
+                new ResponseObject(200, "Assign successfully ", assignedUserShifts)
         );
     }
 
@@ -310,9 +320,23 @@ public class UserShiftController {
                     new ResponseObject(200, "Found User Shift list", userShiftDTOs)
             );
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+            return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(500, "Not found User Shift  list", "")
             );
         }
     }
+
+    @GetMapping("/userShift/checkLate")
+    public ResponseEntity<ResponseObject> lateUserShiftChecker(){
+        List<UserShift> userShifts = userShiftService.checkInLateChecker();
+        if(userShifts==null){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "There's no late shift", "")
+            );
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(200, "Late found list", userShifts)
+        );
+    }
+
 }
