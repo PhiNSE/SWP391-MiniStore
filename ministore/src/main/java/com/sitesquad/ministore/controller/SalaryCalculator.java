@@ -106,14 +106,7 @@ public class SalaryCalculator {
             addPayslip(userShiftList);
         }
 
-        List<Long> userIds = new ArrayList<>();
-        for (User user : userList) {
-            userIds.add(user.getUserId());
-        }
-
-        System.out.println(userIds);
-
-        userNotificationService.customCreateUserNotification("Tra luong", "Tra luong cho nhan vien", userIds);
+        userNotificationService.sendNotiAndMailToAllAdmins("Admin Tra luong", "Den ngay tra luong cho nhan vien");
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(200, "Successfull", "")
         );
@@ -162,6 +155,11 @@ public class SalaryCalculator {
         if (foundPayslip.getIsPaid() == null || foundPayslip.getIsPaid() == false) {
             foundPayslip.setIsPaid(true);
             payslipService.edit(foundPayslip);
+
+            List<Long> userIds = new ArrayList<>();
+            userIds.add(foundPayslip.getUserId());
+            System.out.println(userIds);
+            userNotificationService.customCreateUserNotification("Tra luong", "Nhan vien nhan luong", userIds);
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Successfull", foundPayslip)
             );

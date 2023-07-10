@@ -70,9 +70,9 @@ public class OrderDetails {
     @ToString.Exclude
     private ProductVoucher productVoucher;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id", referencedColumnName = "product_id")
-    @JsonIgnore
+//    @JsonIgnore
     @ToString.Exclude
     private Product product;
 

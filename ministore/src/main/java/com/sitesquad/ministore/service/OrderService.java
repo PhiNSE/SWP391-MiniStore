@@ -10,10 +10,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,13 +39,17 @@ public class OrderService {
         return foundOrder.get();
     }
 
-    public List<Order> findByDate(YearMonth yearMonth) {
+    public List<Order> findByDate(int month) {
         List<Order> orderList = orderRepository.findAll();
         List<Order> orderInAMonth = new ArrayList<>();
         for (Order order : orderList) {
-            Long date = order.getDate().getTime();
-            YearMonth dateYearMonth = YearMonth.from(LocalDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneId.systemDefault()));
-            if (dateYearMonth.equals(yearMonth)) {
+            //extract date in timestamp to month
+            long timestamp = order.getDate().getTime();
+            Date date = new Date(timestamp);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            int time = cal.get(Calendar.MONTH) + 1;
+            if (time == month) {
                 orderInAMonth.add(order);
             }
         }
@@ -56,7 +57,11 @@ public class OrderService {
     }
 
     public List<Map<String, Object>> findMostSoldHour() {
-        return orderRepository.findByCustom();
+        return orderRepository.findMostSoldHour();
+    }
+
+    public List<Map<String, Object>> findByUserRank() {
+        return orderRepository.findByUserRank();
     }
 
     public Order add(Order order) {

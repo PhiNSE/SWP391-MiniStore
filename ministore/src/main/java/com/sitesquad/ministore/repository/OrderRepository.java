@@ -25,7 +25,14 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
             "WHERE type = 0\n" +
             "GROUP BY DATEPART(hour, date)\n" +
             "ORDER BY number_of_order DESC", nativeQuery = true)
-    List<Map<String, Object>> findByCustom();
+    List<Map<String, Object>> findMostSoldHour();
+
+    @Query(value = "select user_id, sum(total) as 'total_money'\n" +
+            "from tbl_order\n" +
+            "where type = 0\n" +
+            "group by user_id\n" +
+            "order by sum(total) desc", nativeQuery = true)
+    List<Map<String, Object>> findByUserRank();
 
 //    List<Order> findByUserIdAndName(Long userId, String name);
 }
