@@ -87,30 +87,26 @@ public class RevenueDashboard {
     private List<List<Map<String, Object>>> monthRevenue() {
         List<List<Map<String, Object>>> monthRevenuesList = new ArrayList<>();
 
-        YearMonth month = YearMonth.of(2023, 6); //fix cung
-        for (int i = 0; i <= 11; i++) {
+//        YearMonth month = YearMonth.of(2023, 6); //fix cung
+        for (int i = 1; i <= 12; i++) {
             List<Map<String, Object>> monthRevenueMap = new ArrayList<>();
             Map<String, Object> monthMap = new HashMap<>();
             Map<String, Object> revenueMap = new HashMap<>();
             Double revenue = new Double(0);
-            List<Order> orderList = orderService.findByDate(month);
-            if (orderList.isEmpty()) {
-                break;
-            }
-            for (Order order : orderList) {
-                if (order.getType() == false) {
-                    revenue += order.getTotal();
-                }
-                if (order.getType() == true) {
-                    revenue -= order.getTotal();
+            List<Order> orderList = orderService.findByDate(i);
+            if (!orderList.isEmpty()) {
+                for (Order order : orderList) {
+                    if (order.getType() == false) {
+                        revenue += order.getTotal();
+                    }
                 }
             }
-            monthMap.put("month", month.toString());
+            monthMap.put("month", i);
             revenueMap.put("revenue", revenue);
             monthRevenueMap.add(monthMap);
             monthRevenueMap.add(revenueMap);
             monthRevenuesList.add(monthRevenueMap);
-            month = month.plus(Period.ofMonths(1));
+
         }
         return monthRevenuesList;
     }
@@ -180,14 +176,14 @@ public class RevenueDashboard {
         List<List<Map<String, Object>>> userRankList = new ArrayList<>();
         List<Map<String, Object>> orderList = orderService.findByUserRank();
 
-        for(Map<String, Object> order: orderList) {
+        for (Map<String, Object> order : orderList) {
             List<Map<String, Object>> userRankMap = new ArrayList<>();
             Map<String, Object> userMap = new HashMap<>();
             Map<String, Object> totalMoneyMap = new HashMap<>();
             Integer user = (Integer) order.get("user_id");
             BigDecimal totalMoney = (BigDecimal) order.get("total_money");
 
-            userMap.put("user", userService.findById(user.longValue()));
+            userMap.put("user", userService.find(user.longValue()));
             totalMoneyMap.put("totalRevenue", Double.valueOf(totalMoney.doubleValue()));
             userRankMap.add(userMap);
             userRankMap.add(totalMoneyMap);
