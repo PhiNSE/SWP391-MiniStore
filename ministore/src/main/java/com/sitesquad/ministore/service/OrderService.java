@@ -40,7 +40,7 @@ public class OrderService {
     }
 
     public List<Order> findByDate(int month) {
-        List<Order> orderList = orderRepository.findByTypeFalse();
+        List<Order> orderList = orderRepository.findAll();
         List<Order> orderInAMonth = new ArrayList<>();
         for (Order order : orderList) {
             //extract date in timestamp to month

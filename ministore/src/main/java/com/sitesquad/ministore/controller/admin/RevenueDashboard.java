@@ -87,24 +87,30 @@ public class RevenueDashboard {
     private List<List<Map<String, Object>>> monthRevenue() {
         List<List<Map<String, Object>>> monthRevenuesList = new ArrayList<>();
 
-//        YearMonth month = YearMonth.of(2023, 6); //fix cung
         for (int i = 1; i <= 12; i++) {
             List<Map<String, Object>> monthRevenueMap = new ArrayList<>();
             Map<String, Object> monthMap = new HashMap<>();
             Map<String, Object> revenueMap = new HashMap<>();
+            Map<String, Object> costMap = new HashMap<>();
             Double revenue = new Double(0);
+            Double cost = new Double(0);
             List<Order> orderList = orderService.findByDate(i);
             if (!orderList.isEmpty()) {
                 for (Order order : orderList) {
                     if (order.getType() == false) {
                         revenue += order.getTotal();
                     }
+                    if (order.getType() == true) {
+                        cost += order.getTotal();
+                    }
                 }
             }
             monthMap.put("month", i);
             revenueMap.put("revenue", revenue);
+            costMap.put("cost", cost);
             monthRevenueMap.add(monthMap);
             monthRevenueMap.add(revenueMap);
+            monthRevenueMap.add(costMap);
             monthRevenuesList.add(monthRevenueMap);
 
         }
