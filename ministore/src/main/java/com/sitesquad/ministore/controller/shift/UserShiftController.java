@@ -193,6 +193,16 @@ public class UserShiftController {
             userShift.setUserId(user.getUserId());
             UserShift assignedUserShift = userShiftService.edit(userShift);
             assignedUserShifts.add(assignedUserShift);
+            //noti
+            List<Long> notiIds = new ArrayList<>();
+            notiIds.add(assignedUserShift.getUserId());
+            userNotificationService.
+                    customCreateUserNotification("You have been assign to a new shift!"
+                            ," You have been assign by admin to shift: "
+                            + assignedUserShift.getShift().getType()
+                            +" \n From " + assignedUserShift.getStartTime()
+                            +" to " + assignedUserShift.getEndTime()
+                            ,notiIds);
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(

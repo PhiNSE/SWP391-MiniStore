@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.sitesquad.ministore.controller;
+package com.sitesquad.ministore.controller.shift;
 
 import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.model.Shift;
