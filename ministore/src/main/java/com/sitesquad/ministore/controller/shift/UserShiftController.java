@@ -200,8 +200,10 @@ public class UserShiftController {
                     customCreateUserNotification("You have been assign to a new shift!"
                             ," You have been assign by admin to shift: "
                             + assignedUserShift.getShift().getType()
-                            +" \n From " + assignedUserShift.getStartTime()
-                            +" to " + assignedUserShift.getEndTime()
+                            +" \n From " + DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+                                    .format(assignedUserShift.getStartTime())
+                            +" to " + DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+                                    .format(assignedUserShift.getEndTime())
                             ,notiIds);
         }
 
