@@ -14,11 +14,11 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RevenueDTO {
-    private Map<Double,Double> allTimeRevenue;
-    private List<Map<YearMonth,Double>> monthRevenues;
+    private List<Map<String,Double>> allTimeRevenue;
+    private List<List<Map<String,Object>>> monthRevenues;
     private Long totalProduct;
-    private List<Map<Integer,Integer>> productRanks;
-    private List<Map<Integer,Integer>> dayTimeAnalytics;
+    private List<List<Map<String,Object>>> productRanks;
+    private List<Integer> dayTimeAnalytics;
     private Long remainProductQuantity;
-
+    private List<List<Map<String, Object>>> userRank;
 }

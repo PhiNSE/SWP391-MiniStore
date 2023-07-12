@@ -5,12 +5,14 @@ import com.sitesquad.ministore.dto.RequestMeta;
 import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.model.Ticket;
 import com.sitesquad.ministore.repository.TicketRepository;
+import com.sitesquad.ministore.service.UserNotificationService;
 import com.sitesquad.ministore.service.shift.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,9 @@ public class TicketController {
 
     @Autowired
     TicketService ticketService;
+
+    @Autowired
+    UserNotificationService userNotificationService;
 
     @Autowired
     RequestMeta requestMeta;
@@ -101,6 +106,9 @@ public class TicketController {
         }
         ticket.setUserId(requestMeta.getUserId());
         Ticket ticketAdd = ticketService.add(ticket);
+        //noti
+        userNotificationService.sendNotiAndMailToAllAdmins("New ticket is waiting to be processed!"
+                ,"Employee: "+ ticket.getUser().getName() + " has submitted a new ticket: "+ticket.getTitle());
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(200,"Submit ticket successfully, WAIT FOR ADMIN TO APPROVE!",ticketAdd));
 
@@ -175,8 +183,22 @@ public class TicketController {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseObject(200,"Ticket not found",""));
         }
+        if(ticket.getIsApproved() != null){
+            String status = ticket.getIsApproved()==true?"approved":"rejected";
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseObject(500,"Ticket was "+ status + " already!",""));
+        }
         ticket.setIsApproved(isApproved);
         ticket = ticketService.edit(ticket);
+        //noti
+        List<Long> sendIds = new ArrayList<>();
+        sendIds.add(ticket.getUserId());
+        userNotificationService.
+                customCreateUserNotification("Your ticket has been approved!"
+                        ,"Your ticket: \"" + ticket.getTitle() +"\" has been approved by admin"
+                        +"\n You will on leave from: "+ticket.getStartTime() + " to: " + ticket.getEndTime()
+                        ,sendIds
+                        );
         if(ticket.getIsApproved() == true){
             System.out.println(ticket);
             ticketService.generateShiftRequestByTicket(ticket);

@@ -34,5 +34,6 @@ public interface UserShiftRepository extends JpaRepository<UserShift, Long>, Jpa
             "AND DATEPART(MINUTE, us.startTime) = :minute")
     List<UserShift> findUserShiftsByStartTime(@Param("year") Integer year, @Param("month") Integer month, @Param("day") Integer day, @Param("hour") Integer hour, @Param("minute") Integer minute);
 
+    public List<UserShift> findByAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(ZonedDateTime startTime, ZonedDateTime endTime);
 
 }

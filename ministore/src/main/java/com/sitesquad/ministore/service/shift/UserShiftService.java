@@ -17,6 +17,7 @@ import com.sitesquad.ministore.repository.HolidayRepository;
 import com.sitesquad.ministore.repository.ShiftRepository;
 import com.sitesquad.ministore.repository.UserRepository;
 import com.sitesquad.ministore.repository.UserShiftRepository;
+import com.sitesquad.ministore.service.UserNotificationService;
 import com.sitesquad.ministore.service.UserService;
 import com.sitesquad.ministore.utils.DateUtil;
 
@@ -24,6 +25,8 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,6 +55,9 @@ public class UserShiftService {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserNotificationService userNotificationService;
 
     public List<UserShift> findAll() {
         return userShiftRepository.findAll();
@@ -183,19 +189,46 @@ public class UserShiftService {
 //        System.out.println(test.size());
 //        for (UserShift userShift : test) { System.out.println(userShift); }
         ZonedDateTime now = SystemConstant.ZONE_DATE_TIME_NOW;
-        List<UserShift> userShifts = userShiftRepository.findUserShiftsByStartTime(
-                now.getYear(), now.getMonthValue(), now.getDayOfMonth(), now.getHour(), now.getMinute());
+//        List<UserShift> userShifts = userShiftRepository.findUserShiftsByStartTime(
+//                now.getYear(), now.getMonthValue(), now.getDayOfMonth(), now.getHour(), now.getMinute());
+        List<UserShift> userShifts = userShiftRepository.
+                findByAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(now,now);
+        System.out.println(userShifts.toString());
         if (userShifts == null || userShifts.isEmpty()) {
             return null;
         }
+        StringBuilder lateDes = new StringBuilder();
+        String lateTitle = "";
         List<UserShift> lateList = new ArrayList<>();
         for (UserShift userShift : userShifts) {
-            if (userShift.getIsCheckedIn() == null) {
-                //noti
-//                Notification
+            if(userShift.getIsCheckedIn() == null&&userShift.getUser()==null){
                 System.out.println("userShift is late: " + userShift);
+                lateTitle = "Shift is not assign and not check in";
                 lateList.add(userShift);
+                lateDes.append("Shift is currently not assign and check in : "
+                        + userShift.getShift().getType() + ", "
+                        + DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(userShift.getStartTime())
+                );
+                lateDes.append(".\n");
             }
+            if (userShift.getIsCheckedIn() == null&&userShift.getUser()!=null) {
+                //noti
+                System.out.println("userShift is late: " + userShift);
+                lateTitle = "Employee is currently not check in!";
+                lateList.add(userShift);
+                lateDes.append("User: "+userShift.getUser().getName()
+                        +", mail: "+ userShift.getUser().getEmail()
+                        +" is currently not check in for shift: "
+                        + userShift.getShift().getType() + ", "
+                        + DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(userShift.getStartTime())
+                );
+                lateDes.append(".\n");
+            }
+        }
+//                Notification
+        if(lateList!=null&&!lateList.isEmpty()){
+            userNotificationService.
+                    sendNotiAndMailToAllAdmins(lateTitle,lateDes.toString());
         }
         return lateList;
     }
