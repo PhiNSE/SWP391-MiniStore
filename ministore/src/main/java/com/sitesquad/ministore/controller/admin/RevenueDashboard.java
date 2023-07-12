@@ -84,14 +84,13 @@ public class RevenueDashboard {
         return allTimeRevenue;
     }
 
-    private List<List<Map<String, Object>>> monthRevenue() {
-        List<List<Map<String, Object>>> monthRevenuesList = new ArrayList<>();
+    private List<Map<String, Object>> monthRevenue() {
+        List<Map<String, Object>> monthRevenuesList = new ArrayList<>();
+        Map<String, Object> monthRevenueMap = new HashMap<>();
+        List<Object> monthRevenue = new ArrayList<>();
+        List<Object> monthCost = new ArrayList<>();
 
         for (int i = 1; i <= 12; i++) {
-            List<Map<String, Object>> monthRevenueMap = new ArrayList<>();
-            Map<String, Object> monthMap = new HashMap<>();
-            Map<String, Object> revenueMap = new HashMap<>();
-            Map<String, Object> costMap = new HashMap<>();
             Double revenue = new Double(0);
             Double cost = new Double(0);
             List<Order> orderList = orderService.findByDate(i);
@@ -105,15 +104,12 @@ public class RevenueDashboard {
                     }
                 }
             }
-            monthMap.put("month", i);
-            revenueMap.put("revenue", revenue);
-            costMap.put("cost", cost);
-            monthRevenueMap.add(monthMap);
-            monthRevenueMap.add(revenueMap);
-            monthRevenueMap.add(costMap);
-            monthRevenuesList.add(monthRevenueMap);
-
+            monthRevenue.add(revenue);
+            monthCost.add(cost);
         }
+        monthRevenueMap.put("revenue", monthRevenue);
+        monthRevenueMap.put("cost", monthCost);
+        monthRevenuesList.add(monthRevenueMap);
         return monthRevenuesList;
     }
 
