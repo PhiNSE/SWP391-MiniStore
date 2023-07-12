@@ -69,7 +69,7 @@ public class SalaryCalculator {
             salary += salaryInADay;
             shiftCount++;
             totalHour += workingPeriod.intValue();
-//            userShift.setIsPaid(true);
+            userShift.setIsPaid(true);
             userShiftService.edit(userShift);
         }
         payslip.setShiftCount(shiftCount);

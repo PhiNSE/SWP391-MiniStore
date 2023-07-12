@@ -75,6 +75,7 @@ public class PayslipController {
             payslipDTO.setUserId(payslip.getUserId());
             payslipDTO.setName(payslip.getUser().getName());
             payslipDTO.setRoleName(payslip.getUser().getRole().getName());
+            payslipDTO.setEmail(payslip.getUser().getEmail());
             payslipDTO.setStartDate(dateFormat.format(payslip.getStartDate()));
             payslipDTO.setEndDate(dateFormat.format(payslip.getEndDate()));
             payslipDTO.setShiftCount(payslip.getShiftCount());

@@ -14,6 +14,7 @@ public class PayslipDTO implements Serializable {
     private Long userId;
     private String name;
     private String roleName;
+    private String email;
     private String startDate;
     private String endDate;
     private Integer shiftCount;
