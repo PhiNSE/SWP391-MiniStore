@@ -23,9 +23,10 @@ public interface OrderDetailsRepository extends JpaRepository<OrderDetails, Long
 
     List<OrderDetails> findByProductVoucherId(Long productVoucherId);
 
-    @Query(value = "select product_id, sum(quantity) as 'sum_quantity'" +
-            "from order_detail\n" +
-            "group by product_id\n" +
-            "order by sum_quantity desc", nativeQuery = true)
+    @Query(value = "select product_id, sum(quantity) as 'sum_quantity'\n" +
+            "            from order_detail join tbl_order on order_detail.order_id = tbl_order.order_id\n" +
+            "            where tbl_order.type = 0\n" +
+            "            group by product_id\n" +
+            "            order by sum_quantity desc", nativeQuery = true)
     List<Map<String, Object>> findByCustom();
 }

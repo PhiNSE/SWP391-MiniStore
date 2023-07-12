@@ -15,7 +15,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class RevenueDTO {
     private List<Map<String,Double>> allTimeRevenue;
-    private List<List<Map<String,Object>>> monthRevenues;
+    private List<Map<String, Object>> monthRevenues;
     private Long totalProduct;
     private List<List<Map<String,Object>>> productRanks;
     private List<Integer> dayTimeAnalytics;

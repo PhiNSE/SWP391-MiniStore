@@ -32,7 +32,7 @@ public class UserNotificationController {
     @PostMapping("/send")
     public ResponseEntity<ResponseObject> sendNotify(@RequestBody (required = false) List<UserNotification> userNotificationList){
         if(requestMeta != null && requestMeta.getRole().trim().equalsIgnoreCase("Admin")){
-                List<UserNotification> userNotificationLists =userNotificationService.createUserNotification(userNotificationList);
+                List<UserNotification> userNotificationLists =userNotificationService.createUserNotification2(userNotificationList);
             if(userNotificationLists != null){
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObject(200, "Add notify success", userNotificationLists)

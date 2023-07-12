@@ -1,8 +1,6 @@
 package com.sitesquad.ministore.service;
 
 import com.sitesquad.ministore.constant.RoleConstant;
-import com.sitesquad.ministore.constant.SystemConstant;
-import com.sitesquad.ministore.model.Role;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.model.UserNotification;
 import com.sitesquad.ministore.repository.UserNotificationRepository;
@@ -10,13 +8,13 @@ import com.sitesquad.ministore.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.DateFormat;
-import java.time.ZonedDateTime;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 public class UserNotificationService {
@@ -79,8 +77,29 @@ public class UserNotificationService {
         return userNotificationList;
     }
 
+    public List<UserNotification> createUserNotification2(List<UserNotification> userNotificationList) {
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+
+        for (UserNotification userNotification : userNotificationList) {
+            userNotification.setUser(userRepository.findById(userNotification.getUserId()).get());
+            Date date = new Date();
+            userNotification.setDate(new Timestamp(date.getTime()));
+            User user = userRepository.findByUserIdAndIsDeletedFalse(userNotification.getUserId());
+            userNotificationRepository.save(userNotification);
+
+            executorService.submit(() -> {
+                mailerService.sendMailWithOutFile(user.getEmail(), new String[0], userNotification.getTitle(), userNotification.getDescription());
+            });
+        }
+
+        executorService.shutdown();
+        return userNotificationList;
+    }
+
 
     public void customCreateUserNotification(String title, String description, List<Long> receiverIdList) {
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+
         List<User> userList = new ArrayList<>();
         for (Long userId : receiverIdList) {
             User user = userRepository.findByUserIdAndIsDeletedFalse(userId);
@@ -97,7 +116,10 @@ public class UserNotificationService {
             userNotification.setDescription(description);
             userNotification.setUser(user);
             userNotificationRepository.save(userNotification);
-            mailerService.sendMailWithOutFile(user.getEmail(), new String[0], title, description);
+            executorService.submit(() ->{
+                mailerService.sendMailWithOutFile(user.getEmail(), new String[0], title, description);
+            });
+            executorService.shutdown();
         }
 
     }
