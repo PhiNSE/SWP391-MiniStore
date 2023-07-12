@@ -12,6 +12,8 @@ import java.io.Serializable;
 public class PayslipDTO implements Serializable {
     private Long payslipId;
     private Long userId;
+    private String name;
+    private String roleName;
     private String startDate;
     private String endDate;
     private Integer shiftCount;

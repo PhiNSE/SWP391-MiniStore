@@ -13,4 +13,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PayslipRepository extends JpaRepository<Payslip, Long>, JpaSpecificationExecutor<Payslip>{
     List<Payslip> findByUserId(Long userId);
+    List<Payslip> findByIsPaidNullOrIsPaidFalse();
 }
