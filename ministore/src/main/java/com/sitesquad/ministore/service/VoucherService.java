@@ -18,7 +18,7 @@ public class VoucherService {
     VoucherRepository voucherRepository;
 
     public List<Voucher> findAll() {
-        return voucherRepository.findAll();
+        return voucherRepository.findByIsDeletedFalseOrIsDeletedIsNull();
     }
 
     public Voucher findById(Long id) {

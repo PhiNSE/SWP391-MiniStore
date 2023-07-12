@@ -188,7 +188,7 @@ public class ProductController {
         Product editedProduct = productService.edit(product);
         if (editedProduct != null) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "Edit sucessfully ", editedProduct)
+                    new ResponseObject(200, "Edit successfully ", editedProduct)
             );
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(
@@ -209,7 +209,7 @@ public class ProductController {
         Boolean isDeleted = productService.delete(id);
         if (isDeleted) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "Delete sucessfully ", "")
+                    new ResponseObject(200, "Delete successfully ", "")
             );
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(

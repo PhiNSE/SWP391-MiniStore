@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -196,7 +198,11 @@ public class TicketController {
         userNotificationService.
                 customCreateUserNotification("Your ticket has been approved!"
                         ,"Your ticket: \"" + ticket.getTitle() +"\" has been approved by admin"
-                        +"\n You will on leave from: "+ticket.getStartTime() + " to: " + ticket.getEndTime()
+                        +"\n You will on leave from: "
+                                + DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+                                .format(ticket.getStartTime())
+                                + " to: " + DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+                                .format(ticket.getEndTime())
                         ,sendIds
                         );
         if(ticket.getIsApproved() == true){

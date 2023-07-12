@@ -119,7 +119,7 @@ public class UserService {
     }
 
     public User find(Long id){
-        return userRepository.findByUserIdAndIsDeletedFalseOrIsDeletedTrue(id);
+        return userRepository.findByUserIdAndIsDeletedFalse(id);
     }
 
     public boolean delete(Long id) {
