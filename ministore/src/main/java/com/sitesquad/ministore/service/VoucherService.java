@@ -50,6 +50,7 @@ public class VoucherService {
     public boolean minusQuantityOfVoucher(Long voucherId) {
         Voucher voucher = findById(voucherId);
         voucher.setQuantity(voucher.getQuantity() - 1);
+        voucherRepository.save(voucher);
         return true;
     }
 }
