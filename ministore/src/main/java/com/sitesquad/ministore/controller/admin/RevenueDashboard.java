@@ -122,7 +122,9 @@ public class RevenueDashboard {
         List<OrderDetails> orderDetailsList = orderDetailsService.findAll();
 
         for (OrderDetails orderDetail : orderDetailsList) {
-            totalProduct += orderDetail.getQuantity();
+            if (orderDetail.getOrderDet().getType() == false) {
+                totalProduct += orderDetail.getQuantity();
+            }
         }
 
         return totalProduct;
