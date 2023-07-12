@@ -32,7 +32,7 @@ public class ShiftRequestController {
 
     @GetMapping("/shiftRequest")
     public ResponseEntity<ResponseObject> getAll(){
-        List<ShiftRequest> shiftRequests = shiftRequestService.getAll();
+        List<ShiftRequest> shiftRequests = shiftRequestRepository.findByType(ShiftConstant.SHIFT_REQUEST_TYPE);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(200,"Found shift requests",shiftRequests));
     }

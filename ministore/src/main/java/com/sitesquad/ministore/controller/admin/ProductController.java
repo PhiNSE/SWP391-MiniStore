@@ -48,7 +48,7 @@ public class ProductController {
     @Autowired
     OrderDetailsService orderDetailsService;
 
-    @GetMapping("/getAllProduct")
+    @GetMapping("/product/all")
     public ResponseEntity<ResponseObject> getProducts() {
         List<ProductDTO> products = productService.findAll();
         if (products != null && !products.isEmpty()) {
