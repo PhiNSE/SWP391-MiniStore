@@ -12,7 +12,7 @@ CREATE TABLE [dbo].[user_notification](
 	[user_id] [int] NOT NULL,
 	[date][datetime]NOT NULL,
 	[title] [Nvarchar](255) null,
-	[description] [TEXT] NULL,
+	[description] [Nvarchar](MAX) NULL,
 	
 PRIMARY KEY CLUSTERED 
 (

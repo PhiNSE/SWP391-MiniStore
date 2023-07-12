@@ -7,9 +7,10 @@ package com.sitesquad.ministore.service;
 
 import com.sitesquad.ministore.model.Role;
 import com.sitesquad.ministore.repository.RoleRepository;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  *
@@ -43,7 +44,7 @@ public class RoleService {
         }
     }
     
-    public Role edit(Role newRole){
+        public Role edit(Role newRole){
         Role oldRole = roleRepository.findById(newRole.getRoleId()).get();
         newRole.setRoleId(null);
         Role editRole = add(newRole);

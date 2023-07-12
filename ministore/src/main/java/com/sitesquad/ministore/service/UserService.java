@@ -45,6 +45,7 @@ public class UserService {
         userDTO.setDob(user.getDob());
         userDTO.setGender(user.getGender());
         userDTO.setAddress(user.getAddress());
+        userDTO.setUserImg(user.getUserImg());
         return userDTO;
     }
 
@@ -154,7 +155,7 @@ public class UserService {
             return null;
         }
     }
-    public List<User> findUserByRoleName(String name) {
+        public List<User> findUserByRoleName(String name) {
         List<User> users = userRepository.findUserByRole_NameIgnoreCaseAndIsDeletedFalse(name);
 //        List<UserDTO> userDTOs = new ArrayList<>();
 //        for (User user: users) {

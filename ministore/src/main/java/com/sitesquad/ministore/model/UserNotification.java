@@ -30,13 +30,13 @@ public class UserNotification {
     @JsonIgnore
     private User user;
 
-    @Column(name = "title")
+    @Column(name = "title", columnDefinition = "nvarchar(255)")
     private String title;
 
     @Column(name = "date")
     private Timestamp date;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "nvarchar(max)")
     private String description;
 
 }
