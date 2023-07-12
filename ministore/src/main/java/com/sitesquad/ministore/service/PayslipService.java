@@ -32,6 +32,10 @@ public class PayslipService {
         Payslip foundPayslip = payslipRepository.findById(id).orElse(null);
         return foundPayslip;
     }
+
+    public List<Payslip> findByIsPaidFalseOrNull() {
+        return payslipRepository.findByIsPaidNullOrIsPaidFalse();
+    }
     
     public List<Payslip> findByUserId(Long id) {
         List<Payslip> foundPayslip = payslipRepository.findByUserId(id);

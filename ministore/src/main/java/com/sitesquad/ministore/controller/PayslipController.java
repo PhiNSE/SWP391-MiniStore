@@ -25,14 +25,23 @@ public class PayslipController {
 
     @GetMapping("/payslip")
     public ResponseEntity<ResponseObject> getAllPayslips() {
-        List<Payslip> payslipList = payslipService.findAll();
+        List<Payslip> payslipList = payslipService.findByIsPaidFalseOrNull();
         List<PayslipDTO> payslipDTOList = new ArrayList<>();
+
+        if(payslipList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(404, "Not found Payslips", "")
+            );
+        }
 
         for(Payslip payslip: payslipList) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             PayslipDTO payslipDTO = new PayslipDTO();
+
             payslipDTO.setPayslipId(payslip.getPayslipId());
             payslipDTO.setUserId(payslip.getUserId());
+            payslipDTO.setName(payslip.getUser().getName());
+            payslipDTO.setRoleName(payslip.getUser().getRole().getName());
             payslipDTO.setStartDate(dateFormat.format(payslip.getStartDate()));
             payslipDTO.setEndDate(dateFormat.format(payslip.getEndDate()));
             payslipDTO.setShiftCount(payslip.getShiftCount());
@@ -48,6 +57,40 @@ public class PayslipController {
         );
     }
 
+    @GetMapping("/payslip/viewHistory")
+    public ResponseEntity<ResponseObject> viewSalaryHistory(@RequestParam Long userId) {
+        List<Payslip> payslipList = payslipService.findByUserId(userId);
+        List<PayslipDTO> payslipDTOList = new ArrayList<>();
+
+        if(payslipList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(404, "Not found payslip", "")
+            );
+        }
+        for(Payslip payslip: payslipList) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            PayslipDTO payslipDTO = new PayslipDTO();
+
+            payslipDTO.setPayslipId(payslip.getPayslipId());
+            payslipDTO.setUserId(payslip.getUserId());
+            payslipDTO.setName(payslip.getUser().getName());
+            payslipDTO.setRoleName(payslip.getUser().getRole().getName());
+            payslipDTO.setEmail(payslip.getUser().getEmail());
+            payslipDTO.setStartDate(dateFormat.format(payslip.getStartDate()));
+            payslipDTO.setEndDate(dateFormat.format(payslip.getEndDate()));
+            payslipDTO.setShiftCount(payslip.getShiftCount());
+            payslipDTO.setSalary(payslip.getSalary());
+            payslipDTO.setTotalHour(payslip.getTotalHours());
+            payslipDTO.setDate(dateFormat.format(payslip.getDate()));
+            payslipDTO.setIsPaid(payslip.getIsPaid());
+            payslipDTOList.add(payslipDTO);
+        }
+        System.out.println(payslipDTOList);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(200, "Found", payslipDTOList)
+        );
+    }
+
     @GetMapping("/payslip/{id}")
     public ResponseEntity<ResponseObject> findById(@PathVariable Long id) {
         Payslip foundPayslip = payslipService.findById(id);
@@ -56,7 +99,7 @@ public class PayslipController {
                     new ResponseObject(200, "Found Payslip id = " + id, foundPayslip)
             );
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+            return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(404, "Cant find Payslip id = " + id, "")
             );
         }
@@ -103,21 +146,4 @@ public class PayslipController {
             );
         }
     }
-
-    //    @PutMapping("/order")
-//    public ResponseEntity<ResponseObject> editOrder(@RequestBody Order order) {
-//        order.setOrderUser(userRepository.findById(order.getUserId()).get());
-//        Order addOrder = orderRepository.save(order);
-//        if (addOrder != null) {
-////            orderRepository.findById(order.getId()).get().setIsDeleted(true);
-//            return ResponseEntity.status(HttpStatus.OK).body(
-//                    new ResponseObject(200, "Edit sucessfully ", addOrder)
-//            );
-//        } else {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-//                    new ResponseObject(500, "Cant edit order", order)
-//            );
-//        }
-//
-//    }
 }

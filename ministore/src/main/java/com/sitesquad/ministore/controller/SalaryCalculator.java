@@ -97,7 +97,6 @@ public class SalaryCalculator {
 
         for (User user : userList) {
             List<UserShift> userShiftList = userShiftService.findAllByIsPaidAndUserId(user.getUserId());
-//            System.out.println(userShiftList);
             if (userShiftList.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObject(404, "Not Found UserShift", "")
@@ -158,7 +157,6 @@ public class SalaryCalculator {
 
             List<Long> userIds = new ArrayList<>();
             userIds.add(foundPayslip.getUserId());
-            System.out.println(userIds);
             userNotificationService.customCreateUserNotification("Tra luong", "Nhan vien nhan luong", userIds);
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Successfull", foundPayslip)

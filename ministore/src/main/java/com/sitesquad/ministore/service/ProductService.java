@@ -133,7 +133,7 @@ public class ProductService {
     public boolean minusQuantityOfProduct(Long orderQuantity, Long productId) {
         Product product = findById(productId);
         product.setQuantity(product.getQuantity() - orderQuantity);
-        edit(product);
+        productRepository.save(product);
         return true;
     }
   
