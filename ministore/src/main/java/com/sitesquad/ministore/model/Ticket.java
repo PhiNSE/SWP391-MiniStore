@@ -39,10 +39,10 @@ public class Ticket {
     @Column(name = "is_approved")
     private Boolean isApproved;
 
-    @Column(name = "title")
+    @Column(name = "title",columnDefinition = "nvarchar(255)")
     private String title;
 
-    @Column(name = "description")
+    @Column(name = "description",columnDefinition = "nvarchar(255)")
     private String description;
 
     @Column(name = "ticket_type_id", insertable = false, updatable = false)
