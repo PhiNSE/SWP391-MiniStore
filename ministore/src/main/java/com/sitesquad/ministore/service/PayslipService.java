@@ -4,8 +4,9 @@ import com.sitesquad.ministore.model.Payslip;
 import com.sitesquad.ministore.model.Product;
 import com.sitesquad.ministore.repository.PayslipRepository;
 import com.sitesquad.ministore.repository.UserRepository;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +41,24 @@ public class PayslipService {
     public List<Payslip> findByUserId(Long id) {
         List<Payslip> foundPayslip = payslipRepository.findByUserId(id);
         return foundPayslip;
+    }
+
+    public List<Payslip> findPayslipByMonth(int month) {
+        List<Payslip> payslipList = payslipRepository.findAll();
+        List<Payslip> payslipInAMonth = new ArrayList<>();
+
+        for(Payslip payslip: payslipList) {
+//            extract date in timestamp to month
+            long timestamp = payslip.getDate().getTime();
+            Date date = new Date(timestamp);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            int time = cal.get(Calendar.MONTH) + 1;
+            if (time == month) {
+                payslipInAMonth.add(payslip);
+            }
+        }
+        return payslipInAMonth;
     }
 
     @Transactional

@@ -6,6 +6,7 @@ import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.dto.RevenueDTO;
 import com.sitesquad.ministore.model.Order;
 import com.sitesquad.ministore.model.OrderDetails;
+import com.sitesquad.ministore.model.Payslip;
 import com.sitesquad.ministore.model.Product;
 import com.sitesquad.ministore.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +78,12 @@ public class RevenueDashboard {
                 expense += order.getTotal();
             }
         }
+
+        List<Payslip> payslipList = payslipService.findAll();
+        for (Payslip payslip : payslipList) {
+            expense += payslip.getSalary();
+        }
+
         revenueMap.put("revenue", revenue);
         profitMap.put("profit", revenue - expense);
         allTimeRevenue.add(revenueMap);
@@ -102,6 +109,10 @@ public class RevenueDashboard {
                     if (order.getType() == true) {
                         cost += order.getTotal();
                     }
+                }
+                List<Payslip> payslipList = payslipService.findPayslipByMonth(i);
+                for (Payslip payslip: payslipList) {
+                    cost += payslip.getSalary();
                 }
             }
             monthRevenue.add(revenue);
