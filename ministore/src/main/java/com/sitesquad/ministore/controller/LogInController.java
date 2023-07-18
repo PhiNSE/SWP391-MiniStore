@@ -48,7 +48,7 @@ public class LogInController {
 
         if(user == null){
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(404, "log in failed", null)
+                    new ResponseObject(404, "Wrong email or password", null)
             );
         }
         String token = jwtUtils.generateJWT(user);
