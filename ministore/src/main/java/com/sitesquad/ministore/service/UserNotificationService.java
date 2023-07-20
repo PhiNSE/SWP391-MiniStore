@@ -119,10 +119,10 @@ public class UserNotificationService {
             executorService.submit(() ->{
                 mailerService.sendMailWithOutFile(user.getEmail(), new String[0], title, description);
             });
-            executorService.shutdown();
         }
-
+        executorService.shutdown();
     }
+
     public void sendNotiAndMailToAllByRole(String title, String description, String role){
         List<User> users = userRepository.findUserByRole_NameIgnoreCaseAndIsDeletedFalse(role);
         if(users==null) return;

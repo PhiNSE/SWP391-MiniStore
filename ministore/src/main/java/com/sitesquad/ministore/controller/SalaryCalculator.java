@@ -138,32 +138,33 @@ public class SalaryCalculator {
     }
 
     @GetMapping("/salary/pay")
-    public ResponseEntity<ResponseObject> paySalary(@RequestParam(required = false) Long payslipId) {
+    public ResponseEntity<ResponseObject> paySalary(@RequestBody List<Long> payslipIds) {
         if (!requestMeta.getRole().equals("admin")) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(404, "You don't have permission", "")
             );
         }
-        Payslip foundPayslip = new Payslip();
-        foundPayslip = payslipService.findById(payslipId);
-        if (foundPayslip == null) {
+        List<Payslip> foundPayslips = new ArrayList<>();
+        for (Long payslipId : payslipIds) {
+            Payslip payslip = payslipService.findById(payslipId);
+            if (payslip.getIsPaid() == null || payslip.getIsPaid() == false) {
+                payslip.setIsPaid(true);
+                payslipService.edit(payslip);
+
+                List<Long> userIds = new ArrayList<>();
+                userIds.add(payslip.getUserId());
+                userNotificationService.customCreateUserNotification("Tra luong", "Nhan vien nhan luong", userIds);
+                foundPayslips.add(payslip);
+            }
+        }
+
+        if (foundPayslips.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(404, "Not found payslip", "")
             );
         }
-        if (foundPayslip.getIsPaid() == null || foundPayslip.getIsPaid() == false) {
-            foundPayslip.setIsPaid(true);
-            payslipService.edit(foundPayslip);
-
-            List<Long> userIds = new ArrayList<>();
-            userIds.add(foundPayslip.getUserId());
-            userNotificationService.customCreateUserNotification("Tra luong", "Nhan vien nhan luong", userIds);
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "Successfull", foundPayslip)
-            );
-        }
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject(404, "Payslip is paid", "")
+                new ResponseObject(200, "Payslip is paid", "")
         );
     }
 
