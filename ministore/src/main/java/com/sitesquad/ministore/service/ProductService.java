@@ -77,7 +77,6 @@ public class ProductService {
         } else if (sortBy != null && sortBy.equalsIgnoreCase("quantity")) {
             sort = Sort.by(sortDirection, "quantity");
         }
-        System.out.println(productTypeId);
         Page<Product> productPage
                 = productRepository.findByCustomQuery(productId, name, productTypeName, productTypeId, productCode, PageRequest.of(offset, 9, sort));
         Page<ProductDTO> productDTOPage = mapDTO(productPage);
