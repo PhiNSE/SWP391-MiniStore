@@ -7,6 +7,7 @@ import com.sitesquad.ministore.repository.OrderDetailsRepository;
 import com.sitesquad.ministore.repository.OrderRepository;
 import com.sitesquad.ministore.repository.ProductRepository;
 import com.sitesquad.ministore.repository.ProductVoucherRepository;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,11 +17,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- *
  * @author admin
  */
 @Service
@@ -39,12 +40,16 @@ public class OrderDetailsService {
     ProductVoucherRepository productVoucherRepository;
 
     public List<OrderDetails> findAll() {
-        return orderDetailRepository.findAll();
+        return orderDetailRepository.findByIsDeletedNullOrIsDeletedFalse();
     }
 
     public OrderDetails findById(Long id) {
         Optional<OrderDetails> foundOrder = orderDetailRepository.findById(id);
         return foundOrder.get();
+    }
+
+    public List<OrderDetails> findByOrderId(Long id) {
+        return orderDetailRepository.findByOrderId(id);
     }
 
     public OrderDetails add(OrderDetails orderDetail) {
@@ -61,11 +66,7 @@ public class OrderDetailsService {
         return orderDetailRepository.save(newOrerDetail);
     }
 
-
-
     public List<OrderDetails> importOrderDetail(List<Product> productList, Order order) {
-
-
         List<OrderDetails> orderDetailList = new ArrayList<>();
         for (Product product : productList) {
             OrderDetails orderDetail = new OrderDetails();
@@ -79,6 +80,13 @@ public class OrderDetailsService {
         }
         return orderDetailList;
     }
+
+//    public void deleteOrderDetail(List<OrderDetails> orderDetailsList) {
+//        for(OrderDetails orderDetails : orderDetailsList) {
+//            orderDetails.setIsDeleted(true);
+//            orderDetailRepository.save(orderDetails);
+//        }
+//    }
 
     public List<Map<String, Object>> findTotalQuantityOfProduct() {
         return orderDetailRepository.findByCustom();

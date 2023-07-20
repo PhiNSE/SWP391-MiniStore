@@ -129,9 +129,16 @@ public class ProductService {
         }
     }
     
-    public boolean minusQuantityOfProduct(Long orderQuantity, Long productId) {
+    public boolean minusQuantityOfProduct(Long orderDetailQuantity, Long productId) {
         Product product = findById(productId);
-        product.setQuantity(product.getQuantity() - orderQuantity);
+        product.setQuantity(product.getQuantity() - orderDetailQuantity);
+        productRepository.save(product);
+        return true;
+    }
+
+    public boolean plusQuantityOfProduct(Long orderDetailQuantity, Long productId) {
+        Product product = findById(productId);
+        product.setQuantity(product.getQuantity() + orderDetailQuantity);
         productRepository.save(product);
         return true;
     }

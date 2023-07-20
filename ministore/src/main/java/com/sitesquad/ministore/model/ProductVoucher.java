@@ -47,6 +47,9 @@ public class ProductVoucher {
     @Column(name = "product_id", insertable = false, updatable = false)
     private Long productId;
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id", referencedColumnName = "product_id")
     @JsonIgnore

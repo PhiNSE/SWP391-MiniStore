@@ -58,6 +58,9 @@ public class OrderDetails {
     @Column(name = "product_voucher_id", nullable = true, insertable = false, updatable = false)
     private Long productVoucherId;
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id", referencedColumnName = "order_id")
     @JsonBackReference

@@ -59,6 +59,12 @@ public class Order {
     @Column(name = "date")
     private Timestamp date;
 
+    @Column(name = "is_apply_all")
+    private Boolean isApplyAll;
+
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
 //    @JsonIgnore

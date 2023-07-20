@@ -31,16 +31,22 @@ public class OrderService {
     VoucherRepository voucherRepository;
 
     public List<Order> findAll() {
-        return orderRepository.findAll();
+        return orderRepository.findByIsDeletedNullOrIsDeletedFalse();
     }
 
     public Order findById(Long id) {
-        Optional<Order> foundOrder = orderRepository.findById(id);
-        return foundOrder.get();
+        List<Order> orderList = orderRepository.findByIsDeletedNullOrIsDeletedFalse();
+        Order foundOrder = new Order();
+        for(Order order: orderList) {
+            if(order.getOrderId().equals(id)) {
+                foundOrder = order;
+            }
+        }
+        return foundOrder;
     }
 
     public List<Order> findByDate(int month) {
-        List<Order> orderList = orderRepository.findAll();
+        List<Order> orderList = orderRepository.findByIsDeletedNullOrIsDeletedFalse();
         List<Order> orderInAMonth = new ArrayList<>();
         for (Order order : orderList) {
             //extract date in timestamp to month
@@ -74,5 +80,16 @@ public class OrderService {
 
     public Order edit(Order newOrder) {
         return orderRepository.save(newOrder);
+    }
+
+    public boolean delete(Long id) {
+        Order order = orderRepository.findById(id).orElse(null);
+        if (order == null) {
+            return false;
+        } else {
+            order.setIsDeleted(true);
+            orderRepository.save(order);
+            return true;
+        }
     }
 }

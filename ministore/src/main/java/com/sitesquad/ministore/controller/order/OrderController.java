@@ -3,6 +3,11 @@ package com.sitesquad.ministore.controller.order;
 import com.sitesquad.ministore.model.Order;
 import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.service.OrderService;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- *
  * @author admin
  */
 @RestController
@@ -29,6 +33,34 @@ public class OrderController {
     public ResponseEntity<ResponseObject> getAllOrder() {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(200, "Found Order", orderService.findAll())
+        );
+    }
+
+    @GetMapping("/order/findInADay")
+    public ResponseEntity<ResponseObject> getOrderInADay() {
+        List<Order> orderList = orderService.findAll();
+        List<Order> filteredorderList = new ArrayList<>();
+        for (Order order : orderList) {
+            //extract date in timestamp to month
+            Date date = new Date(order.getDate().getTime());
+            Date currentTime = new Date(System.currentTimeMillis());
+            Calendar cal1 = Calendar.getInstance();
+            Calendar cal2 = Calendar.getInstance();
+            cal1.setTime(date);
+            cal2.setTime(currentTime);
+            boolean sameDay = cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
+                    cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
+            if (sameDay == true) {
+                filteredorderList.add(order);
+            }
+        }
+        if (filteredorderList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(404, "Not found order", "")
+            );
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(200, "Found Order", filteredorderList)
         );
     }
 
@@ -62,19 +94,19 @@ public class OrderController {
         }
     }
 
-    @PostMapping("/order")
-    public ResponseEntity<ResponseObject> createOrder(@RequestBody Order order) {
-        Order addOrder = orderService.add(order);
-        if (addOrder != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "Add sucessfully ", addOrder)
-            );
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject(500, "Cant add order detail", addOrder)
-            );
-        }
-    }
+//    @PostMapping("/order")
+//    public ResponseEntity<ResponseObject> createOrder(@RequestBody Order order) {
+//        Order addOrder = orderService.add(order);
+//        if (addOrder != null) {
+//            return ResponseEntity.status(HttpStatus.OK).body(
+//                    new ResponseObject(200, "Add sucessfully ", addOrder)
+//            );
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+//                    new ResponseObject(500, "Cant add order detail", addOrder)
+//            );
+//        }
+//    }
 
 //    @PutMapping("/order")
 //    public ResponseEntity<ResponseObject> editOrder(@RequestBody Order order) {

@@ -32,7 +32,8 @@ CREATE TABLE [dbo].[tbl_order](
 	[voucher_id] [int] NULL,
 	[total] [decimal](10, 2) null,
 	[date] [datetime] NOT NULL,
-	[is_apply_all] [bit] null
+	[is_apply_all] [bit] NULL,
+	[is_deleted] [bit] NULL
 PRIMARY KEY CLUSTERED 
 (
 	[order_id] ASC
@@ -52,6 +53,7 @@ CREATE TABLE [dbo].[order_detail](
 	[price] [decimal](10, 2)  NULL,
 	[total] [decimal](10, 2)  NULL,
 	[product_voucher_id] [int]  NULL,
+	[is_deleted] [bit] NULL
 	
  CONSTRAINT [PK__orderDet__3213E83FEAB6E822] PRIMARY KEY CLUSTERED 
 (
@@ -127,6 +129,7 @@ CREATE TABLE [dbo].[product_voucher](
 	[product_voucher_id] [int] IDENTITY(1,1) NOT NULL,
 	[voucher_id] [int] NOT NULL,
 	[product_id] [int]  NULL,
+	[is_deleted] [bit] NULL
 	
 PRIMARY KEY CLUSTERED 
 (

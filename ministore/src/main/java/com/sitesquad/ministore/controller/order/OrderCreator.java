@@ -15,6 +15,7 @@ import com.sitesquad.ministore.service.ProductService;
 import com.sitesquad.ministore.service.ProductVoucherService;
 import com.sitesquad.ministore.service.UserService;
 import com.sitesquad.ministore.service.VoucherService;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,17 +23,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
- *
  * @author admin
  */
 @RestController
@@ -119,6 +116,11 @@ public class OrderCreator {
                 orderDetail.setQuantity(quantity);
                 if (voucherId != null) {
                     Long productVoucherId = productVoucherService.findByVoucherIdAndProductId(voucherId, productId).getProductVoucherId();
+                    if (productVoucherId == null) {
+                        return ResponseEntity.status(HttpStatus.OK).body(
+                                new ResponseObject(500, "Can't find voucher for order detail", orderDetail.getProductId())
+                        );
+                    }
                     orderDetail.setProductVoucherId(productVoucherId);
                     orderDetail = orderDetailsService.add(orderDetail);
 
@@ -149,7 +151,7 @@ public class OrderCreator {
 
     @GetMapping("/getVoucherByProductId")
     public ResponseEntity<ResponseObject> searchVoucherByProductId(@RequestParam(required = false) Long productId,
-            @RequestParam(required = false) int results) {
+                                                                   @RequestParam(required = false) int results) {
         List<Voucher> voucherList = new ArrayList<>();
         List<ProductVoucher> productVoucherList = productVoucherService.findByProductId(productId);
         for (int i = 0; i < results && i < productVoucherList.size(); i++) {
@@ -202,27 +204,36 @@ public class OrderCreator {
         );
     }
 
-    @GetMapping("/getAllVouchers")
-    public ResponseEntity<ResponseObject> getAllVoucher() throws NullPointerException {
-        List<Voucher> voucherList = voucherService.findAll();
-        List<Voucher> filteredVoucherList = new ArrayList<>();
-        for (Voucher v : voucherList) {
-            if (v.getIsApplyAll() != null) {
-                if (v.getIsApplyAll() == true) {
-                    if (v.getQuantity() > 0) {
-                        filteredVoucherList.add(v);
-                    }
-                }
-            }
-        }
-        if (filteredVoucherList.isEmpty()) {
+    @DeleteMapping("/cancelOrder/{orderId}")
+    public ResponseEntity<ResponseObject> cancelOrder(@PathVariable Long orderId) {
+        Order order = orderService.findById(orderId);
+        if(order.getOrderId() == null) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(404, "Voucher not found", "")
+                    new ResponseObject(404, "Can't find order", "")
             );
         }
+        if (order.getVoucherId() != null) {
+            Voucher voucher = voucherService.findById(order.getVoucherId());
+            voucherService.plusQuantityOfVoucher(voucher.getVoucherId());
+        }
+        List<OrderDetails> orderDetailsList = orderDetailsService.findByOrderId(orderId);
+        for (OrderDetails orderDetails : orderDetailsList) {
+            productService.plusQuantityOfProduct(orderDetails.getQuantity(), orderDetails.getProductId());
+
+            if (orderDetails.getProductVoucherId() != null) {
+                ProductVoucher productVoucher = productVoucherService.findById(orderDetails.getProductVoucherId());
+                productVoucher.setIsDeleted(true);
+                voucherService.plusQuantityOfVoucher(productVoucher.getVoucherId());
+                productVoucherService.edit(productVoucher);
+            }
+            orderDetails.setIsDeleted(true);
+            orderDetailsService.edit(orderDetails);
+        }
+        order.setIsDeleted(true);
+        orderService.edit(order);
+
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject(200, "Successfull", filteredVoucherList)
+                new ResponseObject(200, "Delete sucessfully ", "")
         );
     }
-
 }
