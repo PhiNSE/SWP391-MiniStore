@@ -3,6 +3,8 @@ package com.sitesquad.ministore.controller.admin;
 import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.model.Voucher;
 import com.sitesquad.ministore.service.VoucherService;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,7 @@ public class VoucherController {
     VoucherService voucherService;
 
     @GetMapping("/voucher")
-    public List<Voucher> getAllVoucher() {
+    public List<Voucher> findAll() {
         return voucherService.findAll();
     }
 
@@ -90,21 +92,27 @@ public class VoucherController {
         }
     }
 
-//    @PutMapping("/voucher")
-//    public ResponseEntity<ResponseObject> editVoucher(@RequestBody Order order) {
-////        order.setOrderUser(userRepository.findById(order.getUserId()).get());
-//        voucherRepository.findOne(order);
-//        Order addOrder = orderRepository.save(order);
-//        if (addOrder != null) {
-////            orderRepository.findById(order.getId()).get().setIsDeleted(true);
-//            return ResponseEntity.status(HttpStatus.OK).body(
-//                    new ResponseObject(200, "Edit sucessfully ", addOrder)
-//            );
-//        } else {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-//                    new ResponseObject(500, "Cant edit order", order)
-//            );
-//        }
-//
-//    }
+
+    @GetMapping("/getAllVouchers")
+    public ResponseEntity<ResponseObject> getAllVoucher() throws NullPointerException {
+        List<Voucher> voucherList = voucherService.findAll();
+        List<Voucher> filteredVoucherList = new ArrayList<>();
+        for (Voucher v : voucherList) {
+            if (v.getIsApplyAll() != null) {
+                if (v.getIsApplyAll() == true) {
+                    if (v.getQuantity() > 0) {
+                        filteredVoucherList.add(v);
+                    }
+                }
+            }
+        }
+        if (filteredVoucherList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(404, "Voucher not found", "")
+            );
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(200, "Successfull", filteredVoucherList)
+        );
+    }
 }

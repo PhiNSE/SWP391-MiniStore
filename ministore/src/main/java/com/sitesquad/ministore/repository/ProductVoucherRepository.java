@@ -13,5 +13,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProductVoucherRepository extends JpaRepository<ProductVoucher, Long>, JpaSpecificationExecutor<ProductVoucher> {
     List<ProductVoucher> findByProductId(Long productId);
+    List<ProductVoucher> findByIsDeletedNullOrIsDeletedFalse();
     ProductVoucher findByVoucherIdAndProductId(Long voucherId, Long productId);
 }
