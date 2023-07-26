@@ -8,13 +8,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-/**
+    /**
  *
  * @author admin
  */
@@ -43,20 +39,20 @@ public class OrderDetailsController {
         }
     }
 
-//    @GetMapping("/orderDetail/search/order")
-//    public ResponseEntity<ResponseObject> findByOrderId(@RequestParam Long id) {
-//        List<OrderDetails> foundOrders = orderDetailsService.findByOrderId(id);
-////        List<Order> foundOrders = orderRepository.findByUserIdAndName(id, name);
-//        if (!foundOrders.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.OK).body(
-//                    new ResponseObject(200, "Found OrderDetails ", foundOrders)
-//            );
-//        } else {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-//                    new ResponseObject(404, "Cant find any OrderDetails matched", "")
-//            );
-//        }
-//    }
+    @GetMapping("/orderDetail/searchByOrderId")
+    public ResponseEntity<ResponseObject> findByOrderId(@RequestParam Long id) {
+        List<OrderDetails> foundOrderDetail = orderDetailsService.findByOrderId(id);
+//        List<Order> foundOrders = orderRepository.findByUserIdAndName(id, name);
+        if (!foundOrderDetail.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(200, "Found OrderDetails ", foundOrderDetail)
+            );
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(404, "Cant find any OrderDetails matched", "")
+            );
+        }
+    }
         
 //    @GetMapping("/orderDetail/search/product")
 //    public ResponseEntity<ResponseObject> findByProductId(@RequestParam Long id) {
