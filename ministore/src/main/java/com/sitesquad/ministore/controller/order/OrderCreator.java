@@ -17,12 +17,7 @@ import com.sitesquad.ministore.service.UserService;
 import com.sitesquad.ministore.service.VoucherService;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -207,11 +202,26 @@ public class OrderCreator {
     @DeleteMapping("/cancelOrder/{orderId}")
     public ResponseEntity<ResponseObject> cancelOrder(@PathVariable Long orderId) {
         Order order = orderService.findById(orderId);
+
         if(order.getOrderId() == null) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(404, "Can't find order", "")
             );
         }
+
+        //check if order date is expired or not
+        Date date = new Date(order.getDate().getTime());
+        Date currentTime = new Date(System.currentTimeMillis());
+        long updatedTime = date.getTime() + (24 * 60 * 60 * 1000);
+        Date updatedDate = new Date(updatedTime);
+        // a day +24 hour < currentTime ==> expired date
+        if(updatedDate.compareTo(currentTime) < 0) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(500, "This order is expired", "")
+            );
+        }
+
+
         if (order.getVoucherId() != null) {
             Voucher voucher = voucherService.findById(order.getVoucherId());
             voucherService.plusQuantityOfVoucher(voucher.getVoucherId());
