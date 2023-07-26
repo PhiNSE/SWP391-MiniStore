@@ -31,38 +31,44 @@ public class OrderController {
 
     @GetMapping("/order")
     public ResponseEntity<ResponseObject> getAllOrder() {
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject(200, "Found Order", orderService.findAll())
-        );
-    }
-
-    @GetMapping("/order/findInADay")
-    public ResponseEntity<ResponseObject> getOrderInADay() {
         List<Order> orderList = orderService.findAll();
-        List<Order> filteredorderList = new ArrayList<>();
-        for (Order order : orderList) {
-            //extract date in timestamp to month
-            Date date = new Date(order.getDate().getTime());
-            Date currentTime = new Date(System.currentTimeMillis());
-            Calendar cal1 = Calendar.getInstance();
-            Calendar cal2 = Calendar.getInstance();
-            cal1.setTime(date);
-            cal2.setTime(currentTime);
-            boolean sameDay = cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
-                    cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
-            if (sameDay == true) {
-                filteredorderList.add(order);
-            }
-        }
-        if (filteredorderList.isEmpty()) {
+        if (orderList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(404, "Not found order", "")
+                    new ResponseObject(404, "Not found Order", "")
             );
         }
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject(200, "Found Order", filteredorderList)
+                new ResponseObject(200, "Found Order", orderList)
         );
     }
+
+//    @GetMapping("/order/findInADay")
+//    public ResponseEntity<ResponseObject> getOrderInADay() {
+//        List<Order> orderList = orderService.findAll();
+//        List<Order> filteredorderList = new ArrayList<>();
+//        for (Order order : orderList) {
+//            //extract date in timestamp to month
+//            Date date = new Date(order.getDate().getTime());
+//            Date currentTime = new Date(System.currentTimeMillis());
+//            Calendar cal1 = Calendar.getInstance();
+//            Calendar cal2 = Calendar.getInstance();
+//            cal1.setTime(date);
+//            cal2.setTime(currentTime);
+//            boolean sameDay = cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
+//                    cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
+//            if (sameDay == true) {
+//                filteredorderList.add(order);
+//            }
+//        }
+//        if (filteredorderList.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.OK).body(
+//                    new ResponseObject(404, "Not found order", "")
+//            );
+//        }
+//        return ResponseEntity.status(HttpStatus.OK).body(
+//                new ResponseObject(200, "Found Order", filteredorderList)
+//        );
+//    }
 
     @GetMapping("/order/{id}")
     public ResponseEntity<ResponseObject> findById(@PathVariable Long id) {

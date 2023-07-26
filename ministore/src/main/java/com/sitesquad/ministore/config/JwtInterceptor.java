@@ -76,6 +76,6 @@ public class JwtInterceptor implements HandlerInterceptor {
 
     private boolean isLoginApi(HttpServletRequest request) {
         String requestURI = request.getRequestURI();
-        return requestURI.contains("/login") || requestURI.contains("/home") || requestURI.contains("/error");
+        return requestURI.contains("/login") || requestURI.contains("/home") || requestURI.contains("/error") || requestURI.contains("/vnpay-payment");
     }
 }
