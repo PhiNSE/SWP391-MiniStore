@@ -347,4 +347,6 @@ GO
 ALTER DATABASE [MinistoreManagement] SET  READ_WRITE 
 GO
 
-
+use MinistoreManagement
+ALTER TABLE [dbo].[ticket]  
+ADD [user_shift_id] int NULL

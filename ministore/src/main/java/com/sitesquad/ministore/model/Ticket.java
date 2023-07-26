@@ -53,4 +53,7 @@ public class Ticket {
     @JoinColumn(name = "ticket_type_id", referencedColumnName = "ticket_type_id")
     private TicketType TicketType;
 
+    @Column(name = "user_shift_id")
+    private Long userShiftId;
+
 }

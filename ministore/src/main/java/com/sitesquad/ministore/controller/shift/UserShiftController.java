@@ -185,26 +185,49 @@ public class UserShiftController {
                 );
             }
 
-//        if(userShift.getUserId()!=null){
+        if(userShift.getUserId()!=null){
 //            return ResponseEntity.status(HttpStatus.OK).body(
 //                    new ResponseObject(500, "THIS SHIFT IS ASSIGN ALREADY", userService.findById(userId))
 //            );
-//        }
+            //noti
+            List<Long> assignEmployeeIds = new ArrayList<>();
+            assignEmployeeIds.add(userShift.getUserId());
+            String inThePast = "";
+            if(userShift.getStartTime()!=null && userShift.getStartTime().isBefore(SystemConstant.ZONE_DATE_TIME_NOW)) {
+                inThePast = " in the PAST ";
+            }
+            userNotificationService.
+                    customCreateUserNotification("You have been removed from a shift"+inThePast+"!"
+                            , " You have been removed by admin from shift"+inThePast+": "
+                                    + userShift.getShift().getType()
+                                    + " \n From " + DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+                                    .format(userShift.getStartTime())
+                                    + " to " + DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+                                    .format(userShift.getEndTime())
+                                    + "\nIf you have any problem please contact admin!"
+                            , assignEmployeeIds);
+        }
             userShift.setUserId(user.getUserId());
             UserShift assignedUserShift = userShiftService.edit(userShift);
             assignedUserShifts.add(assignedUserShift);
             //noti
-            List<Long> notiIds = new ArrayList<>();
-            notiIds.add(assignedUserShift.getUserId());
-            userNotificationService.
-                    customCreateUserNotification("You have been assign to a new shift!"
-                            ," You have been assign by admin to shift: "
-                            + assignedUserShift.getShift().getType()
-                            +" \n From " + DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
-                                    .format(assignedUserShift.getStartTime())
-                            +" to " + DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
-                                    .format(assignedUserShift.getEndTime())
-                            ,notiIds);
+            List<Long> assignEmployeeIds = new ArrayList<>();
+            assignEmployeeIds.add(assignedUserShift.getUserId());
+            String pastShift = "";
+            if(userShift.getStartTime()!=null && userShift.getStartTime().isBefore(SystemConstant.ZONE_DATE_TIME_NOW)) {
+                pastShift = " in the PAST ";
+            }
+                userNotificationService.
+                        customCreateUserNotification("You have been assign to a new shift"+pastShift+"!"
+                                , " You have been assign by admin to shift: "
+                                        + assignedUserShift.getShift().getType()
+                                        + " \n From " + DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+                                        .format(assignedUserShift.getStartTime())
+                                        + " to " + DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+                                        .format(assignedUserShift.getEndTime())
+                                        + "\nIf you have any problem please contact admin!"
+                                , assignEmployeeIds);
+
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -350,5 +373,7 @@ public class UserShiftController {
                 new ResponseObject(200, "Late found list", userShifts)
         );
     }
+
+
 
 }

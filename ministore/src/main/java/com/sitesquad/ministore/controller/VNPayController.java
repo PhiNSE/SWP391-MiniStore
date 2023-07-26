@@ -23,7 +23,8 @@ public class VNPayController {
     public ResponseEntity<ResponseObject> submitOrder(@RequestParam("amount") int orderTotal,
                               @RequestParam("orderInfo") String orderInfo,
                               HttpServletRequest request){
-        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+//        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+        String baseUrl = "http://localhost:5173";
         String vnpayUrl = vnPayService.createOrder(orderTotal, orderInfo, baseUrl);
         System.out.println(vnpayUrl);
 //        return "redirect:" + vnpayUrl;

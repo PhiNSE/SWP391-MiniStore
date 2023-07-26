@@ -205,7 +205,7 @@ public class UserShiftService {
                 System.out.println("userShift is late: " + userShift);
                 lateTitle = "Shift is not assign and not check in";
                 lateList.add(userShift);
-                lateDes.append("Shift is currently not assign and check in : "
+                lateDes.append("\nShift is currently not assign and check in : "
                         + userShift.getShift().getType() + ", "
                         + DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(userShift.getStartTime())
                 );
