@@ -138,15 +138,15 @@ public class SalaryCalculator {
     }
 
     @GetMapping("/salary/pay")
-    public ResponseEntity<ResponseObject> paySalary(@RequestBody List<Long> payslipIds) {
+    public ResponseEntity<ResponseObject> paySalary() {
+        List<Payslip> payslipList = payslipService.findByIsPaidFalseOrNull();
         if (!requestMeta.getRole().equals("admin")) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(404, "You don't have permission", "")
             );
         }
-        List<Payslip> foundPayslips = new ArrayList<>();
-        for (Long payslipId : payslipIds) {
-            Payslip payslip = payslipService.findById(payslipId);
+
+        for (Payslip payslip : payslipList) {
             if (payslip.getIsPaid() == null || payslip.getIsPaid() == false) {
                 payslip.setIsPaid(true);
                 payslipService.edit(payslip);
@@ -154,11 +154,10 @@ public class SalaryCalculator {
                 List<Long> userIds = new ArrayList<>();
                 userIds.add(payslip.getUserId());
                 userNotificationService.customCreateUserNotification("Tra luong", "Nhan vien nhan luong", userIds);
-                foundPayslips.add(payslip);
             }
         }
 
-        if (foundPayslips.isEmpty()) {
+        if (payslipList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(404, "Not found payslip", "")
             );
