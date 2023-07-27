@@ -121,7 +121,7 @@ public class UserShiftService {
 
     public UserShift add(UserShift userShift) {
         if (userShift.getUserId() != null) {
-            userShift.setUser(userRepository.findById(userShift.getUserId()).get());
+            userShift.setUser(userRepository.findById(userShift.getUserId()).orElse(null));
         }
         userShift.setShift(shiftRepository.findById(userShift.getShiftId()).get());
         return userShiftRepository.save(userShift);
@@ -129,9 +129,19 @@ public class UserShiftService {
 
     public UserShift edit(UserShift newUserShift) {
         if (newUserShift.getUserId() != null) {
-            newUserShift.setUser(userRepository.findById(newUserShift.getUserId()).get());
+            newUserShift.setUser(userRepository.findById(newUserShift.getUserId()).orElse(null));
         }
         return userShiftRepository.save(newUserShift);
+    }
+
+    public boolean removeUserFromShift(UserShift userShift){
+        if(userShift!=null){
+            userShift.setUserId(null);
+            userShift.setUser(null);
+            edit(userShift);
+            return true;
+        }
+        return false;
     }
 
     @Scheduled(cron = "0 0 0 */7 * *")

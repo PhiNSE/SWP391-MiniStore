@@ -269,13 +269,16 @@ GO
 create table [dbo].[ticket](
 	[ticket_id] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [tbl_user](user_id) ON DELETE CASCADE,
-	start_time datetime NOT NULL,
-	end_time datetime NOT NULL,
+	start_time datetime NULL,
+	end_time datetime NULL,
 	is_approved bit NULL,
 	title [Nvarchar](255) NULL,
 	description [Nvarchar](255) null,
 	[ticket_type_id] [int] NOT NULL FOREIGN KEY REFERENCES [ticket_type]([ticket_type_id]) ON DELETE CASCADE,
 );
+GO
+ALTER TABLE [dbo].[ticket]  
+ADD [user_shift_id] int NULL
 GO
 ALTER TABLE [dbo].[user_notification]  WITH CHECK ADD  CONSTRAINT [fk19] FOREIGN KEY([user_id])
 REFERENCES [dbo].[tbl_user] ([user_id]) ON DELETE CASCADE
@@ -346,7 +349,3 @@ USE [master]
 GO
 ALTER DATABASE [MinistoreManagement] SET  READ_WRITE 
 GO
-
-use MinistoreManagement
-ALTER TABLE [dbo].[ticket]  
-ADD [user_shift_id] int NULL
