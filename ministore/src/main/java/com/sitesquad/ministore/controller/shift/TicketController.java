@@ -1,12 +1,15 @@
 package com.sitesquad.ministore.controller.shift;
 
 import com.sitesquad.ministore.constant.RoleConstant;
+import com.sitesquad.ministore.constant.TicketTypeConstant;
 import com.sitesquad.ministore.dto.RequestMeta;
 import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.model.Ticket;
+import com.sitesquad.ministore.model.UserShift;
 import com.sitesquad.ministore.repository.TicketRepository;
 import com.sitesquad.ministore.service.UserNotificationService;
 import com.sitesquad.ministore.service.shift.TicketService;
+import com.sitesquad.ministore.service.shift.UserShiftService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +32,9 @@ public class TicketController {
 
     @Autowired
     UserNotificationService userNotificationService;
+
+    @Autowired
+    UserShiftService userShiftService;
 
     @Autowired
     RequestMeta requestMeta;
@@ -98,10 +104,24 @@ public class TicketController {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseObject(500, "ticket parameter not found", ""));
         }
-        if(ticket.getTitle()==null||ticket.getTicketTypeId()==null||ticket.getStartTime()==null||ticket.getEndTime()==null){
+        if(ticket.getTitle()==null||ticket.getTicketTypeId()==null){
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseObject(500, "some fields of the ticket aren't inputted", ""));
+                    .body(new ResponseObject(500, "Ticket title or type aren't inputted", ""));
         }
+        if(ticket.getTicketTypeId() == TicketTypeConstant.LEAVE_TICKET_TYPE&&(ticket.getStartTime()==null||ticket.getEndTime()==null)){
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseObject(500, "Leave Ticket start time or type aren't inputted", ""));
+        }else if(ticket.getTicketTypeId() == TicketTypeConstant.CANCLE_SHIFT_TICKET_TYPE){
+            UserShift cancleShift = userShiftService.findById(ticket.getUserShiftId());
+            if(ticket.getUserShiftId()==null) {
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(new ResponseObject(500, "Cancle-Shift Ticket id wasn't recieved", ""));
+            }else if(cancleShift.getUserId()==null||!cancleShift.getUserId().equals(requestMeta.getUserId())){
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(new ResponseObject(500, "You can not cancle the shift NOT ASSIGNED to you!", ""));
+            }
+        }
+
         if(requestMeta.getUserId()==null){
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseObject(500, "user id not found", ""));
@@ -195,20 +215,38 @@ public class TicketController {
         //noti
         List<Long> sendIds = new ArrayList<>();
         sendIds.add(ticket.getUserId());
-        userNotificationService.
-                customCreateUserNotification("Your ticket has been approved!"
-                        ,"Your ticket: \"" + ticket.getTitle() +"\" has been approved by admin"
-                        +"\n You will on leave from: "
-                                + DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
-                                .format(ticket.getStartTime())
-                                + " to: " + DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
-                                .format(ticket.getEndTime())
-                        ,sendIds
-                        );
-        if(ticket.getIsApproved() == true){
+
+        if(ticket.getIsApproved() == true && ticket.getTicketTypeId() == TicketTypeConstant.LEAVE_TICKET_TYPE){
             System.out.println(ticket);
             ticketService.generateShiftRequestByTicket(ticket);
+            userNotificationService.
+                    customCreateUserNotification("Your ticket has been approved!"
+                            ,"Your ticket: \"" + ticket.getTitle() +"\" has been approved by admin"
+                                    +"\n You will on leave from: "
+                                    + DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+                                    .format(ticket.getStartTime())
+                                    + " to: " + DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+                                    .format(ticket.getEndTime())
+                            ,sendIds
+                    );
+        } else if(ticket.getIsApproved() == true && ticket.getTicketTypeId() == TicketTypeConstant.CANCLE_SHIFT_TICKET_TYPE){
+            System.out.println(ticket);
+            UserShift cancleShift = userShiftService.findById(ticket.getUserShiftId());
+            userShiftService.removeUserFromShift(cancleShift);
+            userNotificationService.
+                    customCreateUserNotification("Your ticket has been approved!"
+                            ,"Your ticket: \"" + ticket.getTitle() +"\" has been approved by admin"
+                                    +"You have been removed from your shift: "
+                                    + cancleShift.getShift().getType()
+                                    + " \n From " + DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+                                    .format(cancleShift.getStartTime())
+                                    + " to " + DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+                                    .format(cancleShift.getEndTime())
+                                    + "\nIf you have any problem please contact admin!"
+                            ,sendIds
+                    );
         }
+
         String status = isApproved?"Approved":"Rejected";
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(200,"Ticket "+status+" successfully",ticket));

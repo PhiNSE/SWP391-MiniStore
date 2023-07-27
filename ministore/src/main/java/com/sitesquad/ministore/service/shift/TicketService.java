@@ -33,6 +33,9 @@ public class TicketService {
     private UserShiftRepository userShiftRepository;
 
     @Autowired
+    private UserShiftService userShiftService;
+
+    @Autowired
     private ShiftRequestService shiftRequestService;
 
     public List<Ticket> getAll(){
@@ -40,7 +43,7 @@ public class TicketService {
     }
 
     public Ticket getByTicketId(Long ticketId){
-        return ticketRepository.findById(ticketId).get();
+        return ticketRepository.findById(ticketId).orElse(null);
     }
 
     public Ticket add(Ticket ticket){
@@ -91,9 +94,7 @@ public class TicketService {
                 }
             }
         }
-
         return true;
-
     }
 
 }
