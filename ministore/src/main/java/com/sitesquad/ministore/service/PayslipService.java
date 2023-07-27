@@ -43,6 +43,10 @@ public class PayslipService {
         return foundPayslip;
     }
 
+    public List<Map<String, Object>> findPayslipCustom() {
+        return payslipRepository.findByCustom();
+    }
+
     public List<Payslip> findPayslipByMonth(int month) {
         List<Payslip> payslipList = payslipRepository.findAll();
         List<Payslip> payslipInAMonth = new ArrayList<>();

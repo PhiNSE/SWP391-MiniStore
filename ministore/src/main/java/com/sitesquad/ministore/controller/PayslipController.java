@@ -3,17 +3,17 @@ package com.sitesquad.ministore.controller;
 import com.sitesquad.ministore.dto.PayslipDTO;
 import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.model.Payslip;
+import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.service.PayslipService;
+import com.sitesquad.ministore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author admin
@@ -23,53 +23,67 @@ public class PayslipController {
 
     @Autowired
     PayslipService payslipService;
+    @Autowired
+    UserService userService;
 
     @GetMapping("/payslip")
     public ResponseEntity<ResponseObject> getAllPayslips() {
-        List<Payslip> payslipList = payslipService.findAll();
-        List<Payslip> filteredPayslipList = new ArrayList<>();
-        List<PayslipDTO> payslipDTOList = new ArrayList<>();
+        List<Map<String, Object>> payslipList = payslipService.findPayslipCustom();
+        List<Map<String, Object>> payslipMapList = new ArrayList<>();
 
         if (payslipList.isEmpty()) {
+//            List<Payslip> payslips = payslipService.findAll();
+//            Set<Object> seenIds = new HashSet<>();
+//            List<Payslip> filteredPayslip = new ArrayList<>();
+//
+//            for (Payslip payslip : payslips) {
+//                if (!seenIds.contains(payslip.getPayslipId())) {
+//                    seenIds.add(payslip.getPayslipId());
+//                    filteredPayslip.add(payslip);
+//                }
+//            }
+//
+//            for (Map<String, Object> payslip : filteredPayslip) {
+//                Map<String, Object> payslipMap = new HashMap<>();
+//                Integer userId = (Integer) payslip.get("user_id");
+//                User user = userService.find(userId.longValue());
+//                payslipMap.put("userId", userId);
+//                payslipMap.put("name", user.getName());
+//                payslipMap.put("role", user.getRole().getName());
+//                payslipMap.put("salary", 0);
+//                payslipMap.put("shiftCount", 0);
+//                payslipMap.put("totalHour", 0);
+//                payslipMapList.add(payslipMap);
+//            }
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(404, "Not found Payslips", "")
+                    new ResponseObject(200, "Found Payslips", "")
             );
         }
 
-        Integer shiftCount = new Integer(0);
-        Integer totalHour = new Integer(0);
-        Double salary = new Double(0);
-        for (Payslip payslip : payslipList) {
-            Set<Long> seenPayslip = new HashSet<>();
-            if (seenPayslip.contains(payslip.getPayslipId())) {
-                seenPayslip.add(payslip.getPayslipId());
-                shiftCount += payslip.getShiftCount();
-                totalHour += payslip.getShiftCount();
-                salary += payslip.getShiftCount();
+        for (Map<String, Object> payslip : payslipList) {
+            Map<String, Object> payslipMap = new HashMap<>();
+            Integer userId = (Integer) payslip.get("user_id");
+            Integer sumShiftCount = (Integer) payslip.get("sum_shift_count");
+            BigDecimal sumSalary = (BigDecimal) payslip.get("sum_salary");
+            Integer sumTotalHours = (Integer) payslip.get("sum_total_hours");
+            User user = userService.find(userId.longValue());
+            payslipMap.put("userId", userId);
+            payslipMap.put("name", user.getName());
+            payslipMap.put("role", user.getRole().getName());
+            if (sumShiftCount != null && sumSalary != null && sumTotalHours != null) {
+                payslipMap.put("salary", Double.valueOf(sumSalary.doubleValue()));
+                payslipMap.put("shiftCount", sumShiftCount);
+                payslipMap.put("totalHour", sumTotalHours);
+            } else {
+                payslipMap.put("salary", 0);
+                payslipMap.put("shiftCount", 0);
+                payslipMap.put("totalHour", 0);
             }
-        }
-
-        for (Payslip payslip : filteredPayslipList) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            PayslipDTO payslipDTO = new PayslipDTO();
-
-
-            payslipDTO.setPayslipId(payslip.getPayslipId());
-            payslipDTO.setUserId(payslip.getUserId());
-            payslipDTO.setName(payslip.getUser().getName());
-            payslipDTO.setRoleName(payslip.getUser().getRole().getName());
-            payslipDTO.setStartDate(dateFormat.format(payslip.getStartDate()));
-            payslipDTO.setEndDate(dateFormat.format(payslip.getEndDate()));
-            payslipDTO.setShiftCount(payslip.getShiftCount());
-            payslipDTO.setSalary(payslip.getSalary());
-            payslipDTO.setTotalHour(payslip.getTotalHours());
-            payslipDTO.setDate(dateFormat.format(payslip.getDate()));
-            payslipDTO.setIsPaid(payslip.getIsPaid());
-            payslipDTOList.add(payslipDTO);
+            payslipMapList.add(payslipMap);
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject(200, "Found Payslips", payslipDTOList)
+                new ResponseObject(200, "Found Payslips", payslipMapList)
         );
     }
 
