@@ -4,10 +4,7 @@ import com.sitesquad.ministore.dto.ProductDTO;
 import com.sitesquad.ministore.dto.RequestMeta;
 import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.dto.RevenueDTO;
-import com.sitesquad.ministore.model.Order;
-import com.sitesquad.ministore.model.OrderDetails;
-import com.sitesquad.ministore.model.Payslip;
-import com.sitesquad.ministore.model.Product;
+import com.sitesquad.ministore.model.*;
 import com.sitesquad.ministore.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -190,8 +187,17 @@ public class RevenueDashboard {
     private List<List<Map<String, Object>>> userRank() {
         List<List<Map<String, Object>>> userRankList = new ArrayList<>();
         List<Map<String, Object>> orderList = orderService.findByUserRank();
+        List<Map<String, Object>> filteredOrderList = new ArrayList<>();
 
-        for (Map<String, Object> order : orderList) {
+        for(Map<String, Object> order : orderList) {
+            Integer userId = (Integer) order.get("user_id");
+            User user = userService.find(userId.longValue());
+            if(user != null) {
+                filteredOrderList.add(order);
+            }
+        }
+
+        for (Map<String, Object> order : filteredOrderList) {
             List<Map<String, Object>> userRankMap = new ArrayList<>();
             Map<String, Object> userMap = new HashMap<>();
             Map<String, Object> totalMoneyMap = new HashMap<>();
