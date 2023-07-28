@@ -81,8 +81,11 @@ public class TicketController {
                 return ResponseEntity.status(HttpStatus.OK)
                         .body(new ResponseObject(500, "There's no such ticket", ""));
             }
+            Map<String,Object> data = new HashMap<>();
+            data.put("ticket",ticket);
+            data.put("userShift",userShiftService.findById(ticket.getUserShiftId()));
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseObject(200, "Ticket detail found ", ticket));
+                    .body(new ResponseObject(200, "Ticket detail found !", data));
         }else{
             Ticket ticket = ticketRepository.findById(id).orElse(null);
             if(ticket == null){
@@ -93,8 +96,11 @@ public class TicketController {
                 return ResponseEntity.status(HttpStatus.OK)
                         .body(new ResponseObject(500, "You cant view ticket detail of other user", ""));
             }
+            Map<String,Object> data = new HashMap<>();
+            data.put("ticket",ticket);
+            data.put("userShift",userShiftService.findById(ticket.getUserShiftId()));
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseObject(200, "Ticket detail found ", ticket));
+                    .body(new ResponseObject(200, "Ticket detail found !", data));
         }
     }
 
@@ -131,11 +137,8 @@ public class TicketController {
         //noti
         userNotificationService.sendNotiAndMailToAllAdmins("New ticket is waiting to be processed!"
                 ,"Employee: "+ ticket.getUser().getName() + " has submitted a new ticket: "+ticket.getTitle());
-        Map<String,Object> data = new HashMap<>();
-        data.put("ticket",ticketAdd);
-        data.put("userShift",userShiftService.findById(ticketAdd.getUserShiftId()));
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new ResponseObject(200,"Submit ticket successfully, WAIT FOR ADMIN TO APPROVE!",data));
+                .body(new ResponseObject(200,"Submit ticket successfully, WAIT FOR ADMIN TO APPROVE!",ticketAdd));
 
     }
 
