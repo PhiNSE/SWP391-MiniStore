@@ -11,7 +11,7 @@
     <groupId>com.sitesquad</groupId>
     <artifactId>ministore</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>ministore</name>
     <description>Demo project for Spring Boot</description>
     <properties>
