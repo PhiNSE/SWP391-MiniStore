@@ -54,7 +54,7 @@ public class UserShift {
     private Long shiftId;
 
     @ToString.Exclude
-    @JsonIgnore
+//    @JsonIgnore
     @ManyToOne(targetEntity = Shift.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "shift_id", referencedColumnName = "shift_id")
     private Shift shift;
