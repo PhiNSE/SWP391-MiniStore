@@ -1,7 +1,10 @@
 package com.sitesquad.ministore.controller.admin;
 
 import com.sitesquad.ministore.dto.*;
-import com.sitesquad.ministore.model.*;
+import com.sitesquad.ministore.model.Order;
+import com.sitesquad.ministore.model.OrderDetails;
+import com.sitesquad.ministore.model.Payslip;
+import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.service.*;
 import com.sitesquad.ministore.service.shift.UserShiftService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -99,11 +101,13 @@ public class RevenueDashboard {
             List<Order> orderList = orderService.findByDate(i);
             if (!orderList.isEmpty()) {
                 for (Order order : orderList) {
-                    if (order.getType() == false) {
-                        revenue += order.getTotal();
-                    }
-                    if (order.getType() == true) {
-                        cost += order.getTotal();
+                    if (order.getTotal() != null) {
+                        if (order.getType() == false) {
+                            revenue += order.getTotal();
+                        }
+                        if (order.getType() == true) {
+                            cost += order.getTotal();
+                        }
                     }
                 }
                 List<Payslip> payslipList = payslipService.findPayslipByMonth(i);
