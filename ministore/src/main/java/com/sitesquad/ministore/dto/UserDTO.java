@@ -30,4 +30,6 @@ public class UserDTO {
 
     private String rfid;
 
+    private Boolean onLeave;
+
 }

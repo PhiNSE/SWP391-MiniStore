@@ -1,6 +1,7 @@
 package com.sitesquad.ministore.controller;
 
 
+import com.sitesquad.ministore.constant.SystemConstant;
 import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.service.VNPayService;
 
@@ -24,7 +25,7 @@ public class VNPayController {
                               @RequestParam("orderInfo") String orderInfo,
                               HttpServletRequest request){
 //        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-        String baseUrl = "http://localhost:5173";
+        String baseUrl = SystemConstant.FRONT_END_ROOT_URL;
         String vnpayUrl = vnPayService.createOrder(orderTotal, orderInfo, baseUrl);
         System.out.println(vnpayUrl);
 //        return "redirect:" + vnpayUrl;

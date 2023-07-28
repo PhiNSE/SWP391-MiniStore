@@ -6,8 +6,10 @@
 package com.sitesquad.ministore.service;
 
 import com.sitesquad.ministore.dto.UserDTO;
+import com.sitesquad.ministore.model.ShiftRequest;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.repository.RoleRepository;
+import com.sitesquad.ministore.repository.ShiftRequestRepository;
 import com.sitesquad.ministore.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,6 +35,9 @@ public class UserService {
 
     @Autowired
     RoleRepository roleRepository;
+
+    @Autowired
+    ShiftRequestRepository shiftRequestRepository;
 
 
     public UserDTO mapUserDTO(User user){
@@ -61,6 +66,14 @@ public class UserService {
             userDTO.setDob(user.getDob());
             userDTO.setGender(user.getGender());
             userDTO.setUserImg(user.getUserImg());
+            Boolean onLeave = false;
+            List<ShiftRequest> shiftRequests = shiftRequestRepository.findByUserId(user.getUserId());
+//            if(shiftRequests!=null){
+//                for (ShiftRequest shiftRequest: shiftRequests){
+//                    if(shiftRequest.getUserShift().getStartTime().||)
+//                }
+//            }
+//            userDTO.setOnLeave();
             return userDTO;
         });
         return userDTOPage;
