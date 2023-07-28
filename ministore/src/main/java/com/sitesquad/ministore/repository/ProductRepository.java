@@ -34,7 +34,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
             Long productId, String name, String productTypeName, Long productTypeId, String productCode, Pageable pageable);
 
     @Query("SELECT p FROM Product p JOIN p.productType pt "
-            + "WHERE (:productId IS NULL OR p.id = :productId) "
+            + "WHERE (:productId IS NULL OR p.productId = :productId) "
             + "AND ((:name IS NULL OR LOWER(p.name) LIKE CONCAT('%', LOWER(:name), '%')) "
             + "OR (:productTypeName IS NULL OR LOWER(pt.name) LIKE CONCAT('%', LOWER(:productTypeName), '%'))) "
             + "AND (:productTypeId IS NULL OR p.productTypeId = :productTypeId) "
@@ -47,5 +47,15 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 //    Page<Product> findByIsDeletedIsNull(Pageable pageable);
 //
 //
-  
+
+    @Query("SELECT p FROM Product p JOIN p.productType pt "
+            + "WHERE (:productId IS NULL OR p.productId = :productId) "
+            + "AND ((:name IS NULL OR LOWER(p.name) LIKE CONCAT('%', LOWER(:name), '%')) "
+            + "OR (:productTypeName IS NULL OR LOWER(pt.name) LIKE CONCAT('%', LOWER(:productTypeName), '%'))) "
+            + "AND (:productTypeId IS NULL OR p.productTypeId = :productTypeId) "
+            + "OR (:productCode IS NULL OR p.productCode = :productCode) "
+            + "AND (p.isDeleted = false OR p.isDeleted IS NULL)")
+    List<Product> searchAll(@Param("productId") Long id, @Param("name") String name,
+                                    @Param("productTypeName") String productTypeName, @Param("productTypeId") Long productTypeId,
+                                    @Param("productCode") String productCode);
 }

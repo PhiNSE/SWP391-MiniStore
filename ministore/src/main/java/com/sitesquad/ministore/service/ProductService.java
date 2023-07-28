@@ -29,24 +29,62 @@ public class ProductService {
     private ProductTypeRepository productTypeRepository;
 
     public List<ProductDTO> findAll() {
-        List<Product> productList = productRepository.findByIsDeletedFalseOrIsDeletedIsNull();
+        List<Product> productList = productRepository.findAll();
         List<ProductDTO> productDTOList = new ArrayList<>();
         for (Product product : productList) {
-            ProductDTO productDTO = new ProductDTO();
-            productDTO.setProductId(product.getProductId());
-            productDTO.setName(product.getName());
-            productDTO.setQuantity(product.getQuantity());
-            productDTO.setProductTypeName(product.getProductType().getName());
-            productDTO.setPrice(product.getPrice());
-            productDTO.setCost(product.getCost());
-            productDTO.setProductImg(product.getProductImg());
-            productDTO.setProductCode(product.getProductCode());
-            productDTO.setIsDeleted(product.getIsDeleted());
-            productDTOList.add(productDTO);
+//            ProductDTO productDTO = new ProductDTO();
+//            productDTO.setProductId(product.getProductId());
+//            productDTO.setName(product.getName());
+//            productDTO.setQuantity(product.getQuantity());
+//            productDTO.setProductTypeName(product.getProductType().getName());
+//            productDTO.setPrice(product.getPrice());
+//            productDTO.setCost(product.getCost());
+//            productDTO.setProductImg(product.getProductImg());
+//            productDTO.setProductCode(product.getProductCode());
+//            productDTO.setIsDeleted(product.getIsDeleted());
+            productDTOList.add(mapDTOByPhi(product));
         }
         return productDTOList;
 
     }
+
+    public List<ProductDTO> searchAll(Long productId, String keyword, Long productTypeId, String productCode) {
+        String name = keyword;
+        String productTypeName = keyword;
+        List<Product> productList = productRepository.searchAll(productId, name, productTypeName, productTypeId, productCode);
+        List<ProductDTO> productDTOList = new ArrayList<>();
+        for (Product product : productList) {
+//            ProductDTO productDTO = new ProductDTO();
+//            productDTO.setProductId(product.getProductId());
+//            productDTO.setName(product.getName());
+//            productDTO.setQuantity(product.getQuantity());
+//            productDTO.setProductTypeName(product.getProductType().getName());
+//            productDTO.setPrice(product.getPrice());
+//            productDTO.setCost(product.getCost());
+//            productDTO.setProductImg(product.getProductImg());
+//            productDTO.setProductCode(product.getProductCode());
+//            productDTO.setIsDeleted(product.getIsDeleted());
+            productDTOList.add(mapDTOByPhi(product));
+        }
+        return productDTOList;
+
+    }
+
+    public ProductDTO mapDTOByPhi(Product product){
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setProductId(product.getProductId());
+        productDTO.setName(product.getName());
+        productDTO.setQuantity(product.getQuantity());
+        productDTO.setProductTypeName(product.getProductType().getName());
+        productDTO.setPrice(product.getPrice());
+        productDTO.setCost(product.getCost());
+        productDTO.setProductImg(product.getProductImg());
+        productDTO.setProductCode(product.getProductCode());
+        productDTO.setIsDeleted(product.getIsDeleted());
+        return productDTO;
+
+    }
+
 
     public Page<ProductDTO> findAll(Integer offset) {
         Page<Product> productPage = productRepository.findByIsDeletedFalseOrIsDeletedIsNull(PageRequest.of(offset, 9));

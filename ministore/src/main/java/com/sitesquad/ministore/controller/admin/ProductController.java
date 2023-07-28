@@ -49,8 +49,12 @@ public class ProductController {
     OrderDetailsService orderDetailsService;
 
     @GetMapping("/product/all")
-    public ResponseEntity<ResponseObject> getProducts() {
-        List<ProductDTO> products = productService.findAll();
+    public ResponseEntity<ResponseObject> searchAllProducts(
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Long productTypeId
+    ) {
+        List<ProductDTO> products = productService.searchAll(id, keyword, productTypeId, keyword);
         if (products != null && !products.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Product list", products)
