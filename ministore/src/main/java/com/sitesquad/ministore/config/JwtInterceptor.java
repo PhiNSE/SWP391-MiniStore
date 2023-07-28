@@ -27,15 +27,15 @@ public class JwtInterceptor implements HandlerInterceptor {
     @CrossOrigin
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-//        if (request.getMethod().equals("OPTIONS")) {
-//            response.setHeader("Access-Control-Allow-Origin", "*");
-//            response.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, PATCH, HEAD, OPTIONS");
-//            response.setHeader("Access-Control-Allow-Headers", "Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization, X-Forwarded-For");
-//            response.setHeader("Access-Control-Expose-Headers", "Access-Control-Allow-Origin, Access-Control-Allow-Credentials");
-//            response.setHeader("Access-Control-Allow-Credentials", "true");
-//            response.setHeader("Vary", "Origin, Access-Control-Request-Method, Access-Control-Request-Headers");
-//            return true;
-//        }
+        if (request.getMethod().equals("OPTIONS")) {
+            response.setHeader("Access-Control-Allow-Origin", "*");
+            response.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, PATCH, HEAD, OPTIONS");
+            response.setHeader("Access-Control-Allow-Headers", "Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization, X-Forwarded-For");
+            response.setHeader("Access-Control-Expose-Headers", "Access-Control-Allow-Origin, Access-Control-Allow-Credentials");
+            response.setHeader("Access-Control-Allow-Credentials", "true");
+            response.setHeader("Vary", "Origin, Access-Control-Request-Method, Access-Control-Request-Headers");
+            return true;
+        }
 
 
             System.out.println("URI: " + request.getRequestURI());
