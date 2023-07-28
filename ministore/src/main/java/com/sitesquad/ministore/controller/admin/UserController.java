@@ -128,7 +128,7 @@ public class UserController {
             }
         }else{
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(405, "user already exist", "")
+                    new ResponseObject(405, "user's mail or phone already exist", "")
             );
         }
     }
@@ -246,7 +246,7 @@ public class UserController {
             );
         }else{
 
-            User userChange = userService.changePassword(currentUser,oldPassword,newPassword);
+            User userChange = userService.changePassword(currentUser,newPassword);
 
             if(userChange != null) {
 //                List<Long> userId = new ArrayList<>();

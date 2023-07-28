@@ -3,18 +3,19 @@ package com.sitesquad.ministore.controller;
 import com.sitesquad.ministore.dto.PayslipDTO;
 import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.model.Payslip;
+import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.service.PayslipService;
+import com.sitesquad.ministore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
- *
  * @author admin
  */
 @RestController
@@ -22,38 +23,44 @@ public class PayslipController {
 
     @Autowired
     PayslipService payslipService;
+    @Autowired
+    UserService userService;
 
     @GetMapping("/payslip")
     public ResponseEntity<ResponseObject> getAllPayslips() {
-        List<Payslip> payslipList = payslipService.findByIsPaidFalseOrNull();
-        List<PayslipDTO> payslipDTOList = new ArrayList<>();
+        List<Map<String, Object>> payslipList = payslipService.findPayslipCustom();
+        List<Map<String, Object>> payslipMapList = new ArrayList<>();
 
-        if(payslipList.isEmpty()) {
+        if (payslipList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(404, "Not found Payslips", "")
+                    new ResponseObject(200, "Not found Payslips", "")
             );
         }
 
-        for(Payslip payslip: payslipList) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            PayslipDTO payslipDTO = new PayslipDTO();
-
-            payslipDTO.setPayslipId(payslip.getPayslipId());
-            payslipDTO.setUserId(payslip.getUserId());
-            payslipDTO.setName(payslip.getUser().getName());
-            payslipDTO.setRoleName(payslip.getUser().getRole().getName());
-            payslipDTO.setStartDate(dateFormat.format(payslip.getStartDate()));
-            payslipDTO.setEndDate(dateFormat.format(payslip.getEndDate()));
-            payslipDTO.setShiftCount(payslip.getShiftCount());
-            payslipDTO.setSalary(payslip.getSalary());
-            payslipDTO.setTotalHour(payslip.getTotalHours());
-            payslipDTO.setDate(dateFormat.format(payslip.getDate()));
-            payslipDTO.setIsPaid(payslip.getIsPaid());
-            payslipDTOList.add(payslipDTO);
+        for (Map<String, Object> payslip : payslipList) {
+            Map<String, Object> payslipMap = new HashMap<>();
+            Integer userId = (Integer) payslip.get("user_id");
+            Integer sumShiftCount = (Integer) payslip.get("sum_shift_count");
+            BigDecimal sumSalary = (BigDecimal) payslip.get("sum_salary");
+            Integer sumTotalHours = (Integer) payslip.get("sum_total_hours");
+            User user = userService.find(userId.longValue());
+            payslipMap.put("userId", userId);
+            payslipMap.put("name", user.getName());
+            payslipMap.put("role", user.getRole().getName());
+            if (sumShiftCount != null && sumSalary != null && sumTotalHours != null) {
+                payslipMap.put("salary", Double.valueOf(sumSalary.doubleValue()));
+                payslipMap.put("shiftCount", sumShiftCount);
+                payslipMap.put("totalHour", sumTotalHours);
+            } else {
+                payslipMap.put("salary", 0);
+                payslipMap.put("shiftCount", 0);
+                payslipMap.put("totalHour", 0);
+            }
+            payslipMapList.add(payslipMap);
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject(200, "Found Payslips", payslipDTOList)
+                new ResponseObject(200, "Found Payslips", payslipMapList)
         );
     }
 
@@ -62,12 +69,12 @@ public class PayslipController {
         List<Payslip> payslipList = payslipService.findByUserId(userId);
         List<PayslipDTO> payslipDTOList = new ArrayList<>();
 
-        if(payslipList.isEmpty()) {
+        if (payslipList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(404, "Not found payslip", "")
             );
         }
-        for(Payslip payslip: payslipList) {
+        for (Payslip payslip : payslipList) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             PayslipDTO payslipDTO = new PayslipDTO();
 
@@ -114,7 +121,7 @@ public class PayslipController {
             );
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject(404, "Cant find any Payslips matched","")
+                    new ResponseObject(404, "Cant find any Payslips matched", "")
             );
         }
     }

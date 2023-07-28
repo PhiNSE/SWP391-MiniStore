@@ -29,6 +29,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,8 +68,10 @@ public class UserShiftService {
         List<UserShift> userShiftList = new ArrayList<>();
         List<UserShift> userShifts = userShiftRepository.findByIsPaidFalseOrIsPaidNull();
         for (UserShift userShift : userShifts) {
-            if (userShift.getUserId() == id) {
-                userShiftList.add(userShift);
+            if (userShift.getIsCheckedIn() != null && userShift.getIsCheckedOut() != null) {
+                if (userShift.getUserId() == id && userShift.getIsCheckedIn() == true && userShift.getIsCheckedOut() == true) {
+                    userShiftList.add(userShift);
+                }
             }
         }
         return userShiftList;
@@ -134,8 +137,12 @@ public class UserShiftService {
         return userShiftRepository.save(newUserShift);
     }
 
-    public boolean removeUserFromShift(UserShift userShift){
-        if(userShift!=null){
+    public List<Map<String, Object>> findByUserRank() {
+        return userShiftRepository.findByUserRank();
+    }
+
+    public boolean removeUserFromShift(UserShift userShift) {
+        if (userShift != null) {
             userShift.setUserId(null);
             userShift.setUser(null);
             edit(userShift);
@@ -190,7 +197,7 @@ public class UserShiftService {
         return userShift;
     }
 
-//    @Scheduled(cron = "*/5 * * * * *")
+    //    @Scheduled(cron = "*/5 * * * * *")
     @Scheduled(cron = "0 0 6,12,18 * * *")
     public List<UserShift> checkInLateChecker() {
         //test
@@ -202,7 +209,7 @@ public class UserShiftService {
 //        List<UserShift> userShifts = userShiftRepository.findUserShiftsByStartTime(
 //                now.getYear(), now.getMonthValue(), now.getDayOfMonth(), now.getHour(), now.getMinute());
         List<UserShift> userShifts = userShiftRepository.
-                findByAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(now,now);
+                findByAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(now, now);
         System.out.println(userShifts.toString());
         if (userShifts == null || userShifts.isEmpty()) {
             return null;
@@ -211,7 +218,7 @@ public class UserShiftService {
         String lateTitle = "";
         List<UserShift> lateList = new ArrayList<>();
         for (UserShift userShift : userShifts) {
-            if(userShift.getIsCheckedIn() == null&&userShift.getUser()==null){
+            if (userShift.getIsCheckedIn() == null && userShift.getUser() == null) {
                 System.out.println("userShift is late: " + userShift);
                 lateTitle = "Shift is not assign and not check in";
                 lateList.add(userShift);
@@ -221,14 +228,14 @@ public class UserShiftService {
                 );
                 lateDes.append(".\n");
             }
-            if (userShift.getIsCheckedIn() == null&&userShift.getUser()!=null) {
+            if (userShift.getIsCheckedIn() == null && userShift.getUser() != null) {
                 //noti
                 System.out.println("userShift is late: " + userShift);
                 lateTitle = "Employee is currently not check in!";
                 lateList.add(userShift);
-                lateDes.append("User: "+userShift.getUser().getName()
-                        +", mail: "+ userShift.getUser().getEmail()
-                        +" is currently not check in for shift: "
+                lateDes.append("User: " + userShift.getUser().getName()
+                        + ", mail: " + userShift.getUser().getEmail()
+                        + " is currently not check in for shift: "
                         + userShift.getShift().getType() + ", "
                         + DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(userShift.getStartTime())
                 );
@@ -236,9 +243,9 @@ public class UserShiftService {
             }
         }
 //                Notification
-        if(lateList!=null&&!lateList.isEmpty()){
+        if (lateList != null && !lateList.isEmpty()) {
             userNotificationService.
-                    sendNotiAndMailToAllAdmins(lateTitle,lateDes.toString());
+                    sendNotiAndMailToAllAdmins(lateTitle, lateDes.toString());
         }
         return lateList;
     }
@@ -249,7 +256,7 @@ public class UserShiftService {
 //    }
 
     public List<UserShiftDTO> mapDTO(List<UserShift> userShifts) {
-        if(userShifts == null || userShifts.isEmpty()){
+        if (userShifts == null || userShifts.isEmpty()) {
             return null;
         }
         return userShifts.stream()
@@ -294,7 +301,7 @@ public class UserShiftService {
                 .collect(Collectors.toList());
     }
 
-    public String getRoleByUserShiftId(Long userShiftId){
+    public String getRoleByUserShiftId(Long userShiftId) {
         String role = null;
         UserShift userShift = userShiftRepository.findByUserShiftId(userShiftId);
         if (userShift.getShift().getType().contains(RoleConstant.SALER_ROLE_NAME)) {
@@ -308,43 +315,42 @@ public class UserShiftService {
     private String getStatus(UserShift userShift) {
         String status = "";
         ZonedDateTime now = SystemConstant.ZONE_DATE_TIME_NOW;
-        if(userShift.getIsCheckedIn()==null){
-            if(userShift.getStartTime().isBefore(now)){
-                if(userShift.getIsCheckedInLate()==null){
+        if (userShift.getIsCheckedIn() == null) {
+            if (userShift.getStartTime().isBefore(now)) {
+                if (userShift.getIsCheckedInLate() == null) {
                     status = "not checked in";
-                } else if(userShift.getIsCheckedInLate()!=null) {
+                } else if (userShift.getIsCheckedInLate() != null) {
                     status = "checked in late";
                 }
-                if (userShift.getEndTime().isBefore(now)&&userShift.getIsCheckedOut()==null){
-                    if(userShift.getIsCheckedOutLate()==null){
+                if (userShift.getEndTime().isBefore(now) && userShift.getIsCheckedOut() == null) {
+                    if (userShift.getIsCheckedOutLate() == null) {
                         status += " and not checked out";
-                    }else if(userShift.getIsCheckedOutLate()!=null)
+                    } else if (userShift.getIsCheckedOutLate() != null)
                         status += " and checked out late";
-                } else if(userShift.getEndTime().isBefore(now)&&userShift.getIsCheckedOut()!=null){
+                } else if (userShift.getEndTime().isBefore(now) && userShift.getIsCheckedOut() != null) {
                     status += " and checked out";
                 }
-            }
-            else {
-                if(now.isAfter(userShift.getEndTime().plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE).plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE_LATE))){
+            } else {
+                if (now.isAfter(userShift.getEndTime().plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE).plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE_LATE))) {
                     status = "not checked in and not checked out";
                 } else {
                     status = "not yet";
                 }
             }
-        } else if(userShift.getIsCheckedIn()!=null){
-            if (userShift.getEndTime().isAfter(now)&&userShift.getIsCheckedOut()==null){
+        } else if (userShift.getIsCheckedIn() != null) {
+            if (userShift.getEndTime().isAfter(now) && userShift.getIsCheckedOut() == null) {
                 status = "working";
-            } else if(userShift.getEndTime().isBefore(now)&&userShift.getIsCheckedOut()!=null){
+            } else if (userShift.getEndTime().isBefore(now) && userShift.getIsCheckedOut() != null) {
                 status = "checked in and checked out";
-            } else if(userShift.getEndTime().isBefore(now)&&userShift.getIsCheckedOut()==null){
-                if(userShift.getIsCheckedOutLate()==null){
+            } else if (userShift.getEndTime().isBefore(now) && userShift.getIsCheckedOut() == null) {
+                if (userShift.getIsCheckedOutLate() == null) {
                     status = "checked in and not checked out";
-                } else if(userShift.getIsCheckedOutLate()!=null){
+                } else if (userShift.getIsCheckedOutLate() != null) {
                     status = "checked in and checked out late";
                 }
+            }
         }
-        }
-        return  status;
+        return status;
     }
 
     public List<UserShift> findByUserId(Long userId) {
@@ -367,8 +373,6 @@ public class UserShiftService {
 //        }
 //        return mapDTO(workingUserShifts);
 //    }
-
-
 
 
 }

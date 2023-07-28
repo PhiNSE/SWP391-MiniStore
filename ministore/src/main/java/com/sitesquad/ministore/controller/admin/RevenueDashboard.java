@@ -1,24 +1,18 @@
 package com.sitesquad.ministore.controller.admin;
 
-import com.sitesquad.ministore.dto.ProductDTO;
-import com.sitesquad.ministore.dto.RequestMeta;
-import com.sitesquad.ministore.dto.ResponseObject;
-import com.sitesquad.ministore.dto.RevenueDTO;
+import com.sitesquad.ministore.dto.*;
 import com.sitesquad.ministore.model.Order;
 import com.sitesquad.ministore.model.OrderDetails;
 import com.sitesquad.ministore.model.Payslip;
-import com.sitesquad.ministore.model.Product;
+import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.service.*;
+import com.sitesquad.ministore.service.shift.UserShiftService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
-import java.net.Inet4Address;
-import java.time.Period;
-import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +30,8 @@ public class RevenueDashboard {
     PayslipService payslipService;
     @Autowired
     UserService userService;
+    @Autowired
+    UserShiftService userShiftService;
     @Autowired
     RequestMeta requestMeta;
 
@@ -71,11 +67,13 @@ public class RevenueDashboard {
 
         List<Order> orderList = orderService.findAll();
         for (Order order : orderList) {
-            if (order.getType() == false) {
-                revenue += order.getTotal();
-            }
-            if (order.getType() == true) {
-                expense += order.getTotal();
+            if (order.getTotal() != null) {
+                if (order.getType() == false) {
+                    revenue += order.getTotal();
+                }
+                if (order.getType() == true) {
+                    expense += order.getTotal();
+                }
             }
         }
 
@@ -103,15 +101,17 @@ public class RevenueDashboard {
             List<Order> orderList = orderService.findByDate(i);
             if (!orderList.isEmpty()) {
                 for (Order order : orderList) {
-                    if (order.getType() == false) {
-                        revenue += order.getTotal();
-                    }
-                    if (order.getType() == true) {
-                        cost += order.getTotal();
+                    if (order.getTotal() != null) {
+                        if (order.getType() == false) {
+                            revenue += order.getTotal();
+                        }
+                        if (order.getType() == true) {
+                            cost += order.getTotal();
+                        }
                     }
                 }
                 List<Payslip> payslipList = payslipService.findPayslipByMonth(i);
-                for (Payslip payslip: payslipList) {
+                for (Payslip payslip : payslipList) {
                     cost += payslip.getSalary();
                 }
             }
@@ -189,17 +189,38 @@ public class RevenueDashboard {
 
     private List<List<Map<String, Object>>> userRank() {
         List<List<Map<String, Object>>> userRankList = new ArrayList<>();
-        List<Map<String, Object>> orderList = orderService.findByUserRank();
+        List<Map<String, Object>> shiftList = userShiftService.findByUserRank();
+        List<Map<String, Object>> filteredShiftList = new ArrayList<>();
 
-        for (Map<String, Object> order : orderList) {
+        for (Map<String, Object> shift : shiftList) {
+            Integer userId = (Integer) shift.get("user_id");
+            User user = userService.find(userId.longValue());
+            if (user != null) {
+                filteredShiftList.add(shift);
+            }
+        }
+
+        for (Map<String, Object> shift : filteredShiftList) {
             List<Map<String, Object>> userRankMap = new ArrayList<>();
             Map<String, Object> userMap = new HashMap<>();
             Map<String, Object> totalMoneyMap = new HashMap<>();
-            Integer user = (Integer) order.get("user_id");
-            BigDecimal totalMoney = (BigDecimal) order.get("total_money");
+            Integer userId = (Integer) shift.get("user_id");
+            Integer totalShiftCount = (Integer) shift.get("total_shift_count");
 
-            userMap.put("user", userService.find(user.longValue()));
-            totalMoneyMap.put("totalRevenue", Double.valueOf(totalMoney.doubleValue()));
+            User user = userService.find(userId.longValue());
+            UserDTO userDTO = new UserDTO();
+            userDTO.setUserId(user.getUserId());
+            userDTO.setName(user.getName());
+            userDTO.setEmail(user.getEmail());
+            userDTO.setPhone(user.getPhone());
+            userDTO.setAddress(user.getAddress());
+            userDTO.setDob(user.getDob());
+            userDTO.setRoles(user.getRole().getName());
+            userDTO.setGender(user.getGender());
+            userDTO.setUserImg(user.getUserImg());
+            userDTO.setRfid(user.getRfid());
+            userMap.put("user", userDTO);
+            totalMoneyMap.put("totalShiftCount", totalShiftCount);
             userRankMap.add(userMap);
             userRankMap.add(totalMoneyMap);
             userRankList.add(userRankMap);
