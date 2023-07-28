@@ -35,6 +35,20 @@ public class UserService {
     RoleRepository roleRepository;
 
 
+    public User map2User(User oldUser){
+        User newUser = new User();
+        newUser.setUserId(oldUser.getUserId());
+        newUser.setEmail(oldUser.getEmail());
+        newUser.setName(oldUser.getName());
+        newUser.setPhone(oldUser.getPhone());
+        newUser.setRole(oldUser.getRole());
+        newUser.setRoleId(oldUser.getRoleId());
+        newUser.setAddress(oldUser.getAddress());
+        newUser.setDob(oldUser.getDob());
+        newUser.setUserImg(oldUser.getUserImg());
+        return newUser;
+    }
+
     public UserDTO mapUserDTO(User user){
         UserDTO userDTO = new UserDTO();
         userDTO.setUserId(user.getUserId());
@@ -209,46 +223,76 @@ public class UserService {
         user.setPassword(password);
         return userRepository.save(user);
     }
+// old edit
+
+//    public User edit (User newUser){
+//        User oldUser = userRepository.findOneByEmailIgnoreCaseAndIsDeletedFalse(newUser.getEmail());
+//        if(oldUser == null)
+//            return null;
+//        newUser.setUserId(null);
+//
+//        User userChanged =addUserForEdit(newUser, oldUser.getPassword());
+//        if(userChanged != null){
+//            oldUser.setIsDeleted(Boolean.TRUE);
+//            userRepository.save(oldUser);
+//        }
+//        return userChanged;
+//    }
+
+
 
     public User edit (User newUser){
         User oldUser = userRepository.findOneByEmailIgnoreCaseAndIsDeletedFalse(newUser.getEmail());
         if(oldUser == null)
             return null;
-        newUser.setUserId(null);
+        oldUser.setName(newUser.getName());
+        oldUser.setUserImg(newUser.getUserImg());
+        oldUser.setDob(newUser.getDob());
+        oldUser.setAddress(newUser.getAddress());
+        oldUser.setGender(newUser.getGender());
 
-        User userChanged =addUserForEdit(newUser, oldUser.getPassword());
-        if(userChanged != null){
-            oldUser.setIsDeleted(Boolean.TRUE);
-            userRepository.save(oldUser);
-        }
+        oldUser.setRoleId(newUser.getRoleId());
+        oldUser.setRole(roleRepository.findById(newUser.getRoleId()).get());
+        oldUser.setIsDeleted(Boolean.FALSE);
+
+
+        User userChanged = userRepository.save(oldUser);
         return userChanged;
     }
 
-    public User changePassword(User oldUser,String oldPassword,String newPassword){
+    //change old password
+//    public User changePassword(User oldUser,String oldPassword,String newPassword){
+//
+//
+//
+//        if(oldUser == null)
+//            return null;
+//
+//
+//        User userChanged = new User();
+//        userChanged.setEmail(oldUser.getEmail());
+//        userChanged.setName(oldUser.getName());
+//        userChanged.setGender(oldUser.getGender());
+//        userChanged.setPhone(oldUser.getPhone());
+//        userChanged.setDob(oldUser.getDob());
+//        userChanged.setUserImg(oldUser.getUserImg());
+//        userChanged.setAddress(oldUser.getAddress());
+//        userChanged.setRoleId(oldUser.getRoleId());
+//        userChanged.setRole(oldUser.getRole());
+//        addUserForEdit(userChanged,newPassword);
+//
+//
+//        if(userChanged != null){
+//            oldUser.setIsDeleted(Boolean.TRUE);
+//            userRepository.save(oldUser);
+//        }
+//        return userChanged;
+//    }
 
-
-
-        if(oldUser == null)
-            return null;
-
-
-        User userChanged = new User();
-        userChanged.setEmail(oldUser.getEmail());
-        userChanged.setName(oldUser.getName());
-        userChanged.setGender(oldUser.getGender());
-        userChanged.setPhone(oldUser.getPhone());
-        userChanged.setDob(oldUser.getDob());
-        userChanged.setUserImg(oldUser.getUserImg());
-        userChanged.setAddress(oldUser.getAddress());
-        userChanged.setRoleId(oldUser.getRoleId());
-        userChanged.setRole(oldUser.getRole());
-        addUserForEdit(userChanged,newPassword);
-
-
-        if(userChanged != null){
-            oldUser.setIsDeleted(Boolean.TRUE);
-            userRepository.save(oldUser);
-        }
+    public User changePassword(User user,String newPassword){
+        User oldUser = userRepository.findOneByEmailIgnoreCaseAndIsDeletedFalse(user.getEmail());
+        oldUser.setPassword(newPassword);
+        User userChanged = userRepository.save(oldUser);
         return userChanged;
     }
 
