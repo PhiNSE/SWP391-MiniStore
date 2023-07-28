@@ -4,7 +4,10 @@ import com.sitesquad.ministore.dto.ProductDTO;
 import com.sitesquad.ministore.dto.RequestMeta;
 import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.dto.RevenueDTO;
-import com.sitesquad.ministore.model.*;
+import com.sitesquad.ministore.model.Order;
+import com.sitesquad.ministore.model.OrderDetails;
+import com.sitesquad.ministore.model.Payslip;
+import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,9 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
-import java.net.Inet4Address;
-import java.time.Period;
-import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +68,7 @@ public class RevenueDashboard {
 
         List<Order> orderList = orderService.findAll();
         for (Order order : orderList) {
+
             if (order.getType() == false) {
                 revenue += order.getTotal();
             }
