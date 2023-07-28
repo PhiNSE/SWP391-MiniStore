@@ -1,14 +1,17 @@
 package com.sitesquad.ministore.service;
 
+import com.sitesquad.ministore.model.ProductVoucher;
 import com.sitesquad.ministore.model.Voucher;
+import com.sitesquad.ministore.repository.ProductVoucherRepository;
 import com.sitesquad.ministore.repository.VoucherRepository;
+
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- *
  * @author admin
  */
 @Service
@@ -16,6 +19,8 @@ public class VoucherService {
 
     @Autowired
     VoucherRepository voucherRepository;
+    @Autowired
+    ProductVoucherRepository productVoucherRepository;
 
     public List<Voucher> findAll() {
         return voucherRepository.findByIsDeletedFalseOrIsDeletedIsNull();
@@ -24,8 +29,8 @@ public class VoucherService {
     public Voucher findById(Long id) {
         List<Voucher> voucherList = voucherRepository.findByIsDeletedFalseOrIsDeletedIsNull();
         Voucher foundVoucher = new Voucher();
-        for(Voucher voucher: voucherList) {
-            if(voucher.getVoucherId().equals(id)) {
+        for (Voucher voucher : voucherList) {
+            if (voucher.getVoucherId().equals(id)) {
                 foundVoucher = voucher;
             }
         }
@@ -48,7 +53,13 @@ public class VoucherService {
             return false;
         } else {
             voucher.setIsDeleted(true);
+            plusQuantityOfVoucher(id);
             voucherRepository.save(voucher);
+            List<ProductVoucher> productVoucherList = productVoucherRepository.findByVoucherId(voucher.getVoucherId());
+            for (ProductVoucher productVoucher : productVoucherList) {
+                productVoucher.setIsDeleted(true);
+                productVoucherRepository.save(productVoucher);
+            }
             return true;
         }
     }
@@ -59,6 +70,7 @@ public class VoucherService {
         voucherRepository.save(voucher);
         return true;
     }
+
     public boolean plusQuantityOfVoucher(Long voucherId) {
         Voucher voucher = findById(voucherId);
         voucher.setQuantity(voucher.getQuantity() + 1);
