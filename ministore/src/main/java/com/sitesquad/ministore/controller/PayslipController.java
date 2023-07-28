@@ -32,31 +32,8 @@ public class PayslipController {
         List<Map<String, Object>> payslipMapList = new ArrayList<>();
 
         if (payslipList.isEmpty()) {
-//            List<Payslip> payslips = payslipService.findAll();
-//            Set<Object> seenIds = new HashSet<>();
-//            List<Payslip> filteredPayslip = new ArrayList<>();
-//
-//            for (Payslip payslip : payslips) {
-//                if (!seenIds.contains(payslip.getPayslipId())) {
-//                    seenIds.add(payslip.getPayslipId());
-//                    filteredPayslip.add(payslip);
-//                }
-//            }
-//
-//            for (Map<String, Object> payslip : filteredPayslip) {
-//                Map<String, Object> payslipMap = new HashMap<>();
-//                Integer userId = (Integer) payslip.get("user_id");
-//                User user = userService.find(userId.longValue());
-//                payslipMap.put("userId", userId);
-//                payslipMap.put("name", user.getName());
-//                payslipMap.put("role", user.getRole().getName());
-//                payslipMap.put("salary", 0);
-//                payslipMap.put("shiftCount", 0);
-//                payslipMap.put("totalHour", 0);
-//                payslipMapList.add(payslipMap);
-//            }
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "Found Payslips", "")
+                    new ResponseObject(200, "Not found Payslips", "")
             );
         }
 

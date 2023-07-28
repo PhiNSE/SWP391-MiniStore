@@ -9,6 +9,8 @@ import com.sitesquad.ministore.model.UserShift;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -36,4 +38,10 @@ public interface UserShiftRepository extends JpaRepository<UserShift, Long>, Jpa
 
     public List<UserShift> findByAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(ZonedDateTime startTime, ZonedDateTime endTime);
 
+    @Query(value = "select user_id, count(user_id) as 'total_shift_count'\n" +
+            "from user_shift\n" +
+            "where user_id is not null and month(start_time) = month(getdate()) and year(start_time) = year(getdate())\n" +
+            "group by user_id\n" +
+            "order by count(user_id) desc", nativeQuery = true)
+    List<Map<String, Object>> findByUserRank();
 }

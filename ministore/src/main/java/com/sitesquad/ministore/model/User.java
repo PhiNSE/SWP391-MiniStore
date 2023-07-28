@@ -1,8 +1,14 @@
 package com.sitesquad.ministore.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
@@ -62,10 +68,11 @@ public class User implements Serializable {
     @Column(name = "rf_id")
     private String rfid;
 
-    @ManyToOne(targetEntity = Role.class, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", referencedColumnName = "role_id")
+    @JsonIgnore
+//    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ToString.Exclude
-//    @JsonIgnore
     private Role role;
 
     @OneToMany(mappedBy = "orderUser")

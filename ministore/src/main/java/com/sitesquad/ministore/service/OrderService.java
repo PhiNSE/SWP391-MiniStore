@@ -66,9 +66,6 @@ public class OrderService {
         return orderRepository.findMostSoldHour();
     }
 
-    public List<Map<String, Object>> findByUserRank() {
-        return orderRepository.findByUserRank();
-    }
 
     public Order add(Order order) {
         order.setOrderUser(userRepository.findById(order.getUserId()).get());

@@ -32,20 +32,20 @@ import lombok.ToString;
 public class Role implements Serializable {
     @Id
     @Column(name = "role_id")
-    Long roleId;
+    private Long roleId;
     
     @Column(name = "name")
-    String name;
+    private String name;
+
+    @Column(name = "base_salary")
+    private Double baseSalary;
+
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
 
 
     @OneToMany(mappedBy = "role")
     @JsonIgnore
     @ToString.Exclude
     private Collection<User> users;
-
-    @Column(name = "base_salary")
-    Double baseSalary;
-
-    @Column(name = "is_deleted")
-    Boolean isDeleted;
 }
