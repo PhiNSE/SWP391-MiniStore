@@ -5,6 +5,11 @@
  */
 package com.sitesquad.ministore.service;
 
+import com.sitesquad.ministore.constant.ShiftConstant;
+import com.sitesquad.ministore.constant.SystemConstant;
+import com.sitesquad.ministore.constant.TicketTypeConstant;
+import com.sitesquad.ministore.controller.shift.TicketController;
+import com.sitesquad.ministore.controller.shift.UserShiftController;
 import com.sitesquad.ministore.dto.UserDTO;
 import com.sitesquad.ministore.model.ShiftRequest;
 import com.sitesquad.ministore.model.User;
@@ -81,13 +86,25 @@ public class UserService {
             userDTO.setGender(user.getGender());
             userDTO.setUserImg(user.getUserImg());
             Boolean onLeave = false;
+            try{
             List<ShiftRequest> shiftRequests = shiftRequestRepository.findByUserId(user.getUserId());
-//            if(shiftRequests!=null){
-//                for (ShiftRequest shiftRequest: shiftRequests){
-//                    if(shiftRequest.getUserShift().getStartTime().||)
-//                }
-//            }
-//            userDTO.setOnLeave();
+            if(shiftRequests!=null) {
+                for (ShiftRequest shiftRequest : shiftRequests) {
+                    if (shiftRequest.getType() == null) {
+                        continue;
+                    }else if (shiftRequest.getType() == ShiftConstant.SHIFT_LEAVE_TYPE) {
+                        if (SystemConstant.ZONE_DATE_TIME_NOW.isAfter(shiftRequest.getUserShift().getStartTime())
+                                && SystemConstant.ZONE_DATE_TIME_NOW.isBefore(shiftRequest.getUserShift().getStartTime()))
+                            ;
+                        onLeave = true;
+                        break;
+                    }
+                }
+            }}
+            catch (NullPointerException e){
+                e.printStackTrace();
+            }
+            userDTO.setOnLeave(onLeave);
             return userDTO;
         });
         return userDTOPage;

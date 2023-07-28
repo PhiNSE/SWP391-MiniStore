@@ -131,8 +131,11 @@ public class TicketController {
         //noti
         userNotificationService.sendNotiAndMailToAllAdmins("New ticket is waiting to be processed!"
                 ,"Employee: "+ ticket.getUser().getName() + " has submitted a new ticket: "+ticket.getTitle());
+        Map<String,Object> data = new HashMap<>();
+        data.put("ticket",ticketAdd);
+        data.put("userShift",userShiftService.findById(ticketAdd.getUserShiftId()));
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new ResponseObject(200,"Submit ticket successfully, WAIT FOR ADMIN TO APPROVE!",ticketAdd));
+                .body(new ResponseObject(200,"Submit ticket successfully, WAIT FOR ADMIN TO APPROVE!",data));
 
     }
 

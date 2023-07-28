@@ -56,4 +56,5 @@ public class Ticket {
     @Column(name = "user_shift_id")
     private Long userShiftId;
 
+
 }
