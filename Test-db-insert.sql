@@ -1,18 +1,32 @@
 USE [MinistoreManagement]
 GO
-insert into [dbo].[role] values('admin',null,0)
+SET IDENTITY_INSERT [dbo].[role] ON 
 GO
-insert into [dbo].[role] values('saler',20.00,0)
+insert into [dbo].[role]([role_id],[name],[base_salary],[is_deleted]) values(1,'admin',null,0)
 GO
-insert into [dbo].[role] values('guard',15.00,0)
+insert into [dbo].[role]([role_id],[name],[base_salary],[is_deleted]) values(2,'saler',20.00,0)
 GO
-insert into [dbo].[tbl_user]([name],[email],[password],[phone],[address],[role_id],[is_deleted],[dob],[gender],[user_img]) values('admintest','test@gmail.com','1','0931311835','111 test street',1,'false','2003-05-14',1,'tesst')
+insert into [dbo].[role]([role_id],[name],[base_salary],[is_deleted]) values(3,'guard',15.00,0)
 GO
-insert into [dbo].[tbl_user]([name],[email],[password],[phone],[address],[role_id],[is_deleted],[dob],[gender],[user_img]) values('admin','admin@gmail.com','123','56565','111 test street',1,'false','2003-05-14',0,'tesst')
+SET IDENTITY_INSERT [dbo].[role] OFF
 GO
-insert into [dbo].[tbl_user]([name],[email],[password],[phone],[address],[role_id],[is_deleted],[dob],[gender],[user_img]) values('saler','saler@gmail.com','123','56565','111 test street',2,'false','2003-05-14',0,'tesst')
+SET IDENTITY_INSERT [dbo].[tbl_user] ON 
 GO
-insert into [dbo].[tbl_user]([name],[email],[password],[phone],[address],[role_id],[is_deleted],[dob],[gender],[user_img]) values('guard','guard@gmail.com','123','56565','111 test street',3,'false','2003-05-14',1,'tesst')
+insert into [dbo].[tbl_user]([user_id],[name],[email],[password],[phone],[address],[role_id],[is_deleted],[dob],[gender],[user_img]) values(1,'admin','admin@gmail.com','Hello123','0931311835','111 test street',1,'false','2003-05-14',0,N'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr4APT4xaS2Boc5iD3b83qaBledYSWMxe9Fw&usqp=CAU')
+GO
+insert into [dbo].[tbl_user]([user_id],[name],[email],[password],[phone],[address],[role_id],[is_deleted],[dob],[gender],[user_img]) values(2,'saler1','saler1@gmail.com','Hello123','0931311835','111 test street',2,'false','2003-05-14',0,N'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDENjzTeAOG11Ay4uAG1RAPaKGuGX9sNA9Og&usqp=CAU')
+GO
+insert into [dbo].[tbl_user]([user_id],[name],[email],[password],[phone],[address],[role_id],[is_deleted],[dob],[gender],[user_img]) values(3,'saler2','saler2@gmail.com','Hello123','0931311835','111 test street',2,'false','2003-05-14',0,N'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDENjzTeAOG11Ay4uAG1RAPaKGuGX9sNA9Og&usqp=CAU')
+GO
+insert into [dbo].[tbl_user]([user_id],[name],[email],[password],[phone],[address],[role_id],[is_deleted],[dob],[gender],[user_img]) values(4,'guard1','guard1@gmail.com','Hello123','0931311835','111 test street',3,'false','2003-05-14',1,N'https://cdn-icons-png.flaticon.com/512/1801/1801293.png')
+GO
+insert into [dbo].[tbl_user]([user_id],[name],[email],[password],[phone],[address],[role_id],[is_deleted],[dob],[gender],[user_img]) values(5,'guard2','guard2@gmail.com','Hello123','0931311835','111 test street',3,'false','2003-05-14',1,N'https://cdn-icons-png.flaticon.com/512/1801/1801293.png')
+GO
+insert into [dbo].[tbl_user]([user_id],[name],[email],[password],[phone],[address],[role_id],[is_deleted],[dob],[gender],[user_img]) values(6,'saler3','saler3@gmail.com','Hello123','0931311835','111 test street',2,'false','2003-05-14',0,N'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDENjzTeAOG11Ay4uAG1RAPaKGuGX9sNA9Og&usqp=CAU')
+GO
+insert into [dbo].[tbl_user]([user_id],[name],[email],[password],[phone],[address],[role_id],[is_deleted],[dob],[gender],[user_img]) values(7,'guard3','guard3@gmail.com','Hello123','0931311835','111 test street',3,'false','2003-05-14',1,N'https://cdn-icons-png.flaticon.com/512/1801/1801293.png')
+GO
+SET IDENTITY_INSERT [dbo].[tbl_user] OFF
 GO
 insert into [dbo].[shift]([name],[start_work_hour],[end_work_hour],[coefficient]) values('saler-morning',6,12,1),
 ('saler-afternoon',12,18,1),
@@ -20,11 +34,11 @@ insert into [dbo].[shift]([name],[start_work_hour],[end_work_hour],[coefficient]
 ('guard-day',6,18,1),
 ('guard-night',18,6,1.5)
 
-insert into [dbo].[product_type]([name]) values('nước ngọt')
+insert into [dbo].[product_type]([name]) values(N'nước ngọt')
 
 SET IDENTITY_INSERT [dbo].[product] ON 
 GO
-INSERT [dbo].[product] ([product_id], [name], [quantity], [product_type_id], [price], [cost], [product_img], [product_code], [is_deleted]) VALUES (1, N'rau xao', 100, 1, CAST(2.20 AS Decimal(10, 2)), CAST(0.20 AS Decimal(10, 2)), N'cccccccccccccc', N'fdfsfdsfsdf', 1)
+--INSERT [dbo].[product] ([product_id], [name], [quantity], [product_type_id], [price], [cost], [product_img], [product_code], [is_deleted]) VALUES (1, N'rau xao', 100, 1, CAST(2.20 AS Decimal(10, 2)), CAST(0.20 AS Decimal(10, 2)), N'cccccccccccccc', N'fdfsfdsfsdf', 1)
 GO
 INSERT [dbo].[product] ([product_id], [name], [quantity], [product_type_id], [price], [cost], [product_img], [product_code], [is_deleted]) VALUES (22, N'6 lon nước ngọt Coca Cola 320ml', 23, 1, CAST(5860.00 AS Decimal(10, 2)), CAST(3860.00 AS Decimal(10, 2)), N'https://cdn.tgdd.vn/Products/Images/2443/125398/bhx/6-lon-nuoc-ngot-coca-cola-320ml-202303301632485062_300x300.jpg', N'1231233312', NULL)
 GO
@@ -86,7 +100,6 @@ INSERT INTO [dbo].[holiday] ([holiday_date],[holiday_name]) VALUES
     ('2023-09-02', N'Ngày Quốc khánh'),
     ('2023-09-04', N'Nghỉ Ngày Quốc khánh');
 GO
-insert into  [dbo].[ticket_type]([name]) values(N'Nghỉ phép')
-insert into  [dbo].[ticket_type]([name]) values(N'Chuyển ca')
---insert into [dbo].[ticket] values(3,'2023-06-27','2023-06-28',null,'nghi phep','bi om',1)
---insert into [dbo].[shift_request] values(3,1,0)
+insert into  [dbo].[ticket_type]([name]) values(N'Leave')
+insert into  [dbo].[ticket_type]([name]) values(N'Cancle shift')
+

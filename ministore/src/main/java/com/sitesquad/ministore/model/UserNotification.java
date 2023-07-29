@@ -24,7 +24,7 @@ public class UserNotification {
     @Column(name = "user_id", insertable=false, updatable=false)
     private Long userId;
 
-    @ManyToOne(targetEntity = User.class,cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = User.class)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = true)
     @ToString.Exclude
     @JsonIgnore
