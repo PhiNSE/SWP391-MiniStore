@@ -18,6 +18,7 @@ import com.sitesquad.ministore.repository.UserRepository;
 import com.sitesquad.ministore.repository.UserShiftRepository;
 import com.sitesquad.ministore.service.UserNotificationService;
 import com.sitesquad.ministore.service.UserService;
+import com.sitesquad.ministore.service.shift.HolidayService;
 import com.sitesquad.ministore.service.shift.ShiftRequestService;
 import com.sitesquad.ministore.service.shift.UserShiftService;
 
@@ -64,6 +65,9 @@ public class UserShiftController {
 
     @Autowired
     UserNotificationService userNotificationService;
+
+    @Autowired
+    HolidayService holidayService;
 
     @GetMapping("/userShift")
     public ResponseEntity<ResponseObject> getUserShifts(@RequestParam(required = false) Integer offset) {
@@ -374,6 +378,13 @@ public class UserShiftController {
         );
     }
 
+    @GetMapping("/userShift/holiday")
+    public ResponseEntity<ResponseObject> holiday(){
+        holidayService.retrieveVietnamHolidays();
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(200, "Retrieve holiday successfully", null)
+        );
+    }
 
 
 }

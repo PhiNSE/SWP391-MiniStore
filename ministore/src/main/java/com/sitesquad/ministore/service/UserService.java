@@ -94,10 +94,10 @@ public class UserService {
                         continue;
                     }else if (shiftRequest.getType() == ShiftConstant.SHIFT_LEAVE_TYPE) {
                         if (SystemConstant.ZONE_DATE_TIME_NOW.isAfter(shiftRequest.getUserShift().getStartTime())
-                                && SystemConstant.ZONE_DATE_TIME_NOW.isBefore(shiftRequest.getUserShift().getStartTime()))
-                            ;
-                        onLeave = true;
-                        break;
+                                && SystemConstant.ZONE_DATE_TIME_NOW.isBefore(shiftRequest.getUserShift().getStartTime())) {
+                            onLeave = true;
+                            break;
+                        }
                     }
                 }
             }}
