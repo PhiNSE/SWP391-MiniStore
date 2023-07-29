@@ -182,7 +182,9 @@ public class RevenueDashboard {
         Long remainProductQuantity = new Long(0);
         List<ProductDTO> productList = productService.findAll();
         for (ProductDTO productDTO : productList) {
-            remainProductQuantity += productDTO.getQuantity();
+            if (productDTO.getIsDeleted() == null || productDTO.getIsDeleted() == false) {
+                remainProductQuantity += productDTO.getQuantity();
+            }
         }
         return remainProductQuantity;
     }
