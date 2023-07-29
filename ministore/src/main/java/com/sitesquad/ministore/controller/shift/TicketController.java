@@ -49,17 +49,38 @@ public class TicketController {
         if(requestMeta.getRole().equals(RoleConstant.ADMIN_ROLE_NAME)){
             List<Ticket> unprocessedTickets = ticketRepository.findByIsApprovedNull();
             List<Ticket> processedTickets = ticketRepository.findByIsApprovedNotNull();
-            Map<String,List<Ticket> > data = new HashMap<>();
-            data.put("unprocessedTickets",unprocessedTickets);
-            data.put("processedTickets",processedTickets);
+            Map<String,Object >unprocessedTicketsMap = new HashMap<>();
+            for(Ticket ticket : unprocessedTickets){
+                unprocessedTicketsMap.put("ticket",ticket);
+                unprocessedTicketsMap.put("userShift",userShiftService.findById(ticket.getUserShiftId()));
+            }
+            Map<String,Object >processedTicketsMap = new HashMap<>();
+            for(Ticket ticket : processedTickets){
+                processedTicketsMap.put("ticket",ticket);
+                processedTicketsMap.put("userShift",userShiftService.findById(ticket.getUserShiftId()));
+            }
+            Map<String, Map<String,Object > > data = new HashMap<>();
+            data.put("unprocessedTickets",unprocessedTicketsMap);
+            data.put("processedTickets",processedTicketsMap);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseObject(200,"Ticket list found for "+requestMeta.getRole(),data));
         } else{
             List<Ticket> unprocessedTickets = ticketRepository.findByUserIdAndIsApprovedNull(requestMeta.getUserId());
             List<Ticket> processedTickets = ticketRepository.findByUserIdAndIsApprovedNotNull(requestMeta.getUserId());
-            Map<String,List<Ticket> > data = new HashMap<>();
-            data.put("unprocessedTickets",unprocessedTickets);
-            data.put("processedTickets",processedTickets);
+            Map<String,Object >unprocessedTicketsMap = new HashMap<>();
+            for(Ticket ticket : unprocessedTickets){
+                unprocessedTicketsMap.put("ticket",ticket);
+                unprocessedTicketsMap.put("userShift",userShiftService.findById(ticket.getUserShiftId()));
+            }
+            Map<String,Object >processedTicketsMap = new HashMap<>();
+            for(Ticket ticket : processedTickets){
+                processedTicketsMap.put("ticket",ticket);
+                processedTicketsMap.put("userShift",userShiftService.findById(ticket.getUserShiftId()));
+            }
+            Map<String, Map<String,Object > > data = new HashMap<>();
+            data.put("unprocessedTickets",unprocessedTicketsMap);
+            data.put("processedTickets",processedTicketsMap);
+
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseObject(200,"Ticket list found for "+requestMeta.getRole(),data));
         }
