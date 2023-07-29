@@ -49,9 +49,25 @@ public class TicketController {
         if(requestMeta.getRole().equals(RoleConstant.ADMIN_ROLE_NAME)){
             List<Ticket> unprocessedTickets = ticketRepository.findByIsApprovedNull();
             List<Ticket> processedTickets = ticketRepository.findByIsApprovedNotNull();
-            Map<String,List<Ticket> > data = new HashMap<>();
-            data.put("unprocessedTickets",unprocessedTickets);
-            data.put("processedTickets",processedTickets);
+            List<Map<String,Object >> unprocessedTicketsRes = new ArrayList<>();
+            List<Map<String,Object >> processedTicketsRes = new ArrayList<>();
+
+            for(Ticket ticket : unprocessedTickets){
+                Map<String,Object >unprocessedTicketsMap = new HashMap<>();
+                unprocessedTicketsMap.put("ticket",ticket);
+                unprocessedTicketsMap.put("userShift",userShiftService.findById(ticket.getUserShiftId()));
+                unprocessedTicketsRes.add(unprocessedTicketsMap);
+            }
+            Map<String,Object >processedTicketsMap = new HashMap<>();
+            for(Ticket ticket : processedTickets){
+                processedTicketsMap.put("ticket",ticket);
+                processedTicketsMap.put("userShift",userShiftService.findById(ticket.getUserShiftId()));
+                processedTicketsRes.add(processedTicketsMap);
+
+            }
+            Map<String,List<Map<String,Object >> > data = new HashMap<>();
+            data.put("unprocessedTickets",unprocessedTicketsRes);
+            data.put("processedTickets",processedTicketsRes);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseObject(200,"Ticket list found for "+requestMeta.getRole(),data));
         } else{
