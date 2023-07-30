@@ -58,8 +58,8 @@ public class TicketController {
                 unprocessedTicketsMap.put("userShift",userShiftService.findById(ticket.getUserShiftId()));
                 unprocessedTicketsRes.add(unprocessedTicketsMap);
             }
-            Map<String,Object >processedTicketsMap = new HashMap<>();
             for(Ticket ticket : processedTickets){
+                Map<String,Object >processedTicketsMap = new HashMap<>();
                 processedTicketsMap.put("ticket",ticket);
                 processedTicketsMap.put("userShift",userShiftService.findById(ticket.getUserShiftId()));
                 processedTicketsRes.add(processedTicketsMap);
