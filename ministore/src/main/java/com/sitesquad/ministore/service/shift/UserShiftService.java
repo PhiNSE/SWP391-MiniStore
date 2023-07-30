@@ -30,6 +30,7 @@ import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -287,7 +288,7 @@ public class UserShiftService {
 //                    }
                     List<User> availableEmployees = userService.findUserByRoleName(role);
                     List<User> requestShifts = userRepository.findByShiftRequests_UserShiftIdAndShiftRequests_TypeFalseAndIsDeletedFalse(userShift.getUserShiftId());
-                    List<User> leaveEmployees = userRepository.findByShiftRequests_UserShiftIdAndShiftRequests_TypeTrueAndIsDeletedFalse(userShift.getUserShiftId());
+                    Set<User> leaveEmployees = userRepository.findByShiftRequests_UserShiftIdAndShiftRequests_TypeTrueAndIsDeletedFalse(userShift.getUserShiftId());
 
                     userShiftDTO.setLeaveEmployees(leaveEmployees);
                     //bad
