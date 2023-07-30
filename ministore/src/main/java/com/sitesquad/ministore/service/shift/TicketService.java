@@ -92,7 +92,7 @@ public class TicketService {
                 System.out.println(shiftRequest);
                 shiftRequestService.add(shiftRequest);
                 //remove people from old shift
-                    if(ticket.getUserId() != null && userShift.getUserId()!=null && ticket.getUserId().equals(user.getUserId())){
+                    if(ticket.getUserId() != null && userShift.getUserId()!=null && ticket.getUserId() == user.getUserId()){
                         userShiftService.removeUserFromShift(userShift);
                     }
 
