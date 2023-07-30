@@ -386,5 +386,11 @@ public class UserShiftController {
         );
     }
 
-
+    @DeleteMapping("/userShift")
+    public ResponseEntity<ResponseObject> deleteUserShift(@RequestBody Long userShiftId){
+        userShiftRepository.deleteById(userShiftId);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(200, "Cancel shift request successfully", null)
+        );
+    }
 }

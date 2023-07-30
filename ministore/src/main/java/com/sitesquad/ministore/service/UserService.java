@@ -13,6 +13,7 @@ import com.sitesquad.ministore.controller.shift.UserShiftController;
 import com.sitesquad.ministore.dto.UserDTO;
 import com.sitesquad.ministore.model.ShiftRequest;
 import com.sitesquad.ministore.model.User;
+import com.sitesquad.ministore.model.UserShift;
 import com.sitesquad.ministore.repository.RoleRepository;
 import com.sitesquad.ministore.repository.ShiftRequestRepository;
 import com.sitesquad.ministore.repository.UserRepository;
@@ -87,20 +88,19 @@ public class UserService {
             userDTO.setUserImg(user.getUserImg());
             Boolean onLeave = false;
             try{
-            List<ShiftRequest> shiftRequests = shiftRequestRepository.findByUserId(user.getUserId());
+            List<ShiftRequest> shiftRequests = shiftRequestRepository.findByUserIdAndTypeTrue(user.getUserId());
             if(shiftRequests!=null) {
                 for (ShiftRequest shiftRequest : shiftRequests) {
-                    if (shiftRequest.getType() == null) {
-                        continue;
-                    }else if (shiftRequest.getType() == ShiftConstant.SHIFT_LEAVE_TYPE) {
-                        if (SystemConstant.ZONE_DATE_TIME_NOW.isAfter(shiftRequest.getUserShift().getStartTime())
-                                && SystemConstant.ZONE_DATE_TIME_NOW.isBefore(shiftRequest.getUserShift().getStartTime())) {
+                    UserShift userShift= shiftRequest.getUserShift();
+                    System.out.println(userShift);
+                        if (SystemConstant.ZONE_DATE_TIME_NOW.isAfter(userShift.getStartTime())
+                                && SystemConstant.ZONE_DATE_TIME_NOW.isBefore(userShift.getEndTime())) {
                             onLeave = true;
                             break;
                         }
                     }
                 }
-            }}
+            }
             catch (NullPointerException e){
                 e.printStackTrace();
             }

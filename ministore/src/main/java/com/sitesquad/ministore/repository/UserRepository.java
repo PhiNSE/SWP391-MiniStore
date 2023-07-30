@@ -36,4 +36,5 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     List<User> findByShiftRequests_UserShiftIdAndShiftRequests_TypeTrueAndIsDeletedFalse(Long userShiftId);
     List<User> findByShiftRequests_UserShiftIdAndShiftRequests_TypeFalseAndIsDeletedFalse(Long userShiftId);
+    List<User> findByShiftRequests_UserIdAndShiftRequests_TypeTrueAndIsDeletedFalse(Long userId);
 }
