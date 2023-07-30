@@ -8,6 +8,7 @@ package com.sitesquad.ministore.controller.shift;
 import com.sitesquad.ministore.constant.RoleConstant;
 import com.sitesquad.ministore.constant.ShiftConstant;
 import com.sitesquad.ministore.constant.SystemConstant;
+import com.sitesquad.ministore.controller.SalaryCalculator;
 import com.sitesquad.ministore.dto.RequestMeta;
 import com.sitesquad.ministore.dto.UserShiftDTO;
 import com.sitesquad.ministore.dto.ResponseObject;
@@ -69,20 +70,27 @@ public class UserShiftController {
     @Autowired
     HolidayService holidayService;
 
+    @Autowired
+    SalaryCalculator salaryCalculator;
+
+
     @GetMapping("/userShift")
     public ResponseEntity<ResponseObject> getUserShifts(@RequestParam(required = false) Integer offset) {
         if (offset == null) {
             offset = 0;
         }
+        SystemConstant SystemConstant = new SystemConstant();
         List<UserShift> userShifts = userShiftService.findOffset(offset);
         List<UserShiftDTO> userShiftDTOs = userShiftService.mapDTO(userShifts);
         if (userShifts != null) {
             List<UserShiftDTO> inProgressUserShiftDTOs = new ArrayList<>();
             for (UserShiftDTO userShiftDTO : userShiftDTOs) {
-                if (userShiftDTO.getStartTime().isBefore(SystemConstant.ZONE_DATE_TIME_NOW) && userShiftDTO.getEndTime().isAfter(SystemConstant.ZONE_DATE_TIME_NOW)) {
+                if (userShiftDTO.getStartTime().isBefore(SystemConstant.ZONE_DATE_TIME_NOW()) && userShiftDTO.getEndTime().isAfter(SystemConstant.ZONE_DATE_TIME_NOW())) {
                     inProgressUserShiftDTOs.add(userShiftDTO);
                 }
             }
+
+            System.out.println(SystemConstant.ZONE_DATE_TIME_NOW());
             Map<String, Object> userShiftMap = new HashMap<>();
             userShiftMap.put("userShifts", userShiftDTOs);
             userShiftMap.put("inProgressUserShifts", inProgressUserShiftDTOs);
@@ -104,6 +112,7 @@ public class UserShiftController {
         if (offset == null) {
             offset = 0;
         }
+        SystemConstant SystemConstant = new SystemConstant();
         if (requestMeta.getUserId() == null) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(500, "User id session not found", "")
@@ -114,7 +123,7 @@ public class UserShiftController {
         if (userShifts != null) {
             UserShiftDTO workingUserShiftDTO = null;
             for (UserShiftDTO userShiftDTO : userShiftDTOs) {
-                if (userShiftDTO.getStartTime().isBefore(SystemConstant.ZONE_DATE_TIME_NOW) && userShiftDTO.getEndTime().isAfter(SystemConstant.ZONE_DATE_TIME_NOW)) {
+                if (userShiftDTO.getStartTime().isBefore(SystemConstant.ZONE_DATE_TIME_NOW()) && userShiftDTO.getEndTime().isAfter(SystemConstant.ZONE_DATE_TIME_NOW())) {
                     workingUserShiftDTO = userShiftDTO;
                 }
             }
@@ -156,6 +165,7 @@ public class UserShiftController {
                     new ResponseObject(404, "List of User shift id & user id parameter not found ", "")
             );
         }
+        SystemConstant SystemConstant = new SystemConstant();
         for (Map<String, Long> item : request) {
 
             Long userShiftId = item.get("userShiftId");
@@ -197,7 +207,7 @@ public class UserShiftController {
             List<Long> assignEmployeeIds = new ArrayList<>();
             assignEmployeeIds.add(userShift.getUserId());
             String inThePast = "";
-            if(userShift.getStartTime()!=null && userShift.getStartTime().isBefore(SystemConstant.ZONE_DATE_TIME_NOW)) {
+            if(userShift.getStartTime()!=null && userShift.getStartTime().isBefore(SystemConstant.ZONE_DATE_TIME_NOW())) {
                 inThePast = " in the PAST ";
             }
             userNotificationService.
@@ -218,7 +228,7 @@ public class UserShiftController {
             List<Long> assignEmployeeIds = new ArrayList<>();
             assignEmployeeIds.add(assignedUserShift.getUserId());
             String pastShift = "";
-            if(userShift.getStartTime()!=null && userShift.getStartTime().isBefore(SystemConstant.ZONE_DATE_TIME_NOW)) {
+            if(userShift.getStartTime()!=null && userShift.getStartTime().isBefore(SystemConstant.ZONE_DATE_TIME_NOW())) {
                 pastShift = " in the PAST ";
             }
                 userNotificationService.
@@ -243,6 +253,7 @@ public class UserShiftController {
     public ResponseEntity<ResponseObject> checkin(@RequestParam Long userShiftId) {
 //        System.out.println(" dòng 136 set user mặc định nhớ sửa");
 //        Long userId = new Long(6);
+        SystemConstant SystemConstant = new SystemConstant();
         System.out.println("userid = " + requestMeta.getUserId());
         User user = userService.find(requestMeta.getUserId());
         UserShift userShift = userShiftRepository.findByUserShiftId(userShiftId);
@@ -264,7 +275,7 @@ public class UserShiftController {
         }
         ZonedDateTime endCheckInTime = userShift.getStartTime();
         ZonedDateTime startCheckInTime = userShift.getStartTime().minusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE);
-        ZonedDateTime checkInTime = SystemConstant.ZONE_DATE_TIME_NOW;
+        ZonedDateTime checkInTime = SystemConstant.ZONE_DATE_TIME_NOW();
         System.out.println(checkInTime);
 //        if (checkInTime.isBefore(startCheckInTime)) {
 //            return ResponseEntity.status(HttpStatus.OK).body(
@@ -273,7 +284,7 @@ public class UserShiftController {
 //        }
 //        if (checkInTime.isAfter(endCheckInTime)) {
 //            if (checkInTime.isBefore(endCheckInTime.plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE_LATE))) {
-//                userShift.setCheckInTime(SystemConstant.ZONE_DATE_TIME_NOW);
+//                userShift.setCheckInTime(SystemConstant.ZONE_DATE_TIME_NOW());
 //                userShift.setIsCheckedInLate(true);
 //                userShift = userShiftService.edit(userShift);
 //                return ResponseEntity.status(HttpStatus.OK).body(
@@ -285,7 +296,7 @@ public class UserShiftController {
 //                                .format(endCheckInTime.plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE_LATE)), ""));
 //            }
 //        }
-        userShift.setCheckInTime(SystemConstant.ZONE_DATE_TIME_NOW);
+        userShift.setCheckInTime(SystemConstant.ZONE_DATE_TIME_NOW());
         userShift.setIsCheckedIn(true);
         userShift = userShiftService.edit(userShift);
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -296,6 +307,7 @@ public class UserShiftController {
     public ResponseEntity<ResponseObject> checkout(@RequestParam Long userShiftId) {
 //        System.out.println(" dòng 172 set user mặc định nhớ sửa");
 //        Long userId = new Long(6);
+        SystemConstant SystemConstant = new SystemConstant();
         System.out.println("userid = " + requestMeta.getUserId());
         User user = userService.find(requestMeta.getUserId());
         UserShift userShift = userShiftRepository.findByUserShiftId(userShiftId);
@@ -317,7 +329,7 @@ public class UserShiftController {
         }
         ZonedDateTime startCheckOutTime = userShift.getEndTime();
         ZonedDateTime endCheckOutTime = userShift.getEndTime().plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE);
-        ZonedDateTime checkOutTime = SystemConstant.ZONE_DATE_TIME_NOW;
+        ZonedDateTime checkOutTime = SystemConstant.ZONE_DATE_TIME_NOW();
         System.out.println(checkOutTime);
 //        if (checkOutTime.isBefore(startCheckOutTime)) {
 //                return ResponseEntity.status(HttpStatus.OK).body(
@@ -326,7 +338,7 @@ public class UserShiftController {
 //            }
 //            if (checkOutTime.isAfter(endCheckOutTime)) {
 //                if(checkOutTime.isBefore(endCheckOutTime.plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE_LATE))){
-//                    userShift.setCheckOutTime(SystemConstant.ZONE_DATE_TIME_NOW);
+//                    userShift.setCheckOutTime(SystemConstant.ZONE_DATE_TIME_NOW());
 //                    userShift.setIsCheckedOutLate(true);
 //                    userShift = userShiftService.edit(userShift);
 //                    return ResponseEntity.status(HttpStatus.OK).body(
@@ -338,9 +350,12 @@ public class UserShiftController {
 //                                    .format(endCheckOutTime.plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE).plusMinutes(ShiftConstant.LIMIT_CHECKIN_MINUTE_LATE)), ""));
 //                }
 //        }
-        userShift.setCheckOutTime(SystemConstant.ZONE_DATE_TIME_NOW);
+        userShift.setCheckOutTime(SystemConstant.ZONE_DATE_TIME_NOW());
         userShift.setIsCheckedOut(true);
         userShift = userShiftService.edit(userShift);
+
+//        salaryCalculator.calculateSalary();
+
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(200, "Check out successfully!", userShift));
     }
@@ -352,6 +367,7 @@ public class UserShiftController {
                     new ResponseObject(500, "User id session not found", "")
             );
         }
+        SystemConstant SystemConstant = new SystemConstant();
         List<UserShift> userShifts = userShiftRepository.findByUserId(requestMeta.getUserId());
         List<UserShiftDTO> userShiftDTOs = userShiftService.mapDTO(userShifts);
         if (userShifts != null) {

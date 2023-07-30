@@ -4,9 +4,9 @@ SET IDENTITY_INSERT [dbo].[role] ON
 GO
 insert into [dbo].[role]([role_id],[name],[base_salary],[is_deleted]) values(1,'admin',null,0)
 GO
-insert into [dbo].[role]([role_id],[name],[base_salary],[is_deleted]) values(2,'saler',20.00,0)
+insert into [dbo].[role]([role_id],[name],[base_salary],[is_deleted]) values(2,'saler',20000.00,0)
 GO
-insert into [dbo].[role]([role_id],[name],[base_salary],[is_deleted]) values(3,'guard',15.00,0)
+insert into [dbo].[role]([role_id],[name],[base_salary],[is_deleted]) values(3,'guard',15000.00,0)
 GO
 SET IDENTITY_INSERT [dbo].[role] OFF
 GO

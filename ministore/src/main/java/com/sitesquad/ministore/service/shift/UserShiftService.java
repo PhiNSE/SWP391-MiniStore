@@ -60,6 +60,7 @@ public class UserShiftService {
 
     @Autowired
     UserNotificationService userNotificationService;
+    SystemConstant SystemConstant = new SystemConstant();
 
     public List<UserShift> findAll() {
         return userShiftRepository.findAll();
@@ -83,7 +84,7 @@ public class UserShiftService {
         if (userShifts == null || userShifts.isEmpty()) {
             return null;
         }
-//        ZonedDateTime period = SystemConstant.ZONE_DATE_TIME_NOW;
+//        ZonedDateTime period = SystemConstant.ZONE_DATE_TIME_NOW();
         LocalDate period = LocalDate.now();
         if (offset == null) {
             offset = 0;
@@ -103,7 +104,7 @@ public class UserShiftService {
         if (userShifts == null || userShifts.isEmpty()) {
             return null;
         }
-//        ZonedDateTime period = SystemConstant.ZONE_DATE_TIME_NOW;
+//        ZonedDateTime period = SystemConstant.ZONE_DATE_TIME_NOW();
         LocalDate period = LocalDate.now();
         if (offset == null) {
             offset = 0;
@@ -153,10 +154,11 @@ public class UserShiftService {
     }
 
     @Scheduled(cron = "0 0 0 */7 * *")
+//    @Scheduled(cron = "0 59 11 * * SUN")
     public void generateUserShifts() throws NullPointerException {
         System.out.print("Generating shifts...");
         UserShift lastShift = userShiftRepository.findTop1ByOrderByEndTimeDesc();
-        ZonedDateTime startDate = SystemConstant.ZONE_DATE_TIME_NOW.withHour(0).withMinute(0).withSecond(0);
+        ZonedDateTime startDate = SystemConstant.ZONE_DATE_TIME_NOW().withHour(0).withMinute(0).withSecond(0);
         if (lastShift != null) {
             startDate = lastShift.getEndTime().withHour(0).withMinute(0).withSecond(0).withNano(0);
         }
@@ -206,7 +208,7 @@ public class UserShiftService {
 //                2023, 6, 10, 6, 0);
 //        System.out.println(test.size());
 //        for (UserShift userShift : test) { System.out.println(userShift); }
-        ZonedDateTime now = SystemConstant.ZONE_DATE_TIME_NOW;
+        ZonedDateTime now = SystemConstant.ZONE_DATE_TIME_NOW();
 //        List<UserShift> userShifts = userShiftRepository.findUserShiftsByStartTime(
 //                now.getYear(), now.getMonthValue(), now.getDayOfMonth(), now.getHour(), now.getMinute());
         List<UserShift> userShifts = userShiftRepository.
@@ -253,7 +255,7 @@ public class UserShiftService {
 
 // @Scheduled(cron = "* * * ? * *")
 //    public void test(){
-//        System.out.println(SystemConstant.ZONE_DATE_TIME_NOW);
+//        System.out.println(SystemConstant.ZONE_DATE_TIME_NOW());
 //    }
 
     public List<UserShiftDTO> mapDTO(List<UserShift> userShifts) {
@@ -315,7 +317,7 @@ public class UserShiftService {
 
     private String getStatus(UserShift userShift) {
         String status = "";
-        ZonedDateTime now = SystemConstant.ZONE_DATE_TIME_NOW;
+        ZonedDateTime now = SystemConstant.ZONE_DATE_TIME_NOW();
         if (userShift.getIsCheckedIn() == null) {
             if (userShift.getStartTime().isBefore(now)) {
                 if (userShift.getIsCheckedInLate() == null) {
@@ -341,7 +343,7 @@ public class UserShiftService {
         } else if (userShift.getIsCheckedIn() != null) {
             if (userShift.getEndTime().isAfter(now) && userShift.getIsCheckedOut() == null) {
                 status = "working";
-            } else if (userShift.getEndTime().isBefore(now) && userShift.getIsCheckedOut() != null) {
+            } else if ( userShift.getIsCheckedOut() != null) {
                 status = "checked in and checked out";
             } else if (userShift.getEndTime().isBefore(now) && userShift.getIsCheckedOut() == null) {
                 if (userShift.getIsCheckedOutLate() == null) {
@@ -359,7 +361,7 @@ public class UserShiftService {
     }
 
 //    public List<UserShiftDTO> getCurrentUserShifts(){
-//        ZonedDateTime now = SystemConstant.ZONE_DATE_TIME_NOW;
+//        ZonedDateTime now = SystemConstant.ZONE_DATE_TIME_NOW();
 //        List<UserShift> userShifts = new ArrayList<>();
 //        List<UserShift> workingUserShifts = new ArrayList<>();
 //        userShifts.addAll(userShiftRepository.findUserShiftsByStartTime(now.getYear(),now.getMonthValue(),now.getDayOfMonth(),null,null));

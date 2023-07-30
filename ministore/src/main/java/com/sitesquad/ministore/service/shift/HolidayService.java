@@ -24,10 +24,12 @@ public class HolidayService {
     @Autowired
     HolidayRepository holidayRepository;
 
+    SystemConstant SystemConstant = new SystemConstant();
+
     @Scheduled(cron = "0 0 0 1 1 ?") // Runs on January 1st every year at midnight
     public void retrieveVietnamHolidays() {
         try {
-            int year = SystemConstant.LOCAL_DATE_TIME_NOW.getYear(); // You can change the year as needed
+            int year = SystemConstant.LOCAL_DATE_TIME_NOW().getYear(); // You can change the year as needed
 //            year = 2024;
             List<HolidayResponse> vietnamHolidays = getVietnamHolidays(year);
             if (vietnamHolidays != null) {
