@@ -91,10 +91,14 @@ public class TicketService {
                 shiftRequest.setType(ShiftConstant.SHIFT_LEAVE_TYPE);
                 System.out.println(shiftRequest);
                 shiftRequestService.add(shiftRequest);
+                //remove people from old shift
+                    if(ticket.getUserId() != null && userShift.getUserId()!=null && ticket.getUserId().equals(user.getUserId())){
+                        userShiftService.removeUserFromShift(userShift);
+                    }
+
                 }
             }
         }
         return true;
     }
-
 }
