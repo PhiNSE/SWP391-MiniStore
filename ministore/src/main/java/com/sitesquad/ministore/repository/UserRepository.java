@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -34,7 +35,7 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     User findOneByEmailIgnoreCaseAndIsDeletedFalse(String email);
     User findOneByEmailIgnoreCaseAndPasswordIgnoreCaseAndIsDeletedFalse(String email, String password);
 
-    List<User> findByShiftRequests_UserShiftIdAndShiftRequests_TypeTrueAndIsDeletedFalse(Long userShiftId);
+    Set<User> findByShiftRequests_UserShiftIdAndShiftRequests_TypeTrueAndIsDeletedFalse(Long userShiftId);
     List<User> findByShiftRequests_UserShiftIdAndShiftRequests_TypeFalseAndIsDeletedFalse(Long userShiftId);
     List<User> findByShiftRequests_UserIdAndShiftRequests_TypeTrueAndIsDeletedFalse(Long userId);
 }

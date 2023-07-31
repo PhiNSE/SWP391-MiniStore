@@ -4,6 +4,8 @@ import com.sitesquad.ministore.model.Shift;
 import com.sitesquad.ministore.model.User;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -54,6 +56,6 @@ public class UserShiftDTO {
 
     private List<User> requestEmployees;
 
-    private List<User> leaveEmployees;
+    private Set<User> leaveEmployees;
  
 }

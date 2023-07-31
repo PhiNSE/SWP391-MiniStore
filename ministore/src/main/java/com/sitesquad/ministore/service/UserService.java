@@ -45,6 +45,7 @@ public class UserService {
     @Autowired
     ShiftRequestRepository shiftRequestRepository;
 
+    SystemConstant SystemConstant = new SystemConstant();
 
     public User map2User(User oldUser){
         User newUser = new User();
@@ -93,8 +94,8 @@ public class UserService {
                 for (ShiftRequest shiftRequest : shiftRequests) {
                     UserShift userShift= shiftRequest.getUserShift();
                     System.out.println(userShift);
-                        if (SystemConstant.ZONE_DATE_TIME_NOW.isAfter(userShift.getStartTime())
-                                && SystemConstant.ZONE_DATE_TIME_NOW.isBefore(userShift.getEndTime())) {
+                        if (SystemConstant.ZONE_DATE_TIME_NOW().isAfter(userShift.getStartTime())
+                                && SystemConstant.ZONE_DATE_TIME_NOW().isBefore(userShift.getEndTime())) {
                             onLeave = true;
                             break;
                         }

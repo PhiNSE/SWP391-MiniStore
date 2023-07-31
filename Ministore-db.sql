@@ -256,7 +256,7 @@ PRIMARY KEY CLUSTERED (
 GO 
 create table [dbo].[shift_request] (
 	[shift_request_id] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [tbl_user](user_id) ON DELETE CASCADE,
+	[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [tbl_user](user_id),
 	[user_shift_id] [int] NOT NULL FOREIGN KEY REFERENCES [user_shift](user_shift_id),
 	[type] [bit] NOT NULL,
 );
@@ -268,55 +268,55 @@ create table [dbo].[ticket_type](
 GO
 create table [dbo].[ticket](
 	[ticket_id] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [tbl_user](user_id) ON DELETE CASCADE,
+	[user_id] [int] NOT NULL FOREIGN KEY REFERENCES [tbl_user](user_id),
 	start_time datetime NULL,
 	end_time datetime NULL,
 	is_approved bit NULL,
 	title [Nvarchar](255) NULL,
 	description [Nvarchar](255) null,
-	[ticket_type_id] [int] NOT NULL FOREIGN KEY REFERENCES [ticket_type]([ticket_type_id]) ON DELETE CASCADE,
+	[ticket_type_id] [int] NOT NULL FOREIGN KEY REFERENCES [ticket_type]([ticket_type_id]) ,
 );
 GO
 ALTER TABLE [dbo].[ticket]  
 ADD [user_shift_id] int NULL
 GO
 ALTER TABLE [dbo].[user_notification]  WITH CHECK ADD  CONSTRAINT [fk19] FOREIGN KEY([user_id])
-REFERENCES [dbo].[tbl_user] ([user_id]) ON DELETE CASCADE
+REFERENCES [dbo].[tbl_user] ([user_id]) 
 GO
 ALTER TABLE [dbo].[user_notification] CHECK CONSTRAINT [fk19]
 GO
 ALTER TABLE [dbo].[tbl_order]  WITH CHECK ADD  CONSTRAINT [fk10] FOREIGN KEY([user_id])
-REFERENCES [dbo].[tbl_user] ([user_id]) ON DELETE CASCADE
+REFERENCES [dbo].[tbl_user] ([user_id]) 
 GO
 ALTER TABLE [dbo].[tbl_order] CHECK CONSTRAINT [fk10]
 GO
 ALTER TABLE [dbo].[tbl_order]  WITH CHECK ADD  CONSTRAINT [fk99] FOREIGN KEY([voucher_id])
-REFERENCES [dbo].[voucher] ([voucher_id]) ON DELETE CASCADE
+REFERENCES [dbo].[voucher] ([voucher_id]) 
 GO
 ALTER TABLE [dbo].[tbl_order] CHECK CONSTRAINT [fk99]
 GO
 ALTER TABLE [dbo].[order_detail]  WITH CHECK ADD  CONSTRAINT [fk2] FOREIGN KEY([product_id])
-REFERENCES [dbo].[product] ([product_id]) ON DELETE CASCADE
+REFERENCES [dbo].[product] ([product_id]) 
 GO
 ALTER TABLE [dbo].[order_detail] CHECK CONSTRAINT [fk2]
 GO
 ALTER TABLE [dbo].[order_detail]  WITH CHECK ADD  CONSTRAINT [fk21] FOREIGN KEY([product_voucher_id])
-REFERENCES [dbo].[product_voucher] ([product_voucher_id]) ON DELETE CASCADE
+REFERENCES [dbo].[product_voucher] ([product_voucher_id]) 
 GO
 ALTER TABLE [dbo].[order_detail] CHECK CONSTRAINT [fk21]
 GO
 ALTER TABLE [dbo].[order_detail]  WITH CHECK ADD  CONSTRAINT [fk3] FOREIGN KEY([order_id])
-REFERENCES [dbo].[tbl_order] ([order_id]) ON DELETE CASCADE
+REFERENCES [dbo].[tbl_order] ([order_id]) 
 GO
 ALTER TABLE [dbo].[order_detail] CHECK CONSTRAINT [fk3]
 GO
 ALTER TABLE [dbo].[payslip]  WITH CHECK ADD  CONSTRAINT [fk40] FOREIGN KEY([user_id])
-REFERENCES [dbo].[tbl_user] ([user_id]) ON DELETE CASCADE
+REFERENCES [dbo].[tbl_user] ([user_id]) 
 GO
 ALTER TABLE [dbo].[payslip] CHECK CONSTRAINT [fk40]
 GO
 ALTER TABLE [dbo].[product]  WITH CHECK ADD  CONSTRAINT [fk1] FOREIGN KEY([product_type_id])
-REFERENCES [dbo].[product_type] ([product_type_id]) ON DELETE CASCADE
+REFERENCES [dbo].[product_type] ([product_type_id]) 
 GO
 ALTER TABLE [dbo].[product] CHECK CONSTRAINT [fk1]
 
@@ -331,17 +331,17 @@ GO
 ALTER TABLE [dbo].[product_voucher] CHECK CONSTRAINT [fk20]
 GO
 ALTER TABLE [dbo].[tbl_user]  WITH CHECK ADD  CONSTRAINT [fk4] FOREIGN KEY([role_id])
-REFERENCES [dbo].[role] ([role_id]) ON DELETE CASCADE
+REFERENCES [dbo].[role] ([role_id]) 
 GO
 ALTER TABLE [dbo].[tbl_user] CHECK CONSTRAINT [fk4]
 GO
 ALTER TABLE [dbo].[user_shift]  WITH CHECK ADD  CONSTRAINT [fk5] FOREIGN KEY([user_id])
-REFERENCES [dbo].[tbl_user] ([user_id]) ON DELETE CASCADE
+REFERENCES [dbo].[tbl_user] ([user_id]) 
 GO
 ALTER TABLE [dbo].[user_shift] CHECK CONSTRAINT [fk5]
 GO
 ALTER TABLE [dbo].[user_shift]  WITH CHECK ADD  CONSTRAINT [fk6] FOREIGN KEY([shift_id])
-REFERENCES [dbo].[shift] ([shift_id]) ON DELETE CASCADE
+REFERENCES [dbo].[shift] ([shift_id]) 
 GO
 ALTER TABLE [dbo].[user_shift] CHECK CONSTRAINT [fk6]
 GO

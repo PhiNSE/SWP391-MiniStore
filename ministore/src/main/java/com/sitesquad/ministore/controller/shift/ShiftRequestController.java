@@ -77,14 +77,14 @@ public class ShiftRequestController {
 
     @DeleteMapping("/shiftRequest")
     public ResponseEntity<ResponseObject> delete(@RequestParam(required = false) Long shiftRequestId){
-        if(shiftRequestId == null){
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseObject(200,"shiftRequestId parameter not found",""));
-        }
-        if(shiftRequestRepository.findById(shiftRequestId).orElse(null) == null){
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseObject(200,"shiftRequestId doesn't exist in database",""));
-        }
+//        if(shiftRequestId == null){
+//            return ResponseEntity.status(HttpStatus.OK)
+//                    .body(new ResponseObject(200,"shiftRequestId parameter not found",""));
+//        }
+//        if(shiftRequestRepository.findById(shiftRequestId).orElse(null) == null){
+//            return ResponseEntity.status(HttpStatus.OK)
+//                    .body(new ResponseObject(200,"shiftRequestId doesn't exist in database",""));
+//        }
         shiftRequestService.delete(shiftRequestId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseObject(200,"Delete shift request successfully",""));

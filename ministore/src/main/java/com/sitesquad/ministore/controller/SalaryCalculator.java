@@ -1,5 +1,6 @@
 package com.sitesquad.ministore.controller;
 
+import com.sitesquad.ministore.constant.ShiftConstant;
 import com.sitesquad.ministore.constant.SystemConstant;
 import com.sitesquad.ministore.dto.PayslipDTO;
 import com.sitesquad.ministore.dto.RequestMeta;
@@ -46,6 +47,7 @@ public class SalaryCalculator {
 
     @Autowired
     UserNotificationService userNotificationService;
+    SystemConstant SystemConstant = new SystemConstant();
 
     private Payslip addPayslip(List<UserShift> userShiftList) {
         Payslip payslip = new Payslip();
@@ -58,12 +60,12 @@ public class SalaryCalculator {
         for (UserShift userShift : userShiftList) {
             Long workingPeriod = ChronoUnit.HOURS.between(userShift.getStartTime(), userShift.getEndTime());
             Double salaryInADay = userShift.getUser().getRole().getBaseSalary() * workingPeriod * userShift.getShift().getCoefficient();
-            if (userShift.getIsWeekend() == true) { // weekend
+            if (userShift.getIsWeekend()!=null && userShift.getIsWeekend() == true) { // weekend
                 salaryInADay *= 2; // using coeffience const
-            } else { // not weekend
+            } else if(userShift.getShift().getType()!=null &&  userShift.getShift().getType().equals(ShiftConstant.SALER_NIGHT_SHIFT)||userShift.getShift().getType().equals(ShiftConstant.GUARD_NIGHT_SHIFT)){ // not weekend
                 salaryInADay *= 1.5; // using coeffience const
             }
-            if (userShift.getIsHoliday() == true) { // holiday
+            if (userShift.getIsHoliday()!=null && userShift.getIsHoliday() == true) { // holiday
                 salaryInADay *= 3; // using coeffience const
             }
             salary += salaryInADay;
@@ -76,7 +78,7 @@ public class SalaryCalculator {
 
         payslip.setStartDate(Timestamp.from(userShiftList.get(0).getStartTime().toInstant()));
         payslip.setEndDate(Timestamp.from(userShiftList.get(userShiftList.size() - 1).getEndTime().toInstant()));
-        payslip.setDate(Timestamp.from(SystemConstant.LOCAL_DATE_TIME_NOW.atZone(ZoneId.systemDefault()).toInstant()));
+        payslip.setDate(Timestamp.from(SystemConstant.LOCAL_DATE_TIME_NOW().atZone(ZoneId.systemDefault()).toInstant()));
         payslip.setSalary(salary);
         payslip.setTotalHours(totalHour);
         payslipService.add(payslip);
@@ -150,7 +152,7 @@ public class SalaryCalculator {
 
                 List<Long> userIds = new ArrayList<>();
                 userIds.add(payslip.getUserId());
-                userNotificationService.customCreateUserNotification("Tra luong", "Nhan vien nhan luong", userIds);
+//                userNotificationService.customCreateUserNotification("Tra luong", "Nhan vien nhan luong", userIds);
             }
         }
 
