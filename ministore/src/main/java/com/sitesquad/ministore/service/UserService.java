@@ -118,7 +118,7 @@ public class UserService {
     public List<User> findAll(){
         return userRepository.findAll();
     }
-    
+
     public List<User> findAllExceptAdmin(){
         List<User> emp = userRepository.findByRoleId(new Long(2));
         List<User> guard = userRepository.findByRoleId(new Long(3));

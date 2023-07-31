@@ -86,23 +86,20 @@ public class SalaryCalculator {
     @Scheduled(cron = "0 0 0 30 * *")
     @PostMapping("/salary")
     public ResponseEntity<ResponseObject> calculateSalary() {
-        if (!requestMeta.getRole().equals("admin")) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(404, "You don't have permission", "")
-            );
-        }
+//        if (!requestMeta.getRole().equals("admin")) {
+//            return ResponseEntity.status(HttpStatus.OK).body(
+//                    new ResponseObject(404, "You don't have permission", "")
+//            );
+//        }
 
         List<User> userList = userService.findAllExceptAdmin();
         System.out.println(userList);
 
         for (User user : userList) {
             List<UserShift> userShiftList = userShiftService.findAllByIsPaidAndUserId(user.getUserId());
-            if (userShiftList.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject(404, "Not Found UserShift", "")
-                );
+            if (!userShiftList.isEmpty()) {
+                addPayslip(userShiftList);
             }
-            addPayslip(userShiftList);
         }
 
         userNotificationService.sendNotiAndMailToAllAdmins("Admin Tra luong", "Den ngay tra luong cho nhan vien");
