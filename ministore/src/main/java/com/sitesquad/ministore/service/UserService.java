@@ -5,11 +5,7 @@
  */
 package com.sitesquad.ministore.service;
 
-import com.sitesquad.ministore.constant.ShiftConstant;
 import com.sitesquad.ministore.constant.SystemConstant;
-import com.sitesquad.ministore.constant.TicketTypeConstant;
-import com.sitesquad.ministore.controller.shift.TicketController;
-import com.sitesquad.ministore.controller.shift.UserShiftController;
 import com.sitesquad.ministore.dto.UserDTO;
 import com.sitesquad.ministore.model.ShiftRequest;
 import com.sitesquad.ministore.model.User;
@@ -245,7 +241,7 @@ public class UserService {
     public User addUser(User user){
         user.setIsDeleted(Boolean.FALSE);
         user.setRole(roleRepository.findByRoleIdAndIsDeletedFalse(user.getRoleId()));
-        user.setPassword("1");
+        user.setPassword("A12345678");
         return userRepository.save(user);
     }
 

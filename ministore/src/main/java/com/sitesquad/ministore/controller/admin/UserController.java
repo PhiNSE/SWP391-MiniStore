@@ -13,6 +13,7 @@ import com.sitesquad.ministore.dto.UserDTO;
 import com.sitesquad.ministore.model.User;
 import com.sitesquad.ministore.repository.RoleRepository;
 import com.sitesquad.ministore.repository.UserRepository;
+import com.sitesquad.ministore.service.MailerService;
 import com.sitesquad.ministore.service.RoleService;
 import com.sitesquad.ministore.service.UserNotificationService;
 import com.sitesquad.ministore.service.UserService;
@@ -47,6 +48,9 @@ public class UserController {
 
     @Autowired
     UserNotificationService userNotificationService;
+
+    @Autowired
+    MailerService mailerService;
 
     @GetMapping()
     public ResponseEntity<ResponseObject> getAllUser(@RequestParam(required = false)  Integer offset){
@@ -118,6 +122,7 @@ public class UserController {
 
             User addUser = userService.addUser(user);
             if(addUser != null){
+                mailerService.sendMailWithOutFile(user.getEmail(),new String[0], "Your account have been created ",String.format("Your password for the account is %s",user.getPassword()));
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObject(200, "add success", addUser)
                 );

@@ -1,33 +1,22 @@
 package com.sitesquad.ministore.controller.admin;
 
 import com.sitesquad.ministore.dto.ProductDTO;
+import com.sitesquad.ministore.dto.RequestMeta;
+import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.model.Order;
 import com.sitesquad.ministore.model.OrderDetails;
 import com.sitesquad.ministore.model.Product;
-import com.sitesquad.ministore.dto.RequestMeta;
-import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.service.OrderDetailsService;
 import com.sitesquad.ministore.service.OrderService;
 import com.sitesquad.ministore.service.ProductService;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.sql.Timestamp;
+import java.util.*;
 
 /**
  *
@@ -142,7 +131,7 @@ public class ProductController {
         List<Product> filteredProductList = new ArrayList<>();
         for (Product product : productlist) {
             String productCode = product.getProductCode();
-            if (!seenProductCodes.contains(productCode)) {
+            if (!seenProductCodes.contains(productCode) && product.getPrice()> product.getCost()) {
                 seenProductCodes.add(productCode);
                 filteredProductList.add(product);
             }
