@@ -21,7 +21,8 @@ public class VoucherController {
 
     @Autowired
     VoucherService voucherService;
-    
+
+    @GetMapping("/voucher")
     public List<Voucher> findAll() {
         return voucherService.findAll();
     }
@@ -108,7 +109,7 @@ public class VoucherController {
         );
     }
 
-    @GetMapping("/voucher")
+    @GetMapping("/voucherapply")
     public ResponseEntity<ResponseObject> getVouchers(){
         List<Voucher> vouchers = voucherService.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(

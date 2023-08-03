@@ -73,7 +73,7 @@ public class Voucher {
     private Boolean isApplyAll;
 
     @OneToMany(mappedBy = "voucher")
-    @JsonIgnore
+//    @JsonIgnore
     @ToString.Exclude
     private Collection<ProductVoucher> productVouchers;
     

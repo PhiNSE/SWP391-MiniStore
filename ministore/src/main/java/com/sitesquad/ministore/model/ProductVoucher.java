@@ -50,13 +50,13 @@ public class ProductVoucher {
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "product_id", referencedColumnName = "product_id")
-    @JsonIgnore
+//    @JsonIgnore
     @ToString.Exclude
     private Product product;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "voucher_id", referencedColumnName = "voucher_id")
     @JsonIgnore
     @ToString.Exclude
