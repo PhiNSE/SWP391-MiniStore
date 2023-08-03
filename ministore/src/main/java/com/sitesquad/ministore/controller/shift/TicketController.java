@@ -139,6 +139,10 @@ public class TicketController {
 
     @PostMapping("/ticket")
     public ResponseEntity<ResponseObject> add(@RequestBody(required = false) Ticket ticket){
+        if(requestMeta.getUserId()==null){
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseObject(500, "user id not found", ""));
+        }
         if(ticket == null){
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseObject(500, "ticket parameter not found", ""));
@@ -147,10 +151,28 @@ public class TicketController {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseObject(500, "Ticket title or type aren't inputted", ""));
         }
-        if(ticket.getTicketTypeId() == TicketTypeConstant.LEAVE_TICKET_TYPE&&(ticket.getStartTime()==null||ticket.getEndTime()==null)){
+        if(ticket.getTicketTypeId() == TicketTypeConstant.LEAVE_TICKET_TYPE&&(ticket.getStartTime()==null||ticket.getEndTime()==null)) {
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseObject(500, "Leave Ticket start time or type aren't inputted", ""));
-        }else if(ticket.getTicketTypeId() == TicketTypeConstant.CANCLE_SHIFT_TICKET_TYPE){
+                    .body(new ResponseObject(500, "Leave Ticket start/end time or type aren't inputted", ""));
+
+        }
+        //check không trùng time
+        if(ticket.getTicketTypeId() == TicketTypeConstant.LEAVE_TICKET_TYPE&&ticket.getStartTime()!=null&&ticket.getEndTime()!=null) {
+            ticket.setStartTime(ticket.getStartTime().withHour(0).withMinute(0).withSecond(0));
+            ticket.setEndTime(ticket.getEndTime().withHour(23).withMinute(59).withSecond(0));
+            List<Ticket> oldTickets = ticketRepository.findByUserId(requestMeta.getUserId());
+            for (Ticket oldTicket : oldTickets) {
+                if (       (ticket.getStartTime().isEqual(oldTicket.getStartTime())||ticket.getStartTime().isAfter(oldTicket.getStartTime()))
+                        || (ticket.getStartTime().isEqual(oldTicket.getEndTime())||ticket.getStartTime().isBefore(oldTicket.getEndTime()))
+                        || (ticket.getEndTime().isEqual(oldTicket.getStartTime())||ticket.getStartTime().isAfter(oldTicket.getStartTime()))
+                        || (ticket.getEndTime().isEqual(oldTicket.getStartTime())||ticket.getStartTime().isBefore(oldTicket.getStartTime()))
+                ) {
+                    return ResponseEntity.status(HttpStatus.OK)
+                            .body(new ResponseObject(500, "Leave period is duplicated! Please change!", oldTicket));
+                }
+            }
+        }
+        if(ticket.getTicketTypeId() == TicketTypeConstant.CANCLE_SHIFT_TICKET_TYPE){
             UserShift cancleShift = userShiftService.findById(ticket.getUserShiftId());
             if(ticket.getUserShiftId()==null) {
                 return ResponseEntity.status(HttpStatus.OK)
@@ -161,10 +183,6 @@ public class TicketController {
             }
         }
 
-        if(requestMeta.getUserId()==null){
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseObject(500, "user id not found", ""));
-        }
         ticket.setUserId(requestMeta.getUserId());
         Ticket ticketAdd = ticketService.add(ticket);
         //noti

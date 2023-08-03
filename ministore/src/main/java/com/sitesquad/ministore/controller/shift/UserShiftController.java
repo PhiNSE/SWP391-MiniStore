@@ -409,4 +409,9 @@ public class UserShiftController {
                 new ResponseObject(200, "Cancel shift request successfully", null)
         );
     }
+
+    @PutMapping("/userShift/fix")
+    public ResponseEntity<ResponseObject> fixAttendance(@RequestBody UserShift userShift){
+        userShiftService.edit(userShift);
+    }
 }
