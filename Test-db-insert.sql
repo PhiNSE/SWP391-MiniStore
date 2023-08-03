@@ -128,7 +128,7 @@ INSERT INTO [dbo].[holiday] ([holiday_date],[holiday_name]) VALUES
     ('2023-09-04', N'Nghỉ Ngày Quốc khánh');
 GO
 insert into  [dbo].[ticket_type]([name]) values(N'Leave')
-insert into  [dbo].[ticket_type]([name]) values(N'Cancle shift')
+insert into  [dbo].[ticket_type]([name]) values(N'Cancel shift')
 
 USE [MinistoreManagement]
 GO
