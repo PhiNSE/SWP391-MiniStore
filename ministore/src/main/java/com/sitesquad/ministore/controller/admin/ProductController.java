@@ -187,8 +187,8 @@ public class ProductController {
 
 
         Map<String , Object> errorData = new HashMap<>();
-        errorData.put("Err2:", errorDuplicateProductCodeList);
-        errorData.put("Err1:",errorPriceList);
+        errorData.put("err2:", errorDuplicateProductCodeList);
+        errorData.put("err1:",errorPriceList);
         if(!errorDuplicateProductCodeList.isEmpty() || !errorPriceList.isEmpty()){
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(500, "Products invalid", errorData )
