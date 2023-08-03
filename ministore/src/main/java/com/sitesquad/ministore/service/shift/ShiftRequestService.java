@@ -69,4 +69,8 @@ public class ShiftRequestService {
     public List<ShiftRequest> findByUserId(Long userId){
         return shiftRequestRepository.findByUserId(userId);
     }
+
+    public List<ShiftRequest> findByUserIdAndByTypeFalse(Long userId){
+        return shiftRequestRepository.findByUserIdAndTypeFalse(userId);
+    }
 }

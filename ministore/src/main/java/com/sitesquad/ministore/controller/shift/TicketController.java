@@ -1,6 +1,7 @@
 package com.sitesquad.ministore.controller.shift;
 
 import com.sitesquad.ministore.constant.RoleConstant;
+import com.sitesquad.ministore.constant.SystemConstant;
 import com.sitesquad.ministore.constant.TicketTypeConstant;
 import com.sitesquad.ministore.dto.RequestMeta;
 import com.sitesquad.ministore.dto.ResponseObject;
@@ -10,6 +11,7 @@ import com.sitesquad.ministore.repository.TicketRepository;
 import com.sitesquad.ministore.service.UserNotificationService;
 import com.sitesquad.ministore.service.shift.TicketService;
 import com.sitesquad.ministore.service.shift.UserShiftService;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -154,6 +156,10 @@ public class TicketController {
         if(ticket.getTicketTypeId() == TicketTypeConstant.LEAVE_TICKET_TYPE&&(ticket.getStartTime()==null||ticket.getEndTime()==null)) {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseObject(500, "Leave Ticket start/end time or type aren't inputted", ""));
+
+        }
+        //check quá khứ
+        if(ticket.getStartTime().isBefore(SystemConstant.ZONE_DATE_TIME_NOW())){
 
         }
         //check không trùng time

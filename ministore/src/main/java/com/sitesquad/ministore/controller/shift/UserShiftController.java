@@ -95,7 +95,7 @@ public class UserShiftController {
             userShiftMap.put("userShifts", userShiftDTOs);
             userShiftMap.put("inProgressUserShifts", inProgressUserShiftDTOs);
             List<ShiftRequest> shiftRequests = new ArrayList<>();
-            shiftRequests.addAll(shiftRequestService.findByUserId(requestMeta.getUserId()));
+            shiftRequests.addAll(shiftRequestService.findByUserIdAndByTypeFalse(requestMeta.getUserId()));
             userShiftMap.put("shiftRequests", shiftRequests);
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Found User Shift list", userShiftMap)

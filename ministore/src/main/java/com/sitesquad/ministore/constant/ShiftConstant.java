@@ -23,6 +23,6 @@ public class ShiftConstant{
     public static long LIMIT_CHECKIN_MINUTE = 144000/*30*/;
     public static long LIMIT_CHECKIN_MINUTE_LATE = 15;
 
-    public static Boolean SHIFT_REQUEST_TYPE = false;
-    public static Boolean SHIFT_LEAVE_TYPE = true;
+    public static boolean SHIFT_REQUEST_TYPE = false;
+    public static boolean SHIFT_LEAVE_TYPE = true;
 }

@@ -115,4 +115,12 @@ public class VoucherController {
                 new ResponseObject(200, "Successfull", filteredVoucherList)
         );
     }
+
+    @GetMapping("/voucher")
+    public ResponseEntity<ResponseObject> getVouchers(){
+        List<Voucher> vouchers = voucherService.findAll();
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(200, "Found voucher list", vouchers)
+        );
+    }
 }
