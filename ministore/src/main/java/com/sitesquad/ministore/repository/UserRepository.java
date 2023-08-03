@@ -31,7 +31,7 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     User findByUserIdAndIsDeletedFalseOrIsDeletedTrue(Long userId);
     List<User> findUserByRole_NameIgnoreCaseAndIsDeletedFalse(String roleName);
 
-    User findOneByEmailIgnoreCaseOrPhone(String email,String phone);
+    User findOneByEmailIgnoreCaseOrPhoneAndIsDeletedFalse(String email,String phone);
     User findOneByEmailIgnoreCaseAndIsDeletedFalse(String email);
     User findOneByEmailIgnoreCaseAndPasswordIgnoreCaseAndIsDeletedFalse(String email, String password);
 

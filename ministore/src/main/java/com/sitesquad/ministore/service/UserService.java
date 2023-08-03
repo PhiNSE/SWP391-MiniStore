@@ -176,7 +176,7 @@ public class UserService {
     }
 
     public boolean checkUserExist(String email, String phone) {
-        return userRepository.findOneByEmailIgnoreCaseOrPhone(email, phone) != null;
+        return userRepository.findOneByEmailIgnoreCaseOrPhoneAndIsDeletedFalse(email, phone) != null;
     }
 
 
