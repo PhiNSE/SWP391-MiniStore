@@ -189,7 +189,7 @@ public class ProductController {
         Map<String , Object> errorData = new HashMap<>();
         errorData.put("Duplicate product code", errorDuplicateProductCodeList);
         errorData.put("Cost is larger than price",errorPriceList);
-        if(!errorDuplicateProductCodeList.isEmpty() && !errorPriceList.isEmpty()){
+        if(!errorDuplicateProductCodeList.isEmpty() || !errorPriceList.isEmpty()){
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(500, "Products invalid", errorData )
             );
