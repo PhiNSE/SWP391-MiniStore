@@ -21,8 +21,7 @@ public class VoucherController {
 
     @Autowired
     VoucherService voucherService;
-
-    @GetMapping("/voucher")
+    
     public List<Voucher> findAll() {
         return voucherService.findAll();
     }
