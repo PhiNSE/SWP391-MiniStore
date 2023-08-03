@@ -162,10 +162,10 @@ public class TicketController {
             ticket.setEndTime(ticket.getEndTime().withHour(23).withMinute(59).withSecond(0));
             List<Ticket> oldTickets = ticketRepository.findByUserId(requestMeta.getUserId());
             for (Ticket oldTicket : oldTickets) {
-                if (       (ticket.getStartTime().isEqual(oldTicket.getStartTime())||ticket.getStartTime().isAfter(oldTicket.getStartTime()))
-                        || (ticket.getStartTime().isEqual(oldTicket.getEndTime())||ticket.getStartTime().isBefore(oldTicket.getEndTime()))
-                        || (ticket.getEndTime().isEqual(oldTicket.getStartTime())||ticket.getStartTime().isAfter(oldTicket.getStartTime()))
-                        || (ticket.getEndTime().isEqual(oldTicket.getStartTime())||ticket.getStartTime().isBefore(oldTicket.getStartTime()))
+                if (      ( (ticket.getStartTime().isEqual(oldTicket.getStartTime())||ticket.getStartTime().isAfter(oldTicket.getStartTime()))
+                        && (ticket.getStartTime().isEqual(oldTicket.getEndTime())||ticket.getStartTime().isBefore(oldTicket.getEndTime())))
+                        ||( (ticket.getEndTime().isEqual(oldTicket.getStartTime())||ticket.getStartTime().isAfter(oldTicket.getStartTime()))
+                        && (ticket.getEndTime().isEqual(oldTicket.getStartTime())||ticket.getStartTime().isBefore(oldTicket.getStartTime())))
                 ) {
                     return ResponseEntity.status(HttpStatus.OK)
                             .body(new ResponseObject(500, "Leave period is duplicated! Please change!", oldTicket));
