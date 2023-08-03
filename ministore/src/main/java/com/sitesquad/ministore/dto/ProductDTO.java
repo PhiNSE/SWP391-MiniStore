@@ -1,9 +1,10 @@
 package com.sitesquad.ministore.dto;
 
-import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 /**
  *
@@ -22,6 +23,7 @@ public class ProductDTO implements Serializable{
     private Long productTypeId;
 
     private String productTypeName;
+
     
     private Double price;
     

@@ -6,6 +6,7 @@ import com.sitesquad.ministore.dto.ResponseObject;
 import com.sitesquad.ministore.model.Order;
 import com.sitesquad.ministore.model.OrderDetails;
 import com.sitesquad.ministore.model.Product;
+import com.sitesquad.ministore.repository.ProductRepository;
 import com.sitesquad.ministore.service.OrderDetailsService;
 import com.sitesquad.ministore.service.OrderService;
 import com.sitesquad.ministore.service.ProductService;
@@ -36,6 +37,9 @@ public class ProductController {
 
     @Autowired
     OrderDetailsService orderDetailsService;
+
+    @Autowired
+    ProductRepository productRepository;
 
     @GetMapping("/product/all")
     public ResponseEntity<ResponseObject> searchAllProducts(
@@ -129,31 +133,69 @@ public class ProductController {
         // check duplicate productList
         Set<String> seenProductCodes = new HashSet<>();
         List<Product> filteredProductList = new ArrayList<>();
+        List<Product> errorDuplicateProductCodeList = new ArrayList<>();
+        List<Product> errorPriceList = new ArrayList<>();
+        List<Product> currentProductList = productRepository.findByIsDeletedFalseOrIsDeletedIsNull();
+
+        for (Product product1 : currentProductList) {
+//            for (Product product2 : productlist){
+//                if(product1.getProductCode().equals(product2.getProductCode())){
+//                    errorProductList.add(product2);
+//                    seenProductCodes.add
+//                }
+//            }
+            seenProductCodes.add(product1.getProductCode());
+        }
+
+
         for (Product product : productlist) {
             String productCode = product.getProductCode();
-            if (!seenProductCodes.contains(productCode) && product.getPrice()> product.getCost()) {
+            if (!seenProductCodes.contains(productCode)) {
                 seenProductCodes.add(productCode);
                 filteredProductList.add(product);
+            }else{
+                // add error product list
+                errorDuplicateProductCodeList.add(product);
+            }
+
+            if (product.getPrice()> product.getCost()) {
+                seenProductCodes.add(productCode);
+                filteredProductList.add(product);
+            }else{
+                // add error product list
+                errorPriceList.add(product);
             }
         }
 
-        // add product into db
-        for (Product product : filteredProductList) {
-            productService.add(product);
+        if(errorDuplicateProductCodeList.isEmpty() && errorPriceList.isEmpty()) {
+            // add product into db
+            for (Product product : filteredProductList) {
+                productService.add(product);
+            }
+
+            // create order import product
+            Order order = createOrder();
+            List<OrderDetails> orderDetailList = orderDetailsService.importOrderDetail(filteredProductList, order);
+
+            Double totalOrder = 0.0;
+            for (OrderDetails orderDetail : orderDetailList) {
+                totalOrder += orderDetail.getTotal();
+            }
+            order.setTotal(totalOrder);
+            order = orderService.edit(order);
         }
 
-        // create order import product
-        Order order = createOrder();
-        List<OrderDetails> orderDetailList = orderDetailsService.importOrderDetail(filteredProductList, order);
 
-        Double totalOrder = 0.0;
-        for (OrderDetails orderDetail : orderDetailList) {
-            totalOrder += orderDetail.getTotal();
+        Map<String , Object> errorData = new HashMap<>();
+        errorData.put("Duplicate product code", errorDuplicateProductCodeList);
+        errorData.put("Cost is larger than price",errorPriceList);
+        if(!errorDuplicateProductCodeList.isEmpty() && !errorPriceList.isEmpty()){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(500, "Products invalid", errorData )
+            );
         }
-        order.setTotal(totalOrder);
-        order = orderService.edit(order);
 
-        if (productlist != null) {
+        if (!productlist.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(200, "Add sucessfully ", "")
             );
