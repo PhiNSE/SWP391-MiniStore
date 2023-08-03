@@ -412,6 +412,7 @@ public class UserShiftController {
 
     @PutMapping("/userShift/fix")
     public ResponseEntity<ResponseObject> fixAttendance(@RequestBody UserShift userShift){
+
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(200, "Fix shift attendance successfully", null)
         );
