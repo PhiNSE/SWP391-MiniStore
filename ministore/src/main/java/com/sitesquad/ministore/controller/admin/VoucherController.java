@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author admin
  */
 @RestController
@@ -46,7 +45,7 @@ public class VoucherController {
         String description = keyword;
         String name = keyword;
         List<Voucher> foundVouchers = voucherService.findByDescriptionOrName(description, name);
-        if(foundVouchers.isEmpty()) {
+        if (foundVouchers.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(404, "Not found!", "")
             );
@@ -58,17 +57,22 @@ public class VoucherController {
 
     @PostMapping("/voucher")
     public ResponseEntity<ResponseObject> createVoucher(@RequestBody Voucher voucher) {
+        if (voucher.getPercentDiscount() == null || voucher.getPercentDiscount() <= 0 || voucher.getPercentDiscount() > 1) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(500, "Percent discount must >0 and <=1", "")
+            );
+        }
 //        order.setOrderUser(userRepository.findById(order.getUserId()).get());
         Voucher addVoucher = voucherService.add(voucher);
-        if (addVoucher != null) {
+        if (addVoucher == null) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject(200, "Add sucessfully ", addVoucher)
-            );
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObject(500, "Cant add voucher", addVoucher)
             );
         }
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject(200, "Add sucessfully ", addVoucher)
+        );
     }
 
     @DeleteMapping("/voucher/delete/{id}")
@@ -110,7 +114,7 @@ public class VoucherController {
     }
 
     @GetMapping("/voucherapply")
-    public ResponseEntity<ResponseObject> getVouchers(){
+    public ResponseEntity<ResponseObject> getVouchers() {
         List<Voucher> vouchers = voucherService.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(200, "Found voucher list", vouchers)
