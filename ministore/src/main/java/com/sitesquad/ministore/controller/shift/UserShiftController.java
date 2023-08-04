@@ -412,14 +412,14 @@ public class UserShiftController {
 
     @PutMapping("/userShift/fix")
     public ResponseEntity<ResponseObject> fixAttendance(@RequestBody UserShift userShift){
-        if(userShift.getIsCheckedIn()!=null&&userShift.getIsCheckedIn()==true){
+        if(userShift.getIsCheckedIn()!=null){
             userShift.setIsCheckedInLate(null);
-        } else if(userShift.getIsCheckedInLate()!=null&&userShift.getIsCheckedInLate()==true){
+        } else if(userShift.getIsCheckedInLate()!=null){
             userShift.setIsCheckedIn(null);
         }
-        if(userShift.getIsCheckedOut()!=null&&userShift.getIsCheckedOut()==true){
+        if(userShift.getIsCheckedOut()!=null){
             userShift.setIsCheckedOutLate(null);
-        } else if(userShift.getIsCheckedOutLate()!=null&&userShift.getIsCheckedOutLate()==true){
+        } else if(userShift.getIsCheckedOutLate()!=null){
             userShift.setIsCheckedOut(null);
         }
         userShiftService.edit(userShift);
