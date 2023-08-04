@@ -422,6 +422,7 @@ public class UserShiftController {
         } else if(userShift.getIsCheckedOutLate()!=null&&userShift.getIsCheckedOutLate()==true){
             userShift.setIsCheckedOut(null);
         }
+        userShiftService.edit(userShift);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(200, "Fix shift attendance successfully", null)
         );
