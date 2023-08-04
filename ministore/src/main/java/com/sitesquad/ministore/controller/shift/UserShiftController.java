@@ -412,7 +412,16 @@ public class UserShiftController {
 
     @PutMapping("/userShift/fix")
     public ResponseEntity<ResponseObject> fixAttendance(@RequestBody UserShift userShift){
-
+        if(userShift.getIsCheckedIn()!=null&&userShift.getIsCheckedIn()==true){
+            userShift.setIsCheckedInLate(null);
+        } else if(userShift.getIsCheckedInLate()!=null&&userShift.getIsCheckedInLate()==true){
+            userShift.setIsCheckedIn(null);
+        }
+        if(userShift.getIsCheckedOut()!=null&&userShift.getIsCheckedOut()==true){
+            userShift.setIsCheckedOutLate(null);
+        } else if(userShift.getIsCheckedOutLate()!=null&&userShift.getIsCheckedOutLate()==true){
+            userShift.setIsCheckedOut(null);
+        }
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject(200, "Fix shift attendance successfully", null)
         );

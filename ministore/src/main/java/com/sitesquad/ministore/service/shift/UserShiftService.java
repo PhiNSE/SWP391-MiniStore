@@ -71,7 +71,22 @@ public class UserShiftService {
         List<UserShift> userShifts = userShiftRepository.findByIsPaidFalseOrIsPaidNull();
         for (UserShift userShift : userShifts) {
             if (userShift.getIsCheckedIn() != null && userShift.getIsCheckedOut() != null) {
-                if (userShift.getUserId() == id && userShift.getIsCheckedIn() == true && userShift.getIsCheckedOut() == true) {
+                if (userShift.getUserId() == id && (userShift.getIsCheckedIn() == true && userShift.getIsCheckedOut() == true)
+                ) {
+                    userShiftList.add(userShift);
+                }
+
+            } else if(userShift.getIsCheckedInLate() != null && userShift.getIsCheckedOutLate() != null){
+                if (userShift.getIsCheckedInLate() == true && userShift.getIsCheckedOutLate() == true) {
+                    userShiftList.add(userShift);
+                }
+            } else if(userShift.getIsCheckedIn() != null && userShift.getIsCheckedOutLate() != null){
+                if (userShift.getIsCheckedIn() == true && userShift.getIsCheckedOutLate() == true) {
+                    userShiftList.add(userShift);
+                }
+
+            } else if(userShift.getIsCheckedInLate() != null && userShift.getIsCheckedOut() != null){
+                if (userShift.getIsCheckedInLate() == true && userShift.getIsCheckedOut() == true) {
                     userShiftList.add(userShift);
                 }
             }
