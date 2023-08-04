@@ -412,6 +412,11 @@ public class UserShiftController {
 
     @PutMapping("/userShift/fix")
     public ResponseEntity<ResponseObject> fixAttendance(@RequestBody UserShift userShift){
+        if(userShift==null){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject(500, "Shift attendance parameter not received", null)
+            );
+        }
         if(userShift.getIsCheckedIn()!=null){
             userShift.setIsCheckedInLate(null);
         } else if(userShift.getIsCheckedInLate()!=null){
