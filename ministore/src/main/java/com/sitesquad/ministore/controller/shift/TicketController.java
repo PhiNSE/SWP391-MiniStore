@@ -11,7 +11,6 @@ import com.sitesquad.ministore.repository.TicketRepository;
 import com.sitesquad.ministore.service.UserNotificationService;
 import com.sitesquad.ministore.service.shift.TicketService;
 import com.sitesquad.ministore.service.shift.UserShiftService;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -84,8 +83,8 @@ public class TicketController {
                 unprocessedTicketsMap.put("userShift",userShiftService.findById(ticket.getUserShiftId()));
                 unprocessedTicketsRes.add(unprocessedTicketsMap);
             }
-            Map<String,Object >processedTicketsMap = new HashMap<>();
             for(Ticket ticket : processedTickets){
+                Map<String,Object >processedTicketsMap = new HashMap<>();
                 processedTicketsMap.put("ticket",ticket);
                 processedTicketsMap.put("userShift",userShiftService.findById(ticket.getUserShiftId()));
                 processedTicketsRes.add(processedTicketsMap);
@@ -158,15 +157,20 @@ public class TicketController {
                     .body(new ResponseObject(500, "Leave Ticket start/end time or type aren't inputted", ""));
 
         }
+        if(ticket.getEndTime().isBefore(ticket.getStartTime())){
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseObject(500, "Leave Ticket end time cant not before start time", ""));
+        }
         //check quá khứ
-        if(ticket.getStartTime().isBefore(SystemConstant.ZONE_DATE_TIME_NOW())){
-
+        if(ticket.getStartTime().plusDays(1).isBefore(SystemConstant.ZONE_DATE_TIME_NOW())){
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseObject(500, "Leave Ticket start time is in the past", ""));
         }
         //check không trùng time
         if(ticket.getTicketTypeId() == TicketTypeConstant.LEAVE_TICKET_TYPE&&ticket.getStartTime()!=null&&ticket.getEndTime()!=null) {
             ticket.setStartTime(ticket.getStartTime().withHour(0).withMinute(0).withSecond(0));
             ticket.setEndTime(ticket.getEndTime().withHour(23).withMinute(59).withSecond(0));
-            List<Ticket> oldTickets = ticketRepository.findByUserId(requestMeta.getUserId());
+            List<Ticket> oldTickets = ticketRepository.findByUserIdAndIsApprovedTrueOrIsApprovedIsNull(requestMeta.getUserId());
             for (Ticket oldTicket : oldTickets) {
                 if (      ( (ticket.getStartTime().isEqual(oldTicket.getStartTime())||ticket.getStartTime().isAfter(oldTicket.getStartTime()))
                         && (ticket.getStartTime().isEqual(oldTicket.getEndTime())||ticket.getStartTime().isBefore(oldTicket.getEndTime())))
