@@ -411,13 +411,17 @@ public class UserShiftController {
     }
 
     @PutMapping("/userShift/fix")
-    public ResponseEntity<ResponseObject> fixAttendance(@RequestBody Long userShiftId,Boolean isCheckedIn,Boolean isCheckedOut){
+    public ResponseEntity<ResponseObject> fixAttendance(@RequestParam Long userShiftId,Boolean isCheckedIn,Boolean isCheckedOut){
         UserShift userShift = userShiftService.findById(userShiftId);
         if(userShift==null){
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(500, "Shift attendance parameter not received", null)
             );
         }
+        System.out.println("            aaaaaaaa  "+isCheckedIn);
+        System.out.println("            aaaaaaaa  "+isCheckedOut);
+        userShift.setIsCheckedIn(isCheckedIn);
+        userShift.setIsCheckedOut(isCheckedOut);
         if(userShift.getIsCheckedIn()!=null){
             userShift.setIsCheckedInLate(null);
         } else if(userShift.getIsCheckedInLate()!=null){
@@ -430,7 +434,7 @@ public class UserShiftController {
         }
         userShiftService.edit(userShift);
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject(200, "Fix shift attendance successfully", null)
+                new ResponseObject(200, "Fix shift attendance successfully", userShift)
         );
     }
 }

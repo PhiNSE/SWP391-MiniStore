@@ -295,6 +295,7 @@ public class UserShiftService {
                     userShiftDTO.setIsCheckedOutLate(userShift.getIsCheckedOutLate());
                     userShiftDTO.setCheckInTime(userShift.getCheckInTime());
                     userShiftDTO.setCheckOutTime(userShift.getCheckOutTime());
+                    //status
                     userShiftDTO.setStatus(getStatus(userShift));
                     userShiftDTO.setIsPaid(userShift.getIsPaid());
                     String role = getRoleByUserShiftId(userShift.getUserShiftId());
@@ -333,7 +334,7 @@ public class UserShiftService {
     private String getStatus(UserShift userShift) {
         String status = "";
         ZonedDateTime now = SystemConstant.ZONE_DATE_TIME_NOW();
-        if (userShift.getIsCheckedIn() == null) {
+        if (userShift.getIsCheckedIn() == null || userShift.getIsCheckedIn() == false) {
             if (userShift.getStartTime().isBefore(now)) {
                 if (userShift.getIsCheckedInLate() == null) {
                     status = "not checked in";
