@@ -411,7 +411,8 @@ public class UserShiftController {
     }
 
     @PutMapping("/userShift/fix")
-    public ResponseEntity<ResponseObject> fixAttendance(@RequestBody UserShift userShift){
+    public ResponseEntity<ResponseObject> fixAttendance(@RequestBody Long userShiftId,Boolean isCheckedIn,Boolean isCheckedOut){
+        UserShift userShift = userShiftService.findById(userShiftId);
         if(userShift==null){
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject(500, "Shift attendance parameter not received", null)
